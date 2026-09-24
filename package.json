@@ -1,0 +1,21 @@
+{
+  "name": "roadguardian-2.0",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Traffic Sign Recognition & Driver Safety System (3-Day Hackathon MVP)",
+  "scripts": {
+    "dev:frontend": "echo \"Frontend development script placeholder — configure when frontend is created\"",
+    "dev:backend": "echo \"Backend development script placeholder — configure when backend is created\"",
+    "test": "echo \"Root test runner placeholder\""
+  },
+  "keywords": [
+    "traffic-signs",
+    "driver-monitoring",
+    "computer-vision",
+    "fastapi",
+    "react",
+    "road-safety"
+  ],
+  "author": "RoadGuardian Team",
+  "license": "MIT"
+}

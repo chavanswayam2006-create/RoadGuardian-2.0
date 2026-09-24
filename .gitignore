@@ -1,0 +1,119 @@
+# ==========================================
+# RoadGuardian 2.0 - Security & Data Protection
+# ==========================================
+
+# Local Dataset Storage & Private Data (STRICT PRIVACY ENFORCEMENT)
+data/local/
+data/local/**
+data/raw/
+data/processed/
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+
+# Extracted Frames, Annotated Media, and Output Detections
+*.mp4
+*.avi
+*.mov
+*.mkv
+runs/
+outputs/
+recordings/
+
+# Machine Learning Weights & Checkpoints (Heavy Artifacts)
+*.pt
+*.pth
+*.onnx
+*.engine
+*.tflite
+*.h5
+*.ckpt
+ml/models/*.pt
+ml/models/*.pth
+ml/models/*.onnx
+ml/models/*.engine
+# Keep model architecture configs, metadata, and docs tracked
+!ml/models/**/*.yaml
+!ml/models/**/*.json
+!ml/models/**/README.md
+!ml/models/**/.gitkeep
+
+# Environment Variables & Secrets
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# Credentials, Keys & Cloud tokens
+*.pem
+*.key
+kaggle.json
+credentials.json
+secrets.json
+
+# Python & Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node & Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+dist/
+dist-ssr/
+*.local
+
+# Editor & OS Artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs and Temporary Scratch
+logs/
+*.log
+scratch/
+tmp/
+temp/

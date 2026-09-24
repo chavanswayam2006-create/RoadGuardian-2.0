@@ -1,0 +1,348 @@
+{
+  "classes": {
+    "0": {
+      "id": 0,
+      "sign_name": "Speed limit (20km/h)",
+      "label": "SPEED_LIMIT_20",
+      "category": "SPEED_LIMIT",
+      "speed_limit_kmh": 20,
+      "severity": "INFO"
+    },
+    "1": {
+      "id": 1,
+      "sign_name": "Speed limit (30km/h)",
+      "label": "SPEED_LIMIT_30",
+      "category": "SPEED_LIMIT",
+      "speed_limit_kmh": 30,
+      "severity": "INFO"
+    },
+    "2": {
+      "id": 2,
+      "sign_name": "Speed limit (50km/h)",
+      "label": "SPEED_LIMIT_50",
+      "category": "SPEED_LIMIT",
+      "speed_limit_kmh": 50,
+      "severity": "INFO"
+    },
+    "3": {
+      "id": 3,
+      "sign_name": "Speed limit (60km/h)",
+      "label": "SPEED_LIMIT_60",
+      "category": "SPEED_LIMIT",
+      "speed_limit_kmh": 60,
+      "severity": "INFO"
+    },
+    "4": {
+      "id": 4,
+      "sign_name": "Speed limit (70km/h)",
+      "label": "SPEED_LIMIT_70",
+      "category": "SPEED_LIMIT",
+      "speed_limit_kmh": 70,
+      "severity": "INFO"
+    },
+    "5": {
+      "id": 5,
+      "sign_name": "Speed limit (80km/h)",
+      "label": "SPEED_LIMIT_80",
+      "category": "SPEED_LIMIT",
+      "speed_limit_kmh": 80,
+      "severity": "INFO"
+    },
+    "6": {
+      "id": 6,
+      "sign_name": "End of speed limit (80km/h)",
+      "label": "END_SPEED_LIMIT_80",
+      "category": "DERESTRICTION",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "7": {
+      "id": 7,
+      "sign_name": "Speed limit (100km/h)",
+      "label": "SPEED_LIMIT_100",
+      "category": "SPEED_LIMIT",
+      "speed_limit_kmh": 100,
+      "severity": "INFO"
+    },
+    "8": {
+      "id": 8,
+      "sign_name": "Speed limit (120km/h)",
+      "label": "SPEED_LIMIT_120",
+      "category": "SPEED_LIMIT",
+      "speed_limit_kmh": 120,
+      "severity": "INFO"
+    },
+    "9": {
+      "id": 9,
+      "sign_name": "No passing",
+      "label": "NO_PASSING",
+      "category": "PROHIBITORY",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "10": {
+      "id": 10,
+      "sign_name": "No passing for vehicles over 3.5 metric tons",
+      "label": "NO_PASSING_HEAVY",
+      "category": "PROHIBITORY",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "11": {
+      "id": 11,
+      "sign_name": "Right-of-way at the next intersection",
+      "label": "RIGHT_OF_WAY_NEXT",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "12": {
+      "id": 12,
+      "sign_name": "Priority road",
+      "label": "PRIORITY_ROAD",
+      "category": "PRIORITY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "13": {
+      "id": 13,
+      "sign_name": "Yield",
+      "label": "YIELD",
+      "category": "PRIORITY",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "14": {
+      "id": 14,
+      "sign_name": "Stop",
+      "label": "STOP",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "CRITICAL"
+    },
+    "15": {
+      "id": 15,
+      "sign_name": "No vehicles",
+      "label": "NO_VEHICLES",
+      "category": "PROHIBITORY",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "16": {
+      "id": 16,
+      "sign_name": "Vehicles over 3.5 metric tons prohibited",
+      "label": "NO_HEAVY_VEHICLES",
+      "category": "PROHIBITORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "17": {
+      "id": 17,
+      "sign_name": "No entry",
+      "label": "NO_ENTRY",
+      "category": "PROHIBITORY",
+      "speed_limit_kmh": null,
+      "severity": "CRITICAL"
+    },
+    "18": {
+      "id": 18,
+      "sign_name": "General caution",
+      "label": "GENERAL_CAUTION",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "19": {
+      "id": 19,
+      "sign_name": "Dangerous curve to the left",
+      "label": "CURVE_LEFT",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "20": {
+      "id": 20,
+      "sign_name": "Dangerous curve to the right",
+      "label": "CURVE_RIGHT",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "21": {
+      "id": 21,
+      "sign_name": "Double curve",
+      "label": "DOUBLE_CURVE",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "22": {
+      "id": 22,
+      "sign_name": "Bumpy road",
+      "label": "BUMPY_ROAD",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "23": {
+      "id": 23,
+      "sign_name": "Slippery road",
+      "label": "SLIPPERY_ROAD",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "24": {
+      "id": 24,
+      "sign_name": "Road narrows on the right",
+      "label": "ROAD_NARROWS_RIGHT",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "25": {
+      "id": 25,
+      "sign_name": "Road work",
+      "label": "ROAD_WORK",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "26": {
+      "id": 26,
+      "sign_name": "Traffic signals",
+      "label": "TRAFFIC_SIGNALS_AHEAD",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "27": {
+      "id": 27,
+      "sign_name": "Pedestrians",
+      "label": "PEDESTRIANS",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "28": {
+      "id": 28,
+      "sign_name": "Children crossing",
+      "label": "CHILDREN_CROSSING",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "29": {
+      "id": 29,
+      "sign_name": "Bicycles crossing",
+      "label": "BICYCLES_CROSSING",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "30": {
+      "id": 30,
+      "sign_name": "Beware of ice/snow",
+      "label": "BEWARE_ICE_SNOW",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "WARNING"
+    },
+    "31": {
+      "id": 31,
+      "sign_name": "Wild animals crossing",
+      "label": "WILD_ANIMALS_CROSSING",
+      "category": "WARNING",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "32": {
+      "id": 32,
+      "sign_name": "End of all speed and passing limits",
+      "label": "END_ALL_LIMITS",
+      "category": "DERESTRICTION",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "33": {
+      "id": 33,
+      "sign_name": "Turn right ahead",
+      "label": "TURN_RIGHT_AHEAD",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "34": {
+      "id": 34,
+      "sign_name": "Turn left ahead",
+      "label": "TURN_LEFT_AHEAD",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "35": {
+      "id": 35,
+      "sign_name": "Ahead only",
+      "label": "AHEAD_ONLY",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "36": {
+      "id": 36,
+      "sign_name": "Go straight or right",
+      "label": "GO_STRAIGHT_OR_RIGHT",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "37": {
+      "id": 37,
+      "sign_name": "Go straight or left",
+      "label": "GO_STRAIGHT_OR_LEFT",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "38": {
+      "id": 38,
+      "sign_name": "Keep right",
+      "label": "KEEP_RIGHT",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "39": {
+      "id": 39,
+      "sign_name": "Keep left",
+      "label": "KEEP_LEFT",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "40": {
+      "id": 40,
+      "sign_name": "Roundabout mandatory",
+      "label": "ROUNDABOUT_MANDATORY",
+      "category": "MANDATORY",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "41": {
+      "id": 41,
+      "sign_name": "End of no passing",
+      "label": "END_NO_PASSING",
+      "category": "DERESTRICTION",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    },
+    "42": {
+      "id": 42,
+      "sign_name": "End of no passing by vehicles over 3.5 metric tons",
+      "label": "END_NO_PASSING_HEAVY",
+      "category": "DERESTRICTION",
+      "speed_limit_kmh": null,
+      "severity": "INFO"
+    }
+  }
+}
