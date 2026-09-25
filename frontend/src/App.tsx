@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { api } from './services/api';
 import { useSpeechAlerts } from './hooks/useSpeechAlerts';
-import { CockpitHeader } from './components/CockpitHeader';
-import { AlertBanner } from './components/AlertBanner';
-import { VisionCanvas } from './components/VisionCanvas';
-import { DriverGauge } from './components/DriverGauge';
-import { ContextMap } from './components/ContextMap';
-import { EventTicker } from './components/EventTicker';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { AppShell } from './components/AppShell';
+import type { NavRoute } from './components/Sidebar';
+import { DashboardPage } from './pages/DashboardPage';
+import { LiveDetectionPage } from './pages/LiveDetectionPage';
+import { DriverMonitoringPage } from './pages/DriverMonitoringPage';
+import { RoadMapPage } from './pages/RoadMapPage';
+import { HistoryPage } from './pages/HistoryPage';
+import { AnalyticsPage } from './pages/AnalyticsPage';
+import { SystemStatusPage } from './pages/SystemStatusPage';
+import { SettingsPage } from './pages/SettingsPage';
+import { HelpSafetyPage } from './pages/HelpSafetyPage';
 import type {
   Detection,
   DriverStatus,
@@ -20,6 +24,52 @@ import type {
 } from './types';
 
 export const App: React.FC = () => {
+  // Routing state with hash sync
+  const getInitialRoute = (): NavRoute => {
+    const hash = window.location.hash.replace('#', '') as NavRoute;
+    const validRoutes: NavRoute[] = [
+      'dashboard',
+      'detection',
+      'driver-monitoring',
+      'map',
+      'history',
+      'analytics',
+      'system',
+      'settings',
+      'help',
+    ];
+    return validRoutes.includes(hash) ? hash : 'dashboard';
+  };
+
+  const [currentRoute, setCurrentRoute] = useState<NavRoute>(getInitialRoute);
+
+  const handleRouteChange = (route: NavRoute) => {
+    setCurrentRoute(route);
+    window.location.hash = route;
+  };
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '') as NavRoute;
+      const validRoutes: NavRoute[] = [
+        'dashboard',
+        'detection',
+        'driver-monitoring',
+        'map',
+        'history',
+        'analytics',
+        'system',
+        'settings',
+        'help',
+      ];
+      if (validRoutes.includes(hash)) {
+        setCurrentRoute(hash);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   // Core system states
   const [health, setHealth] = useState<SystemHealth | null>(null);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
@@ -27,9 +77,8 @@ export const App: React.FC = () => {
   const [fps, setFps] = useState<number>(60);
 
   // Speedometer & Speed Limit
-  const [currentSpeedKmh, setCurrentSpeedKmh] = useState<number>(54);
+  const [currentSpeedKmh, setCurrentSpeedKmh] = useState<number>(48);
   const [speedLimitKmh, setSpeedLimitKmh] = useState<number>(50);
-  const isOverspeed = currentSpeedKmh > speedLimitKmh;
 
   // Active Critical/Warning Alert Banner
   const [activeAlert, setActiveAlert] = useState<{
@@ -45,7 +94,7 @@ export const App: React.FC = () => {
       class_id: 2,
       class_name: 'Speed limit (50km/h)',
       category: 'Speed Limit',
-      confidence: 0.94,
+      confidence: 0.98,
       bbox: [480, 140, 560, 220],
       speed_limit_kmh: 50,
     },
@@ -56,7 +105,7 @@ export const App: React.FC = () => {
   const [driverStatus, setDriverStatus] = useState<DriverStatus>({
     timestamp: new Date().toISOString(),
     state: 'ATTENTIVE',
-    confidence: 0.96,
+    confidence: 0.98,
     ear_average: 0.32,
     ear_left: 0.32,
     ear_right: 0.33,
@@ -71,7 +120,7 @@ export const App: React.FC = () => {
   const [roadContext, setRoadContext] = useState<RoadContext | null>({
     lat: 48.137154,
     lon: 11.576124,
-    road_name: 'Leopoldstraße / A99 Autobahn',
+    road_name: 'Leopoldstraße / A99 Corridor',
     road_type: 'PRIMARY',
     active_speed_limit_kmh: 50,
     recommended_speed_kmh: 50,
@@ -117,13 +166,13 @@ export const App: React.FC = () => {
   ]);
 
   // Safety Events Timeline
-  const [events, setEvents] = useState<SafetyEvent[]>([
+  const [events, setEvents] = useState<SafetyEvent[]>(() => [
     {
       id: 'ev-init-1',
       timestamp: new Date(Date.now() - 12000).toISOString(),
       category: 'INFO',
       title: 'SYSTEM INITIALIZED',
-      message: 'RoadGuardian 2.0 dual vision and DMS engines online.',
+      message: 'RoadGuard AI 2.0 dual vision and DMS engines online.',
       source: 'SYSTEM',
       spoken: false,
     },
@@ -155,39 +204,31 @@ export const App: React.FC = () => {
   }, []);
 
   // Poll Health & Backend Connection
-  useEffect(() => {
-    let mounted = true;
-    const checkConnection = async () => {
+  const checkConnection = useCallback(async () => {
+    try {
+      const h = await api.getHealth();
+      setHealth(h);
+      setIsBackendConnected(true);
+
+      // Also fetch road context and garages from backend
       try {
-        const h = await api.getHealth();
-        if (mounted) {
-          setHealth(h);
-          setIsBackendConnected(true);
-        }
-
-        // Also fetch road context and garages from backend
-        try {
-          const rc = await api.getRoadContext();
-          if (mounted) setRoadContext(rc);
-          const g = await api.getGarages();
-          if (mounted && g.garages?.length > 0) setGarages(g.garages);
-        } catch {
-          // keep fallback
-        }
+        const rc = await api.getRoadContext();
+        setRoadContext(rc);
+        const g = await api.getGarages();
+        if (g.garages?.length > 0) setGarages(g.garages);
       } catch {
-        if (mounted) {
-          setIsBackendConnected(false);
-        }
+        // keep fallback
       }
-    };
+    } catch {
+      setIsBackendConnected(false);
+    }
+  }, []);
 
+  useEffect(() => {
     checkConnection();
     const interval = setInterval(checkConnection, 5000);
-    return () => {
-      mounted = false;
-      clearInterval(interval);
-    };
-  }, []);
+    return () => clearInterval(interval);
+  }, [checkConnection]);
 
   // Measure dynamic rendering FPS
   useEffect(() => {
@@ -278,7 +319,7 @@ export const App: React.FC = () => {
     }
   }, [currentSpeedKmh, speedLimitKmh, speak, addSafetyEvent, activeAlert?.title]);
 
-  // Simulated manual driver state changes (for testing / hackathon demonstration)
+  // Simulated manual driver state changes (for testing / demonstration)
   const handleSimulateDriverState = useCallback((simState: DriverState) => {
     let ear = 0.32;
     let eyesClosed = false;
@@ -353,7 +394,7 @@ export const App: React.FC = () => {
     setDriverStatus({
       timestamp: new Date().toISOString(),
       state: simState,
-      confidence: 0.95,
+      confidence: 0.98,
       ear_average: ear,
       ear_left: ear,
       ear_right: ear,
@@ -365,125 +406,134 @@ export const App: React.FC = () => {
     });
   }, [speak, addSafetyEvent, activeAlert]);
 
-  return (
-    <div className="min-h-screen bg-cockpit-base text-slate-100 p-3 sm:p-5 flex flex-col font-sans">
-      {/* Top Cockpit Header */}
-      <CockpitHeader
-        health={health}
-        isBackendConnected={isBackendConnected}
-        isMuted={isMuted}
-        onToggleMute={toggleMute}
-        isSpeaking={isSpeaking}
-        mode={mode}
-        onModeChange={setMode}
-        currentSpeedKmh={currentSpeedKmh}
-        speedLimitKmh={speedLimitKmh}
-        isOverspeed={isOverspeed}
-        fps={fps}
-      />
-
-      {/* Active Alert Banner */}
-      <AlertBanner alert={activeAlert} onDismiss={() => setActiveAlert(null)} />
-
-      {/* Main Tactical Grid Layout */}
-      <main className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
-        {/* Left Column: Vision Optical Canvas (Primary HUD) */}
-        <section className="lg:col-span-7 flex flex-col gap-4">
-          <ErrorBoundary fallbackTitle="OPTICAL FEED STANDBY">
-            <VisionCanvas
-              mode={mode}
-              detections={detections}
-              inferenceTimeMs={inferenceTimeMs}
-              onFrameCaptured={handleFrameCaptured}
-              speedLimitKmh={speedLimitKmh}
-            />
-          </ErrorBoundary>
-
-          {/* Vehicle Simulation Controls */}
-          <div className="hud-card p-3 bg-slate-900/80 border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-            <div className="flex items-center gap-2">
-              <span className="text-cyan-400 font-bold uppercase">SPEED BENCH:</span>
-              <button
-                onClick={() => setCurrentSpeedKmh((v) => Math.max(0, v - 5))}
-                className="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold"
-                aria-label="Decrease vehicle speed by 5 km/h"
-              >
-                -5 KM/H
-              </button>
-              <button
-                onClick={() => setCurrentSpeedKmh((v) => v + 5)}
-                className="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold"
-                aria-label="Increase vehicle speed by 5 km/h"
-              >
-                +5 KM/H
-              </button>
-              <span className="text-slate-400">
-                ACTIVE SPEED: <strong className="text-cyan-400">{currentSpeedKmh} KM/H</strong>
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400">CHANGE SPEED LIMIT:</span>
-              {[30, 50, 70, 100].map((limit) => (
-                <button
-                  key={limit}
-                  onClick={() => setSpeedLimitKmh(limit)}
-                  aria-label={`Set speed limit to ${limit} km/h`}
-                  className={`px-2 py-0.5 rounded font-bold transition-all ${
-                    speedLimitKmh === limit
-                      ? 'bg-red-600 text-white'
-                      : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  {limit}
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Right Column: Driver Gauge DMS + Context Map & Timeline */}
-        <section className="lg:col-span-5 flex flex-col gap-4">
-          {/* Driver Monitoring Subsystem (DMS) */}
-          <DriverGauge
+  // Render current route view
+  const renderCurrentPage = () => {
+    switch (currentRoute) {
+      case 'dashboard':
+        return (
+          <DashboardPage
+            currentSpeedKmh={currentSpeedKmh}
+            speedLimitKmh={speedLimitKmh}
+            onSpeedChange={setCurrentSpeedKmh}
+            onSpeedLimitChange={setSpeedLimitKmh}
+            detections={detections}
+            inferenceTimeMs={inferenceTimeMs}
+            driverStatus={driverStatus}
+            roadContext={roadContext}
+            garages={garages}
+            events={events}
+            onNavigate={handleRouteChange}
+            isBackendConnected={isBackendConnected}
+          />
+        );
+      case 'detection':
+        return (
+          <LiveDetectionPage
+            mode={mode}
+            onModeChange={setMode}
+            detections={detections}
+            inferenceTimeMs={inferenceTimeMs}
+            onFrameCaptured={handleFrameCaptured}
+            speedLimitKmh={speedLimitKmh}
+            fps={fps}
+            isBackendConnected={isBackendConnected}
+          />
+        );
+      case 'driver-monitoring':
+        return (
+          <DriverMonitoringPage
             driverStatus={driverStatus}
             onSimulateState={handleSimulateDriverState}
+            events={events}
           />
+        );
+      case 'map':
+        return (
+          <RoadMapPage
+            roadContext={roadContext}
+            garages={garages}
+            speedLimitKmh={speedLimitKmh}
+          />
+        );
+      case 'history':
+        return (
+          <HistoryPage
+            events={events}
+            onClearEvents={() => setEvents([])}
+          />
+        );
+      case 'analytics':
+        return (
+          <AnalyticsPage
+            events={events}
+            inferenceTimeMs={inferenceTimeMs}
+          />
+        );
+      case 'system':
+        return (
+          <SystemStatusPage
+            isBackendConnected={isBackendConnected}
+            health={health}
+            inferenceTimeMs={inferenceTimeMs}
+            fps={fps}
+            onRefreshHealth={checkConnection}
+          />
+        );
+      case 'settings':
+        return (
+          <SettingsPage
+            isMuted={isMuted}
+            onToggleMute={toggleMute}
+            mode={mode}
+            onModeChange={setMode}
+            speedLimitKmh={speedLimitKmh}
+            onSpeedLimitChange={setSpeedLimitKmh}
+          />
+        );
+      case 'help':
+        return <HelpSafetyPage />;
+      default:
+        return (
+          <DashboardPage
+            currentSpeedKmh={currentSpeedKmh}
+            speedLimitKmh={speedLimitKmh}
+            onSpeedChange={setCurrentSpeedKmh}
+            onSpeedLimitChange={setSpeedLimitKmh}
+            detections={detections}
+            inferenceTimeMs={inferenceTimeMs}
+            driverStatus={driverStatus}
+            roadContext={roadContext}
+            garages={garages}
+            events={events}
+            onNavigate={handleRouteChange}
+            isBackendConnected={isBackendConnected}
+          />
+        );
+    }
+  };
 
-          {/* Geospatial Road Context & Nearby Garages */}
-          <div className="flex-1 min-h-[280px]">
-            <ErrorBoundary fallbackTitle="ROAD MAP HUD STANDBY">
-              <ContextMap
-                roadContext={roadContext}
-                garages={garages}
-              />
-            </ErrorBoundary>
-          </div>
-
-          {/* Chronological Safety Event Timeline */}
-          <div className="h-[240px]">
-            <EventTicker
-              events={events}
-              onClearEvents={() => setEvents([])}
-            />
-          </div>
-        </section>
-      </main>
-
-      {/* Tactical Footer Bar */}
-      <footer className="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-500">
-        <div className="flex items-center gap-3">
-          <span>ROADGUARDIAN 2.0 ADVANCED MOBILITY HUD</span>
-          <span>•</span>
-          <span>FASTAPI + REACT + MEDIAPIPE + GTSRB RESNET-18</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span>DATA PRIVACY: LOCAL DATASET ENFORCED</span>
-          <span>•</span>
-          <span className="text-cyan-400 font-bold">ALL SYSTEMS ARMED</span>
-        </div>
-      </footer>
-    </div>
+  return (
+    <AppShell
+      currentRoute={currentRoute}
+      onRouteChange={handleRouteChange}
+      currentSpeedKmh={currentSpeedKmh}
+      speedLimitKmh={speedLimitKmh}
+      driverState={driverStatus.state}
+      isBackendConnected={isBackendConnected}
+      health={health}
+      inferenceTimeMs={inferenceTimeMs}
+      isMuted={isMuted}
+      onToggleMute={toggleMute}
+      isSpeaking={isSpeaking}
+      activeAlert={activeAlert}
+      onDismissAlert={() => setActiveAlert(null)}
+      events={events}
+      onClearEvents={() => setEvents([])}
+      roadContext={roadContext}
+      fps={fps}
+    >
+      {renderCurrentPage()}
+    </AppShell>
   );
 };
 

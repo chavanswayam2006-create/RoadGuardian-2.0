@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&family=Space+Grotesk:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"tertiary-container":"#00a572","background":"#051424","secondary-fixed":"#e9ddff","surface-container":"#122131","inverse-surface":"#d4e4fa","on-secondary-fixed":"#23005c","on-surface-variant":"#c2c6d6","inverse-primary":"#005ac2","on-tertiary-fixed-variant":"#005236","tertiary":"#4edea3","on-primary-container":"#00285d","outline":"#8c909f","on-tertiary-fixed":"#002113","surface-variant":"#273647","tertiary-fixed-dim":"#4edea3","error":"#ffb4ab","on-tertiary":"#003824","primary":"#adc6ff","surface-tint":"#adc6ff","on-tertiary-container":"#00311f","primary-fixed-dim":"#adc6ff","on-surface":"#d4e4fa","primary-container":"#4d8eff","on-primary-fixed-variant":"#004395","on-background":"#d4e4fa","tertiary-fixed":"#6ffbbe","on-error":"#690005","on-primary-fixed":"#001a42","inverse-on-surface":"#233143","on-secondary":"#3c0091","surface-bright":"#2c3a4c","primary-fixed":"#d8e2ff","surface-container-low":"#0d1c2d","outline-variant":"#424754","on-primary":"#002e6a","surface-container-highest":"#273647","secondary":"#d0bcff","on-secondary-container":"#c4abff","surface-container-lowest":"#010f1f","surface":"#051424","surface-dim":"#051424","error-container":"#93000a","secondary-container":"#571bc1","on-error-container":"#ffdad6","surface-container-high":"#1c2b3c","on-secondary-fixed-variant":"#5516be","secondary-fixed-dim":"#d0bcff"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"gutter-lg":"1.5rem","margin":"1rem","margin-lg":"2.5rem","margin-md":"1.5rem","space-xl":"2.5rem","gutter":"1rem","space-lg":"1.5rem","space-md":"1rem","space-sm":"0.5rem","space-xs":"0.25rem"},fontFamily:{"headline-xl-mobile":["Space Grotesk"],"label-caps":["JetBrains Mono"],"headline-xl":["Space Grotesk"],"body-sm":["Inter"],"headline-sm":["Space Grotesk"],"telemetry-unit":["JetBrains Mono"],"headline-lg":["Space Grotesk"],"body-md":["Inter"],"telemetry-display":["JetBrains Mono"],"body-lg":["Inter"],"headline-lg-mobile":["Space Grotesk"]},fontSize:{"headline-xl-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"700"}],"label-caps":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"600"}],"headline-xl":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"500"}],"telemetry-unit":["13px",{"lineHeight":"18px","letterSpacing":"0.05em","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"telemetry-display":["40px",{"lineHeight":"44px","letterSpacing":"-0.03em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest flex flex-col z-50 shadow-[0_1px_8px_rgba(0,0,0,0.4)]"><div class="p-space-md flex items-center gap-space-sm bg-surface-container-low"><img alt="RoadGuard AI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UVf9oVUB4EtGgllRtwPhGJ4ZKOM07odZYYSyXfu9tBKmHFGNQzOUpEdeUEJ1LdvFXF9Ka3uwIajzwUuwOaj-vi4ee_GbFXPjKvbDNqA0Ov77qT_JORh0KZME9NnUBGow6oRz31bBSv-wT6IEU00AgKI_Ajm_WRXqCW4vzfYqvhUpknJjaNpfus4yA1RxVbC2QK6hDrEiniXpP95OA-4sOu0eGm2DbWm9HmjuDLmeUpeXVqwVjRG6zn-G6F"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-tight truncate">RoadGuard AI</span><span class="font-label-caps text-label-caps text-tertiary tracking-widest leading-none">ASSIST PROTOCOL v2.4</span></div></div><div class="flex-1 overflow-y-auto px-space-sm py-space-md"><div class="px-space-sm pb-space-xs font-label-caps text-label-caps text-outline uppercase tracking-wider">Navigation Suite</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-sm"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview-dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-body-md text-body-md">Overview</span></div></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="live-detection" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">videocam</span><span class="font-body-md text-body-md">Live Detection</span></div><span class="font-label-caps text-label-caps bg-tertiary/20 text-tertiary px-space-xs py-0.5 rounded-full">LIVE 30FPS</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="traffic-sign-library" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">traffic</span><span class="font-body-md text-body-md">Traffic Signs</span></div></a><a aria-current="page" class="flex items-center justify-between px-space-sm py-space-xs transition-colors bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-sm" data-path="driver-monitoring" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">visibility</span><span class="font-body-md text-body-md">Driver Monitoring</span></div><span class="flex items-center gap-1 font-label-caps text-label-caps text-tertiary"><span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>ATTENTIVE</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="road-map-and-context" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">explore</span><span class="font-body-md text-body-md">Road Map</span></div><span class="font-label-caps text-label-caps bg-primary-container/30 text-primary px-space-xs py-0.5 rounded-full">GPS ACTIVE</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="voice-alerts" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">record_voice_over</span><span class="font-body-md text-body-md">Voice Alerts</span></div></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="detection-history" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">history</span><span class="font-body-md text-body-md">History Log</span></div></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="safety-analytics" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-body-md text-body-md">Safety Analytics</span></div></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-status" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">memory</span><span class="font-body-md text-body-md">System Status</span></div><span class="font-label-caps text-label-caps bg-tertiary-container/30 text-tertiary px-space-xs py-0.5 rounded-full">ONLINE</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="settings" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-body-md text-body-md">Settings</span></div></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="help-and-safety" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">help_center</span><span class="font-body-md text-body-md">Help & Safety</span></div></a></nav></div><div class="p-space-sm bg-surface-container-low flex flex-col gap-space-xs"><div class="p-space-xs bg-surface-container rounded-lg flex items-center justify-between"><span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Simulation Mode</span><span class="font-label-caps text-label-caps bg-surface-container-high text-primary px-space-xs py-0.5 rounded">ACTIVE</span></div><div class="p-space-xs bg-surface-container rounded-lg flex items-center justify-between"><div class="flex flex-col"><span class="font-label-caps text-label-caps text-outline uppercase">Velocity</span><span class="font-telemetry-display text-headline-sm text-tertiary leading-none">48 <span class="font-telemetry-unit text-telemetry-unit text-on-surface-variant">km/h</span></span></div><span class="font-label-caps text-label-caps text-on-surface-variant">Limit 50</span></div><button class="w-full py-space-xs bg-error-container text-on-error-container font-label-caps text-label-caps uppercase rounded-lg flex items-center justify-center gap-space-xs hover:bg-error hover:text-on-error transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">sos</span><span>SOS Hotline</span></button></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 px-space-md flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.3)]"><div class="flex items-center gap-space-sm"><img alt="RoadGuard AI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UVf9oVUB4EtGgllRtwPhGJ4ZKOM07odZYYSyXfu9tBKmHFGNQzOUpEdeUEJ1LdvFXF9Ka3uwIajzwUuwOaj-vi4ee_GbFXPjKvbDNqA0Ov77qT_JORh0KZME9NnUBGow6oRz31bBSv-wT6IEU00AgKI_Ajm_WRXqCW4vzfYqvhUpknJjaNpfus4yA1RxVbC2QK6hDrEiniXpP95OA-4sOu0eGm2DbWm9HmjuDLmeUpeXVqwVjRG6zn-G6F"/><div class="flex items-center gap-space-xs"><span class="font-label-caps text-label-caps text-primary uppercase">Telematics Core</span><span class="text-outline text-[12px]">/</span><span class="font-label-caps text-label-caps px-space-xs py-0.5 rounded-full bg-tertiary-container/20 text-tertiary flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>SESSION ACTIVE - CRUISE MODE</span></div></div><div class="flex items-center gap-space-md"><div class="hidden xl:flex items-center gap-space-md"><div class="flex items-center gap-1 font-label-caps text-label-caps text-on-surface-variant"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span>FRONT-CAM: 1080p @ 30FPS</span></div><div class="flex items-center gap-1 font-label-caps text-label-caps text-primary"><span class="material-symbols-outlined text-[14px]">neurology</span><span>YOLO-Vision v8.2: 18ms</span></div><div class="flex items-center gap-1 font-label-caps text-label-caps text-tertiary"><span class="material-symbols-outlined text-[14px]">center_focus_strong</span><span>IR DMS: ATTENTIVE (98%)</span></div><div class="flex items-center gap-1 font-label-caps text-label-caps text-on-surface-variant"><span class="material-symbols-outlined text-[14px]">dns</span><span>EDGE NODE: CONNECTED</span></div></div><div class="flex items-center gap-space-sm"><button class="p-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[20px]">volume_up</span></button><button class="relative p-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute -top-1 -right-1 font-label-caps text-[10px] w-4 h-4 bg-error text-on-error rounded-full flex items-center justify-center">2</span></button><div class="flex items-center gap-space-xs pl-space-xs"><div class="flex flex-col text-right"><span class="font-body-sm text-body-sm text-on-surface font-medium leading-none">Capt. Miller</span><span class="font-label-caps text-label-caps text-outline leading-tight">Pilot Demo</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="relative w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full p-space-md lg:p-space-lg space-y-space-md text-on-surface">
+<!-- TOP HEADER & STATUS BAR WITH INTEGRATED SIMULATION SWITCHES -->
+<section class="flex flex-col gap-space-sm bg-surface-container-low p-space-md rounded-xl shadow-lg">
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">face_6</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-caps text-label-caps text-tertiary">OPTICAL ADAS CORE // CH-4</span>
+<span class="text-outline text-[10px]">/</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">NEAR-INFRARED DMS SENSOR</span>
+</div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">Driver Awareness Monitoring System (IR DMS)</h1>
+</div>
+</div>
+<!-- State Indicator Pill & Switcher -->
+<div class="flex flex-wrap items-center gap-space-sm bg-surface-container-lowest p-space-xs rounded-xl shadow-inner">
+<div class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-tertiary/10 text-tertiary transition-all duration-300" id="statusPill">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-ping" id="statusPulse"></span>
+<span class="font-label-caps text-label-caps tracking-widest font-bold" id="statusText">ATTENTIVE</span>
+</div>
+<div class="h-6 w-px bg-surface-container-high hidden sm:block"></div>
+<div class="flex items-center gap-space-xs text-on-surface-variant">
+<span class="font-label-caps text-label-caps text-outline uppercase pl-space-xs">Simulate:</span>
+<button class="px-space-xs py-1 rounded font-label-caps text-label-caps hover:bg-surface-container-high text-tertiary transition-colors" onclick="setDriverState('attentive')" type="button">Safe</button>
+<button class="px-space-xs py-1 rounded font-label-caps text-label-caps hover:bg-surface-container-high text-secondary transition-colors" onclick="setDriverState('attention_warning')" type="button">Distracted</button>
+<button class="px-space-xs py-1 rounded font-label-caps text-label-caps hover:bg-surface-container-high text-error transition-colors" onclick="setDriverState('drowsiness_warning')" type="button">Drowsy</button>
+</div>
+</div>
+</div>
+<!-- Mandatory Product Safety Disclaimer Notice -->
+<div class="flex items-start gap-space-sm bg-surface-container-highest/60 px-space-md py-space-sm rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">verified_user</span>
+<p class="font-body-sm text-body-sm leading-tight">
+<strong class="font-semibold text-primary">Notice:</strong> RoadGuard AI monitors visible facial, gaze, and posture cues to assist driver awareness. This system does not diagnose medical conditions, cognitive impairments, or neurological fatigue disorders.
+      </p>
+</div>
+</section>
+<!-- MAIN SPLIT TELEMETRY SECTION -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- LEFT 60%: High-Tech Interior IR Camera Feed (7 cols on 12-col grid) -->
+<div class="lg:col-span-7 flex flex-col gap-space-sm bg-surface-container-lowest p-space-sm rounded-xl shadow-xl">
+<!-- Live Video Frame Wrapper with Overlays -->
+<div class="relative w-full aspect-[16/10] bg-surface-container-lowest rounded-lg overflow-hidden group">
+<!-- Driver Cabin Photorealistic Feed Placeholder -->
+<img class="absolute inset-0 w-full h-full object-cover filter contrast-125 brightness-95 opacity-85" data-alt="Monochrome near-infrared camera cockpit view of a driver inside a high-tech vehicle at night. Soft invisible IR illuminators spotlight the driver's face, neck, and shoulders, with technical high-contrast clarity, dark moody cabin background, modern steering rim silhouette in deep navy blue ambient cockpit tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZoQW0If11rEdReIMzXiXS10TJ_539XUqHQhhRpVGbvahZYxsDufcFH-h6olfJS3U28rhhBz2MtlRXpuqY0B-AfvLzDXPkE_067ozY0zxvy-dmW4mHnZZsHSXuU-LnObIcOX_mcLhRhMz-XOU1eMKIqn9sCFQ-t-1MWGLzB7v-qvOONmf3poo2X4hzvx3zIKOTU4eLFaUkFt-qjpLzSWLCBCDsC-5rTOLkTBXGROlFJZpxQKZ9WdYiMg"/>
+<!-- Optical Scanlines & Cyber Tint Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/40 pointer-events-none"></div>
+<div class="absolute inset-0 bg-[radial-gradient(#adc6ff_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none"></div>
+<!-- Camera Frame Corner Brackets -->
+<div class="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-primary/60"></div>
+<div class="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-primary/60"></div>
+<div class="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-primary/60"></div>
+<div class="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-primary/60"></div>
+<!-- Top Peripheral HUD Sensor Status Flags -->
+<div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+<div class="flex items-center gap-space-xs bg-surface/80 backdrop-blur-md px-space-sm py-1 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>
+<span class="font-label-caps text-label-caps text-on-surface">IR SENSOR: 940nm OPTIMAL</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-caps text-label-caps bg-surface-container-high/80 backdrop-blur-md text-primary px-space-xs py-1 rounded">POLARIZER: ON</span>
+<span class="font-label-caps text-label-caps bg-surface-container-high/80 backdrop-blur-md text-tertiary px-space-xs py-1 rounded">LENS CLEAR</span>
+<span class="font-label-caps text-label-caps bg-surface-container-high/80 backdrop-blur-md text-on-surface-variant px-space-xs py-1 rounded">FRAME: 1080p @ 60FPS</span>
+</div>
+</div>
+<!-- Facial Landmark Bounding Box Overlay & Vector Graphics -->
+<div class="absolute inset-[18%_28%_18%_28%] border border-primary/70 bg-primary/5 rounded-lg flex flex-col justify-between p-2 shadow-[0_0_15px_rgba(77,142,255,0.15)] transition-all duration-300 pointer-events-none" id="aiTargetBox">
+<!-- Bounding Metadata Header -->
+<div class="flex items-center justify-between -mt-6">
+<span class="font-label-caps text-[10px] bg-primary-container text-on-primary-container px-1.5 py-0.5 rounded uppercase tracking-wider font-semibold" id="boxLabel">
+              FACE_ID: DRIVER_PRIMARY (99.2%)
+            </span>
+<span class="font-label-caps text-[10px] text-primary/80 bg-surface-container-lowest/80 px-1 rounded">
+              FOV LOCK: 0.14ms
+            </span>
+</div>
+<!-- Mesh Landmark Overlay (SVG Points) -->
+<svg class="absolute inset-0 w-full h-full opacity-70" fill="none" viewbox="0 0 200 200">
+<!-- Gaze Vector Arrow -->
+<line id="gazeLine" stroke="#4edea3" stroke-dasharray="2 2" stroke-width="2" x1="100" x2="100" y1="85" y2="35"></line>
+<polygon fill="#4edea3" id="gazeArrow" points="96,35 104,35 100,27"></polygon>
+<!-- Eyebrows & Eyes -->
+<circle cx="70" cy="78" fill="#4edea3" r="2.5"></circle>
+<circle cx="85" cy="76" fill="#4edea3" r="2"></circle>
+<circle cx="58" cy="80" fill="#adc6ff" r="2"></circle>
+<circle cx="72" cy="84" id="eyeLeft" r="3.5" stroke="#4edea3" stroke-width="1.5"></circle>
+<circle cx="130" cy="78" fill="#4edea3" r="2.5"></circle>
+<circle cx="115" cy="76" fill="#4edea3" r="2"></circle>
+<circle cx="142" cy="80" fill="#adc6ff" r="2"></circle>
+<circle cx="128" cy="84" id="eyeRight" r="3.5" stroke="#4edea3" stroke-width="1.5"></circle>
+<!-- Nose Bridge and Tip -->
+<polyline points="100,75 100,105 92,112 108,112" stroke="#adc6ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></polyline>
+<circle cx="100" cy="112" fill="#adc6ff" r="2"></circle>
+<!-- Mouth & Jaw Mesh -->
+<path d="M 80 142 Q 100 146 120 142 Q 100 152 80 142 Z" fill="none" id="mouthShape" stroke="#adc6ff" stroke-width="1"></path>
+<circle cx="76" cy="142" fill="#adc6ff" r="2"></circle>
+<circle cx="124" cy="142" fill="#adc6ff" r="2"></circle>
+<!-- Jawline contour -->
+<path d="M 50 95 Q 60 160 100 180 Q 140 160 150 95" fill="none" opacity="0.4" stroke="#adc6ff" stroke-dasharray="2 2" stroke-width="1"></path>
+</svg>
+<!-- Bounding Box Footnote Stats -->
+<div class="flex items-center justify-between -mb-6">
+<span class="font-label-caps text-[10px] text-tertiary bg-surface-container-lowest/80 px-1 rounded">HEAD POSE: 0° [OPTIMAL]</span>
+<span class="font-label-caps text-[10px] text-primary bg-surface-container-lowest/80 px-1 rounded">IRIS CONF: 98%</span>
+</div>
+</div>
+<!-- Dynamic In-Feed Warning Banner (Controlled via JS) -->
+<div class="absolute bottom-4 left-4 right-4 hidden items-center justify-between p-space-sm bg-error-container/95 text-on-error-container rounded-lg shadow-xl backdrop-blur-md" id="feedAlertBanner">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[20px] animate-bounce">warning</span>
+<span class="font-label-caps text-label-caps font-bold uppercase" id="feedAlertMessage">
+              VISIBLE SIGNS OF REDUCED ATTENTION DETECTED
+            </span>
+</div>
+<span class="font-label-caps text-label-caps px-2 py-0.5 bg-error text-on-error rounded">AUDIO PULSE ACTIVATED</span>
+</div>
+</div>
+<!-- Live Stream Telemetry Footer Data Strips -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-xs p-space-xs bg-surface-container rounded-lg text-on-surface-variant">
+<div class="flex flex-col bg-surface-container-low p-space-xs rounded">
+<span class="font-label-caps text-[10px] text-outline uppercase">Gaze Vector</span>
+<span class="font-telemetry-unit text-telemetry-unit text-tertiary" id="valGaze">FORWARD (-2°, +1°)</span>
+</div>
+<div class="flex flex-col bg-surface-container-low p-space-xs rounded">
+<span class="font-label-caps text-[10px] text-outline uppercase">Eye Ratio (EAR)</span>
+<span class="font-telemetry-unit text-telemetry-unit text-tertiary" id="valEar">0.32 [NORMAL OPEN]</span>
+</div>
+<div class="flex flex-col bg-surface-container-low p-space-xs rounded">
+<span class="font-label-caps text-[10px] text-outline uppercase">Blink Duration</span>
+<span class="font-telemetry-unit text-telemetry-unit text-on-surface" id="valBlink">180ms [STANDARD]</span>
+</div>
+<div class="flex flex-col bg-surface-container-low p-space-xs rounded">
+<span class="font-label-caps text-[10px] text-outline uppercase">Head Pose</span>
+<span class="font-telemetry-unit text-telemetry-unit text-tertiary" id="valPose">ALIGNED [SAFE]</span>
+</div>
+</div>
+</div>
+<!-- RIGHT 40%: Real-Time Attention Telemetry & Event History (5 cols on 12-col grid) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- Real-Time Attention Telemetry Gauges Card -->
+<div class="flex flex-col gap-space-sm bg-surface-container p-space-md rounded-xl shadow-lg">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">speed</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Attention Telemetry</span>
+</div>
+<span class="font-label-caps text-label-caps text-tertiary bg-tertiary/10 px-space-xs py-0.5 rounded">REALTIME 20Hz</span>
+</div>
+<!-- Primary Attention Metric Hero -->
+<div class="flex items-center justify-between p-space-sm bg-surface-container-low rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-outline uppercase">Driver Awareness Score</span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-telemetry-display text-telemetry-display text-tertiary" id="metricIndex">96</span>
+<span class="font-telemetry-unit text-telemetry-unit text-on-surface-variant">/ 100</span>
+</div>
+<span class="font-body-sm text-body-sm text-tertiary flex items-center gap-1" id="metricIndexSub">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Sustained High Readiness
+            </span>
+</div>
+<!-- Radial Progress Ring Gauge -->
+<div class="relative w-24 h-24 shrink-0 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-tertiary transition-all duration-500" cx="50" cy="50" fill="none" id="radialProgress" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="10" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-[20px] text-tertiary">psychology</span>
+</div>
+</div>
+</div>
+<!-- Secondary Gauge Metrics 3-Col Bar Group -->
+<div class="grid grid-cols-3 gap-space-xs text-center">
+<!-- Eye Closure Rate -->
+<div class="bg-surface-container-low p-space-xs rounded flex flex-col items-center">
+<span class="font-label-caps text-[10px] text-outline uppercase truncate w-full">Closure Rate</span>
+<span class="font-headline-sm text-headline-sm text-tertiary" id="metricClosureRate">0.8s</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Avg Blink Cycle</span>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-1.5 overflow-hidden">
+<div class="bg-tertiary h-full w-[20%] transition-all" id="barClosureRate"></div>
+</div>
+</div>
+<!-- Distraction Timer -->
+<div class="bg-surface-container-low p-space-xs rounded flex flex-col items-center">
+<span class="font-label-caps text-[10px] text-outline uppercase truncate w-full">Off-Road Gaze</span>
+<span class="font-headline-sm text-headline-sm text-on-surface" id="metricDistractTime">0.0s</span>
+<span class="font-label-caps text-[10px] text-tertiary">Optimal</span>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-1.5 overflow-hidden">
+<div class="bg-tertiary h-full w-[0%] transition-all" id="barDistractTime"></div>
+</div>
+</div>
+<!-- Yawn & Micro-sleep tracker -->
+<div class="bg-surface-container-low p-space-xs rounded flex flex-col items-center">
+<span class="font-label-caps text-[10px] text-outline uppercase truncate w-full">Fatigue Signs</span>
+<span class="font-headline-sm text-headline-sm text-tertiary" id="metricYawnState">NONE</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Yawn / Micro-sleep</span>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-1.5 overflow-hidden">
+<div class="bg-tertiary h-full w-[5%] transition-all" id="barFatigueSigns"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Attention Event History Log -->
+<div class="flex flex-col gap-space-xs bg-surface-container p-space-md rounded-xl shadow-lg flex-1">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">history</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Attention Event History</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline">AUTO-RECORD</span>
+</div>
+<div class="flex flex-col gap-space-xs overflow-y-auto max-h-[220px] pr-1">
+<!-- Log Item 1 -->
+<div class="flex items-start justify-between gap-space-xs p-space-xs bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary mt-0.5">notification_important</span>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Prolonged distraction (2.4s off-road glance right)</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Soft chime advisory issued</span>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<span class="font-telemetry-unit text-label-caps text-outline">10:41:05</span>
+<span class="font-label-caps text-[9px] bg-tertiary/10 text-tertiary px-1 rounded">RESOLVED</span>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="flex items-start justify-between gap-space-xs p-space-xs bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-error mt-0.5">remove_red_eye</span>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Visible signs of reduced attention detected</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Frequent blink micro-delay — Gentle advisory</span>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<span class="font-telemetry-unit text-label-caps text-outline">10:35:12</span>
+<span class="font-label-caps text-[9px] bg-tertiary/10 text-tertiary px-1 rounded">RESOLVED</span>
+</div>
+</div>
+<!-- Log Item 3 -->
+<div class="flex items-start justify-between gap-space-xs p-space-xs bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-error mt-0.5">screen_rotation</span>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Head turned away from forward roadway (>3.0s)</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Audio alert sounded</span>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<span class="font-telemetry-unit text-label-caps text-outline">10:12:44</span>
+<span class="font-label-caps text-[9px] bg-tertiary/10 text-tertiary px-1 rounded">RESOLVED</span>
+</div>
+</div>
+<!-- Log Item 4 -->
+<div class="flex items-start justify-between gap-space-xs p-space-xs bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary mt-0.5">task_alt</span>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">System initialized</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Baseline facial mesh calibrated</span>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0">
+<span class="font-telemetry-unit text-label-caps text-outline">09:58:20</span>
+<span class="font-label-caps text-[9px] bg-tertiary/10 text-tertiary px-1 rounded">OK</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM SECTION: MONITORING SETTINGS & SENSITIVITY CONTROLS -->
+<section class="bg-surface-container p-space-md rounded-xl shadow-lg flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm border-b border-surface-container-high pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">tune</span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Monitoring Configuration & Thresholds</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Configure DMS neural sensitivity and alert intervention parameters.</p>
+</div>
+</div>
+<!-- Primary Master Toggle -->
+<div class="flex items-center gap-space-sm bg-surface-container-low px-space-md py-1.5 rounded-lg">
+<span class="font-label-caps text-label-caps text-on-surface">IR DMS ACTIVE</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="toggleDmsMaster" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary-container after:border-surface-container after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary-container"></div>
+</label>
+</div>
+</div>
+<!-- 3-Column Settings Controls Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md items-start">
+<!-- Column 1: Sensitivity Level -->
+<div class="flex flex-col gap-space-xs bg-surface-container-low p-space-sm rounded-lg">
+<span class="font-label-caps text-label-caps text-outline uppercase">Sensitivity Profile</span>
+<div class="grid grid-cols-3 gap-space-xs pt-1">
+<button class="sens-btn py-space-xs px-2 rounded font-label-caps text-label-caps text-on-surface-variant bg-surface-container hover:bg-surface-container-high transition-colors" onclick="selectSensitivity('normal', this)" type="button">NORMAL</button>
+<button class="sens-btn py-space-xs px-2 rounded font-label-caps text-label-caps text-on-primary-container bg-primary-container font-semibold transition-colors" onclick="selectSensitivity('high', this)" type="button">HIGH</button>
+<button class="sens-btn py-space-xs px-2 rounded font-label-caps text-label-caps text-on-surface-variant bg-surface-container hover:bg-surface-container-high transition-colors" onclick="selectSensitivity('strict', this)" type="button">STRICT</button>
+</div>
+<span class="font-body-sm text-[11px] text-on-surface-variant pt-1" id="sensDescriptor">
+          High profile reacts to micro-gaze divergence (>2.0s) and yaw deviations >18°.
+        </span>
+</div>
+<!-- Column 2: Specific Warning Trigger Checkboxes -->
+<div class="flex flex-col gap-space-xs bg-surface-container-low p-space-sm rounded-lg">
+<span class="font-label-caps text-label-caps text-outline uppercase">Safety Trigger Conditions</span>
+<div class="flex flex-col gap-space-xs pt-1">
+<label class="flex items-center gap-space-xs cursor-pointer select-none">
+<input checked="" class="w-4 h-4 rounded text-primary bg-surface-container border-outline-variant focus:ring-0" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Long eye closure alert (>1.5s)</span>
+</label>
+<label class="flex items-center gap-space-xs cursor-pointer select-none">
+<input checked="" class="w-4 h-4 rounded text-primary bg-surface-container border-outline-variant focus:ring-0" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Prolonged off-road distraction (>2.5s)</span>
+</label>
+<label class="flex items-center gap-space-xs cursor-pointer select-none">
+<input checked="" class="w-4 h-4 rounded text-primary bg-surface-container border-outline-variant focus:ring-0" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Head orientation deviation (>25°)</span>
+</label>
+</div>
+</div>
+<!-- Column 3: Alert Delivery Mode & Simulated Chime Trigger -->
+<div class="flex flex-col gap-space-xs bg-surface-container-low p-space-sm rounded-lg">
+<span class="font-label-caps text-label-caps text-outline uppercase">Active Advisory Mode</span>
+<div class="flex items-center justify-between bg-surface-container px-space-sm py-space-xs rounded">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-tertiary">record_voice_over</span>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Voice Warning + Chime</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">“Please keep eyes on road”</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary text-[18px]">volume_up</span>
+</div>
+<button class="mt-1 w-full py-space-xs px-space-md rounded-lg bg-surface-container-highest hover:bg-primary hover:text-on-primary text-primary font-label-caps text-label-caps uppercase flex items-center justify-center gap-space-xs transition-colors shadow-sm" id="btnTestChime" onclick="triggerDemoAlert()" type="button">
+<span class="material-symbols-outlined text-[18px]">campaign</span>
+<span>Test Driver Alert Sound</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<script>
+  // Dynamic Demo Simulator for Driver Monitoring States
+  function setDriverState(state) {
+    const pill = document.getElementById('statusPill');
+    const pulse = document.getElementById('statusPulse');
+    const text = document.getElementById('statusText');
+    const feedAlert = document.getElementById('feedAlertBanner');
+    const feedMsg = document.getElementById('feedAlertMessage');
+    const targetBox = document.getElementById('aiTargetBox');
+    const gazeLine = document.getElementById('gazeLine');
+    const gazeArrow = document.getElementById('gazeArrow');
+    
+    // Telemetry values
+    const mIndex = document.getElementById('metricIndex');
+    const mIndexSub = document.getElementById('metricIndexSub');
+    const radProgress = document.getElementById('radialProgress');
+    const vGaze = document.getElementById('valGaze');
+    const vEar = document.getElementById('valEar');
+    const vPose = document.getElementById('valPose');
+    const mDistract = document.getElementById('metricDistractTime');
+    const barDistract = document.getElementById('barDistractTime');
+    const mYawn = document.getElementById('metricYawnState');
+    const barFatigue = document.getElementById('barFatigueSigns');
+
+    if (state === 'attentive') {
+      pill.className = "flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-tertiary/10 text-tertiary transition-all duration-300";
+      pulse.className = "w-2.5 h-2.5 rounded-full bg-tertiary animate-ping";
+      text.innerText = "ATTENTIVE";
+      feedAlert.classList.add('hidden');
+      feedAlert.classList.remove('flex');
+      
+      targetBox.style.borderColor = 'rgba(173, 198, 255, 0.7)';
+      targetBox.style.backgroundColor = 'rgba(77, 142, 255, 0.05)';
+      gazeLine.setAttribute('stroke', '#4edea3');
+      gazeLine.setAttribute('x2', '100');
+      gazeLine.setAttribute('y2', '35');
+      gazeArrow.setAttribute('fill', '#4edea3');
+      gazeArrow.setAttribute('points', '96,35 104,35 100,27');
+
+      mIndex.innerText = "96";
+      mIndex.className = "font-telemetry-display text-telemetry-display text-tertiary";
+      mIndexSub.innerHTML = '<span class="material-symbols-outlined text-[14px]">check_circle</span> Sustained High Readiness';
+      mIndexSub.className = "font-body-sm text-body-sm text-tertiary flex items-center gap-1";
+      radProgress.style.strokeDashoffset = "10";
+      radProgress.className = "text-tertiary transition-all duration-500";
+
+      vGaze.innerText = "FORWARD (-2°, +1°)";
+      vGaze.className = "font-telemetry-unit text-telemetry-unit text-tertiary";
+      vEar.innerText = "0.32 [NORMAL OPEN]";
+      vEar.className = "font-telemetry-unit text-telemetry-unit text-tertiary";
+      vPose.innerText = "ALIGNED [SAFE]";
+      vPose.className = "font-telemetry-unit text-telemetry-unit text-tertiary";
+
+      mDistract.innerText = "0.0s";
+      barDistract.style.width = "0%";
+      barDistract.className = "bg-tertiary h-full transition-all";
+      mYawn.innerText = "NONE";
+      barFatigue.style.width = "5%";
+      barFatigue.className = "bg-tertiary h-full transition-all";
+
+    } else if (state === 'attention_warning') {
+      pill.className = "flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-secondary/20 text-secondary transition-all duration-300";
+      pulse.className = "w-2.5 h-2.5 rounded-full bg-secondary animate-pulse";
+      text.innerText = "ATTENTION WARNING";
+      feedAlert.classList.remove('hidden');
+      feedAlert.classList.add('flex');
+      feedMsg.innerText = "OFF-ROAD GAZE DETECTED (>2.2s)";
+      
+      targetBox.style.borderColor = 'rgba(208, 188, 255, 0.8)';
+      targetBox.style.backgroundColor = 'rgba(87, 27, 193, 0.15)';
+      gazeLine.setAttribute('stroke', '#d0bcff');
+      gazeLine.setAttribute('x2', '160');
+      gazeLine.setAttribute('y2', '55');
+      gazeArrow.setAttribute('fill', '#d0bcff');
+      gazeArrow.setAttribute('points', '156,58 163,50 168,58');
+
+      mIndex.innerText = "64";
+      mIndex.className = "font-telemetry-display text-telemetry-display text-secondary";
+      mIndexSub.innerHTML = '<span class="material-symbols-outlined text-[14px]">warning</span> Gaze Vector Shifted';
+      mIndexSub.className = "font-body-sm text-body-sm text-secondary flex items-center gap-1";
+      radProgress.style.strokeDashoffset = "90";
+      radProgress.className = "text-secondary transition-all duration-500";
+
+      vGaze.innerText = "RIGHT GLANCE (+28°, -4°)";
+      vGaze.className = "font-telemetry-unit text-telemetry-unit text-secondary";
+      vEar.innerText = "0.29 [MARGINAL]";
+      vEar.className = "font-telemetry-unit text-telemetry-unit text-secondary";
+      vPose.innerText = "OFF-CENTER (+18°)";
+      vPose.className = "font-telemetry-unit text-telemetry-unit text-secondary";
+
+      mDistract.innerText = "2.2s";
+      barDistract.style.width = "75%";
+      barDistract.className = "bg-secondary h-full transition-all";
+      mYawn.innerText = "NONE";
+      barFatigue.style.width = "20%";
+
+    } else if (state === 'drowsiness_warning') {
+      pill.className = "flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-error/20 text-error transition-all duration-300";
+      pulse.className = "w-2.5 h-2.5 rounded-full bg-error animate-ping";
+      text.innerText = "DROWSINESS WARNING";
+      feedAlert.classList.remove('hidden');
+      feedAlert.classList.add('flex');
+      feedMsg.innerText = "VISIBLE SIGNS OF REDUCED ATTENTION DETECTED";
+      
+      targetBox.style.borderColor = 'rgba(255, 180, 171, 0.9)';
+      targetBox.style.backgroundColor = 'rgba(147, 0, 10, 0.25)';
+      gazeLine.setAttribute('stroke', '#ffb4ab');
+      gazeLine.setAttribute('x2', '100');
+      gazeLine.setAttribute('y2', '120');
+      gazeArrow.setAttribute('fill', '#ffb4ab');
+      gazeArrow.setAttribute('points', '96,120 104,120 100,128');
+
+      mIndex.innerText = "38";
+      mIndex.className = "font-telemetry-display text-telemetry-display text-error";
+      mIndexSub.innerHTML = '<span class="material-symbols-outlined text-[14px]">error</span> Micro-delay Closure Detected';
+      mIndexSub.className = "font-body-sm text-body-sm text-error flex items-center gap-1";
+      radProgress.style.strokeDashoffset = "160";
+      radProgress.className = "text-error transition-all duration-500";
+
+      vGaze.innerText = "DROOP / DOWNWARD";
+      vGaze.className = "font-telemetry-unit text-telemetry-unit text-error";
+      vEar.innerText = "0.14 [EXTENDED CLOSURE]";
+      vEar.className = "font-telemetry-unit text-telemetry-unit text-error";
+      vPose.innerText = "HEAD NODDING (-14°)";
+      vPose.className = "font-telemetry-unit text-telemetry-unit text-error";
+
+      mDistract.innerText = "1.8s";
+      barDistract.style.width = "60%";
+      barDistract.className = "bg-error h-full transition-all";
+      mYawn.innerText = "DETECTED";
+      mYawn.className = "font-headline-sm text-headline-sm text-error";
+      barFatigue.style.width = "90%";
+      barFatigue.className = "bg-error h-full transition-all";
+    }
+  }
+
+  function selectSensitivity(level, btn) {
+    const buttons = document.querySelectorAll('.sens-btn');
+    buttons.forEach(b => {
+      b.className = "sens-btn py-space-xs px-2 rounded font-label-caps text-label-caps text-on-surface-variant bg-surface-container hover:bg-surface-container-high transition-colors";
+    });
+    btn.className = "sens-btn py-space-xs px-2 rounded font-label-caps text-label-caps text-on-primary-container bg-primary-container font-semibold transition-colors";
+    
+    const desc = document.getElementById('sensDescriptor');
+    if (level === 'normal') {
+      desc.innerText = "Normal profile responds to off-road glance >2.8s and EAR thresholds <0.18.";
+    } else if (level === 'high') {
+      desc.innerText = "High profile reacts to micro-gaze divergence (>2.0s) and yaw deviations >18°.";
+    } else {
+      desc.innerText = "Strict enforcement calibrated for low-light highway pilot and commercial duty.";
+    }
+  }
+
+  function triggerDemoAlert() {
+    const btn = document.getElementById('btnTestChime');
+    const originalText = btn.innerHTML;
+    
+    // Play synthetic browser audio pulse chime using Web Audio API
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High alert note (A5)
+      osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.35);
+      
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.35);
+    } catch(e) {
+      // AudioContext fallback
+    }
+
+    btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span>Transmitting Chime...</span>';
+    btn.classList.add('bg-primary', 'text-on-primary');
+    
+    setTimeout(() => {
+      btn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-tertiary">check</span><span>Chime Sounded</span>';
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('bg-primary', 'text-on-primary');
+      }, 1500);
+    }, 600);
+  }
+</script></main></div></body></html>

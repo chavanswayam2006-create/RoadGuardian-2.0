@@ -2,6 +2,17 @@ export type AlertCategory = 'CRITICAL' | 'WARNING' | 'ADVISORY' | 'INFO';
 
 export type DriverState = 'ATTENTIVE' | 'ATTENTION_WARNING' | 'DROWSINESS_WARNING' | 'FACE_NOT_DETECTED' | 'UNKNOWN';
 
+export type NavRoute =
+  | 'dashboard'
+  | 'detection'
+  | 'driver-monitoring'
+  | 'map'
+  | 'history'
+  | 'analytics'
+  | 'system'
+  | 'settings'
+  | 'help';
+
 export interface Detection {
   class_id: number;
   class_name: string;

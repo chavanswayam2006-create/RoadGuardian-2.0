@@ -83,7 +83,7 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
             ctx.drawImage(canvas, 0, 0, 320, 240);
             onFrameCaptured(smallCanvas.toDataURL('image/jpeg', 0.7));
           }
-        } catch (e) {
+        } catch {
           // ignore canvas capture errors
         }
       }

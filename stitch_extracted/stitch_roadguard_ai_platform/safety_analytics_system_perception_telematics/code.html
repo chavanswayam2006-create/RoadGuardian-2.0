@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Space+Grotesk:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"tertiary-container":"#00a572","background":"#051424","secondary-fixed":"#e9ddff","surface-container":"#122131","inverse-surface":"#d4e4fa","on-secondary-fixed":"#23005c","on-surface-variant":"#c2c6d6","inverse-primary":"#005ac2","on-tertiary-fixed-variant":"#005236","tertiary":"#4edea3","on-primary-container":"#00285d","outline":"#8c909f","on-tertiary-fixed":"#002113","surface-variant":"#273647","tertiary-fixed-dim":"#4edea3","error":"#ffb4ab","on-tertiary":"#003824","primary":"#adc6ff","surface-tint":"#adc6ff","on-tertiary-container":"#00311f","primary-fixed-dim":"#adc6ff","on-surface":"#d4e4fa","primary-container":"#4d8eff","on-primary-fixed-variant":"#004395","on-background":"#d4e4fa","tertiary-fixed":"#6ffbbe","on-error":"#690005","on-primary-fixed":"#001a42","inverse-on-surface":"#233143","on-secondary":"#3c0091","surface-bright":"#2c3a4c","primary-fixed":"#d8e2ff","surface-container-low":"#0d1c2d","outline-variant":"#424754","on-primary":"#002e6a","surface-container-highest":"#273647","secondary":"#d0bcff","on-secondary-container":"#c4abff","surface-container-lowest":"#010f1f","surface":"#051424","surface-dim":"#051424","error-container":"#93000a","secondary-container":"#571bc1","on-error-container":"#ffdad6","surface-container-high":"#1c2b3c","on-secondary-fixed-variant":"#5516be","secondary-fixed-dim":"#d0bcff"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"gutter-lg":"1.5rem","margin":"1rem","margin-lg":"2.5rem","margin-md":"1.5rem","space-xl":"2.5rem","gutter":"1rem","space-lg":"1.5rem","space-md":"1rem","space-sm":"0.5rem","space-xs":"0.25rem"},fontFamily:{"headline-xl-mobile":["Space Grotesk"],"label-caps":["JetBrains Mono"],"headline-xl":["Space Grotesk"],"body-sm":["Inter"],"headline-sm":["Space Grotesk"],"telemetry-unit":["JetBrains Mono"],"headline-lg":["Space Grotesk"],"body-md":["Inter"],"telemetry-display":["JetBrains Mono"],"body-lg":["Inter"],"headline-lg-mobile":["Space Grotesk"]},fontSize:{"headline-xl-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"700"}],"label-caps":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"600"}],"headline-xl":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"500"}],"telemetry-unit":["13px",{"lineHeight":"18px","letterSpacing":"0.05em","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"telemetry-display":["40px",{"lineHeight":"44px","letterSpacing":"-0.03em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest flex flex-col z-50 shadow-[0_1px_8px_rgba(0,0,0,0.4)]"><div class="p-space-md flex items-center gap-space-sm bg-surface-container-low"><img alt="RoadGuard AI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UVf9oVUB4EtGgllRtwPhGJ4ZKOM07odZYYSyXfu9tBKmHFGNQzOUpEdeUEJ1LdvFXF9Ka3uwIajzwUuwOaj-vi4ee_GbFXPjKvbDNqA0Ov77qT_JORh0KZME9NnUBGow6oRz31bBSv-wT6IEU00AgKI_Ajm_WRXqCW4vzfYqvhUpknJjaNpfus4yA1RxVbC2QK6hDrEiniXpP95OA-4sOu0eGm2DbWm9HmjuDLmeUpeXVqwVjRG6zn-G6F"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-tight truncate">RoadGuard AI</span><span class="font-label-caps text-label-caps text-tertiary tracking-widest leading-none">ASSIST PROTOCOL v2.4</span></div></div><div class="flex-1 overflow-y-auto px-space-sm py-space-md"><div class="px-space-sm pb-space-xs font-label-caps text-label-caps text-outline uppercase tracking-wider">Navigation Suite</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-sm"><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="font-body-md text-body-md">Overview</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="live-detection" href="#"><span class="font-body-md text-body-md">Live Detection</span><span class="font-label-caps text-label-caps bg-tertiary/20 text-tertiary px-space-xs py-0.5 rounded-full">LIVE 30FPS</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="traffic-signs" href="#"><span class="font-body-md text-body-md">Traffic Signs</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="driver-monitoring" href="#"><span class="font-body-md text-body-md">Driver Monitoring</span><span class="flex items-center gap-1 font-label-caps text-label-caps text-tertiary"><span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>ATTENTIVE</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="road-map-and-context" href="#"><span class="font-body-md text-body-md">Road Map</span><span class="font-label-caps text-label-caps bg-primary-container/30 text-primary px-space-xs py-0.5 rounded-full">GPS ACTIVE</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="voice-alerts" href="#"><span class="font-body-md text-body-md">Voice Alerts</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="detection-history" href="#"><span class="font-body-md text-body-md">Detection History</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="safety-analytics" href="#"><span class="font-body-md text-body-md">Safety Analytics</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-status" href="#"><span class="font-body-md text-body-md">System Status</span><span class="font-label-caps text-label-caps bg-tertiary-container/30 text-tertiary px-space-xs py-0.5 rounded-full">ONLINE</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="settings" href="#"><span class="font-body-md text-body-md">Settings</span></a><a class="flex items-center justify-between px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="help-and-safety" href="#"><span class="font-body-md text-body-md">Help &amp; Safety</span></a></nav></div><div class="p-space-sm bg-surface-container-low flex flex-col gap-space-xs"><div class="p-space-xs bg-surface-container rounded-lg flex items-center justify-between"><span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Simulation Mode</span><span class="font-label-caps text-label-caps bg-surface-container-high text-primary px-space-xs py-0.5 rounded">ACTIVE</span></div><div class="p-space-xs bg-surface-container rounded-lg flex items-center justify-between"><div class="flex flex-col"><span class="font-label-caps text-label-caps text-outline uppercase">Velocity</span><span class="font-telemetry-display text-headline-sm text-tertiary leading-none">48 <span class="font-telemetry-unit text-telemetry-unit text-on-surface-variant">km/h</span></span></div><span class="font-label-caps text-label-caps text-on-surface-variant">Limit 50</span></div><button class="w-full py-space-xs bg-error-container text-on-error-container font-label-caps text-label-caps uppercase rounded-lg flex items-center justify-center gap-space-xs hover:bg-error hover:text-on-error transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">sos</span><span>SOS Hotline</span></button></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 px-space-md flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.3)]"><div class="flex items-center gap-space-sm"><img alt="RoadGuard AI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UVf9oVUB4EtGgllRtwPhGJ4ZKOM07odZYYSyXfu9tBKmHFGNQzOUpEdeUEJ1LdvFXF9Ka3uwIajzwUuwOaj-vi4ee_GbFXPjKvbDNqA0Ov77qT_JORh0KZME9NnUBGow6oRz31bBSv-wT6IEU00AgKI_Ajm_WRXqCW4vzfYqvhUpknJjaNpfus4yA1RxVbC2QK6hDrEiniXpP95OA-4sOu0eGm2DbWm9HmjuDLmeUpeXVqwVjRG6zn-G6F"/><div class="flex items-center gap-space-xs"><span class="font-label-caps text-label-caps text-primary uppercase">Telematics Core</span><span class="text-outline text-[12px]">/</span><span class="font-label-caps text-label-caps px-space-xs py-0.5 rounded-full bg-tertiary-container/20 text-tertiary flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>SESSION ACTIVE - CRUISE MODE</span></div></div><div class="flex items-center gap-space-md"><div class="hidden xl:flex items-center gap-space-md"><div class="flex items-center gap-1 font-label-caps text-label-caps text-on-surface-variant"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span>FRONT-CAM: 1080p @ 30FPS</span></div><div class="flex items-center gap-1 font-label-caps text-label-caps text-primary"><span class="material-symbols-outlined text-[14px]">neurology</span><span>YOLO-Vision v8.2: 18ms</span></div><div class="flex items-center gap-1 font-label-caps text-label-caps text-tertiary"><span class="material-symbols-outlined text-[14px]">center_focus_strong</span><span>IR DMS: ATTENTIVE (98%)</span></div><div class="flex items-center gap-1 font-label-caps text-label-caps text-on-surface-variant"><span class="material-symbols-outlined text-[14px]">dns</span><span>EDGE NODE: CONNECTED</span></div></div><div class="flex items-center gap-space-sm"><button class="p-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[20px]">volume_up</span></button><button class="relative p-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute -top-1 -right-1 font-label-caps text-[10px] w-4 h-4 bg-error text-on-error rounded-full flex items-center justify-center">2</span></button><div class="flex items-center gap-space-xs pl-space-xs"><div class="flex flex-col text-right"><span class="font-body-sm text-body-sm text-on-surface font-medium leading-none">Capt. Miller</span><span class="font-label-caps text-label-caps text-outline leading-tight">Pilot Demo</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="relative w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full px-space-md py-space-md max-w-[1680px] mx-auto gap-space-lg">
+<!-- ==================== HEADER & TIMEFRAME SELECTION ==================== -->
+<div class="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-space-md pb-space-xs">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-caps text-label-caps px-space-xs py-0.5 rounded-full bg-primary-container/20 text-primary uppercase flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+          Telemetry Node 08 • Run telemetry #4092
+        </span>
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">ISO 26262 ASIL-B Verified</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Safety Analytics &amp; Neural Performance</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+        Objective telematics, AI perception diagnostics, and driver awareness observation analytics for active trip cycles and historical verification sessions.
+      </p>
+</div>
+<!-- Filter Buttons & Controls -->
+<div class="flex flex-wrap items-center gap-space-xs">
+<div class="bg-surface-container-low p-1 rounded-xl flex items-center shadow-sm">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-caps text-label-caps uppercase transition-colors flex items-center gap-1.5 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Oct 24, 10:15 - 10:48 AM</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps uppercase transition-colors">
+          Today (3 Trips)
+        </button>
+<button class="px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps uppercase transition-colors">
+          Last 7 Days
+        </button>
+<button class="px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps uppercase transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_month</span>
+<span>Custom</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-label-caps text-label-caps uppercase transition-colors flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span>Export CSV</span>
+</button>
+<button class="px-space-sm py-2 rounded-xl bg-primary-container text-on-primary-container hover:bg-primary transition-colors font-label-caps text-label-caps uppercase flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+<span>Full Report (PDF)</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ==================== TOP TELEMETRY KPI RIBBON (6 KPIs) ==================== -->
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-space-sm">
+<!-- Metric 1: Total Detections -->
+<div class="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Total Detections</span>
+<span class="material-symbols-outlined text-primary text-[18px]">polyline</span>
+</div>
+<div class="my-space-xs">
+<div class="font-telemetry-display text-headline-lg text-on-surface leading-none tracking-tight">1,428</div>
+<div class="flex items-center gap-1 mt-1 font-label-caps text-label-caps text-tertiary">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>+14.2% vs trip baseline</span>
+</div>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant truncate">Zero dropped frames logged</div>
+</div>
+<!-- Metric 2: Traffic Signs Detected -->
+<div class="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Signs Identified</span>
+<span class="material-symbols-outlined text-tertiary text-[18px]">traffic</span>
+</div>
+<div class="my-space-xs">
+<div class="font-telemetry-display text-headline-lg text-on-surface leading-none tracking-tight">864</div>
+<div class="flex items-center gap-1 mt-1 font-label-caps text-label-caps text-on-surface-variant">
+<span>542 Reg • 218 Warn • 104 School</span>
+</div>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant truncate">Spatial tracking verified</div>
+</div>
+<!-- Metric 3: Traffic Lights & Signals -->
+<div class="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Signal State Transits</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">cloud_upload</span>
+</div>
+<div class="my-space-xs">
+<div class="font-telemetry-display text-headline-lg text-on-surface leading-none tracking-tight">312</div>
+<div class="flex items-center gap-2 mt-1 font-label-caps text-label-caps">
+<span class="text-error">84 R</span>
+<span class="text-tertiary">198 G</span>
+<span class="text-secondary">30 A</span>
+</div>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant truncate">Optical state classifier ok</div>
+</div>
+<!-- Metric 4: Advisory & Voice Dispatches -->
+<div class="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">System Dispatches</span>
+<span class="material-symbols-outlined text-primary text-[18px]">campaign</span>
+</div>
+<div class="my-space-xs">
+<div class="flex items-baseline gap-1">
+<span class="font-telemetry-display text-headline-lg text-on-surface leading-none tracking-tight">48</span>
+<span class="font-telemetry-unit text-telemetry-unit text-on-surface-variant">HUD</span>
+<span class="text-outline mx-1">/</span>
+<span class="font-telemetry-display text-headline-lg text-primary leading-none tracking-tight">18</span>
+<span class="font-telemetry-unit text-telemetry-unit text-primary">TTS</span>
+</div>
+<div class="flex items-center gap-1 mt-1 font-label-caps text-label-caps text-on-surface-variant">
+<span>Priority queuing auto-muted 6</span>
+</div>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant truncate">Acoustic &amp; Visual Telemetry</div>
+</div>
+<!-- Metric 5: Mean Neural Confidence -->
+<div class="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Neural Confidence</span>
+<span class="material-symbols-outlined text-tertiary text-[18px]">psychology</span>
+</div>
+<div class="my-space-xs">
+<div class="font-telemetry-display text-headline-lg text-tertiary leading-none tracking-tight">94.8%</div>
+<div class="flex items-center gap-1 mt-1 font-label-caps text-label-caps text-on-surface-variant">
+<span>IQR: 91.2% - 98.4%</span>
+</div>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant truncate">Uncertainty ceiling &gt;90%</div>
+</div>
+<!-- Metric 6: Edge Compute Latency -->
+<div class="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Inference • FPS</span>
+<span class="material-symbols-outlined text-primary text-[18px]">speed</span>
+</div>
+<div class="my-space-xs">
+<div class="flex items-baseline gap-1">
+<span class="font-telemetry-display text-headline-lg text-on-surface leading-none tracking-tight">16.4</span>
+<span class="font-telemetry-unit text-telemetry-unit text-on-surface-variant">ms</span>
+</div>
+<div class="flex items-center gap-1 mt-1 font-label-caps text-label-caps text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>Feed: 30.2 FPS (Stable)</span>
+</div>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant truncate">Zero GPU throttle observed</div>
+</div>
+</div>
+<!-- ==================== PRIMARY ANALYTICS CHARTS (BENTO 12 COL) ==================== -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-md">
+<!-- Chart 1: Detection Frequency & Velocity Dual Plot (8 Cols) -->
+<div class="xl:col-span-8 bg-surface-container rounded-xl p-space-md shadow-md flex flex-col justify-between">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs pb-space-sm">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Spatial Perception Frequency &amp; Velocity</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Correlation between vehicle speed (km/h) and neural bounding-box perceptions per minute along the corridor.
+          </p>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-1.5 font-label-caps text-label-caps text-primary">
+<span class="w-2.5 h-1 rounded bg-primary"></span>
+<span>Speed (km/h)</span>
+</div>
+<div class="flex items-center gap-1.5 font-label-caps text-label-caps text-tertiary">
+<span class="w-2.5 h-1 rounded bg-tertiary"></span>
+<span>Perceptions/min</span>
+</div>
+</div>
+</div>
+<!-- Dual Graph SVG -->
+<div class="relative w-full h-72 my-space-xs bg-surface-container-low rounded-lg p-space-xs overflow-hidden flex flex-col justify-end">
+<!-- Sector markers & vertical grid reference lines -->
+<div class="absolute inset-0 flex justify-between px-8 pt-4 pb-8 pointer-events-none opacity-20">
+<div class="border-r border-dashed border-outline h-full"></div>
+<div class="border-r border-dashed border-outline h-full"></div>
+<div class="border-r border-dashed border-outline h-full"></div>
+<div class="border-r border-dashed border-outline h-full"></div>
+<div class="border-r border-dashed border-outline h-full"></div>
+</div>
+<!-- Corridor Milestone Chips -->
+<div class="absolute top-2 left-6 right-6 flex justify-between pointer-events-none z-10">
+<span class="font-label-caps text-label-caps bg-surface-container px-2 py-0.5 rounded text-outline uppercase">Departure Terminal</span>
+<span class="font-label-caps text-label-caps bg-surface-container-high px-2 py-0.5 rounded text-secondary uppercase">Sector 4: Downtown Grid</span>
+<span class="font-label-caps text-label-caps bg-surface-container px-2 py-0.5 rounded text-outline uppercase">School Zone B-12</span>
+<span class="font-label-caps text-label-caps bg-surface-container-high px-2 py-0.5 rounded text-tertiary uppercase">Ringway Highway A4</span>
+<span class="font-label-caps text-label-caps bg-surface-container px-2 py-0.5 rounded text-outline uppercase">Arrived North Hub</span>
+</div>
+<!-- Actual Inline SVG Graph -->
+<svg class="w-full h-52 overflow-visible" preserveaspectratio="none" viewbox="0 0 800 200">
+<defs>
+<lineargradient id="gradientPerception" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#4edea3" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#4edea3" stop-opacity="0.0"></stop>
+</lineargradient>
+<lineargradient id="gradientSpeed" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#adc6ff" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#adc6ff" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Perceptions Per Minute (Area + Line) -->
+<polygon fill="url(#gradientPerception)" points="0,170 60,150 140,80 200,60 270,110 350,40 430,70 510,140 600,160 690,130 760,110 800,160 800,200 0,200"></polygon>
+<polyline fill="none" points="0,170 60,150 140,80 200,60 270,110 350,40 430,70 510,140 600,160 690,130 760,110 800,160" stroke="#4edea3" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<!-- Vehicle Speed Line (Primary Blue) -->
+<polygon fill="url(#gradientSpeed)" points="0,180 80,160 160,140 230,130 310,150 390,160 480,90 570,40 650,45 720,120 800,180 800,200 0,200"></polygon>
+<polyline fill="none" points="0,180 80,160 160,140 230,130 310,150 390,160 480,90 570,40 650,45 720,120 800,180" stroke="#adc6ff" stroke-dasharray="4,2" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<!-- Key Insight Focal Nodes -->
+<circle class="animate-ping" cx="200" cy="60" fill="#4edea3" opacity="0.75" r="4"></circle>
+<circle cx="200" cy="60" fill="#4edea3" r="3.5"></circle>
+<circle cx="350" cy="40" fill="#4edea3" r="3.5"></circle>
+<circle cx="570" cy="40" fill="#adc6ff" r="4"></circle>
+</svg>
+<!-- Timeline axis ticks -->
+<div class="flex justify-between items-center px-2 pt-2 text-outline font-label-caps text-label-caps">
+<span>10:15 (T+00)</span>
+<span>10:20 (T+05)</span>
+<span>10:25 (T+10)</span>
+<span>10:30 (T+15)</span>
+<span>10:35 (T+20)</span>
+<span>10:40 (T+25)</span>
+<span>10:48 (T+33)</span>
+</div>
+</div>
+<!-- Chart Metadata Sub-bar -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-xs pt-space-xs bg-surface-container-low/60 p-space-xs rounded-lg mt-space-xs">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-outline uppercase">Peak Spatial Perception</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">82 detections/min <span class="text-tertiary text-body-sm">(Downtown Sector)</span></span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-outline uppercase">Highway Speed Regulated</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">92 km/h <span class="text-on-surface-variant text-body-sm">(Limit 100 km/h)</span></span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-outline uppercase">Perception Lag Delta</span>
+<span class="font-body-md text-body-md text-tertiary font-medium">0.0 ms variance <span class="text-on-surface-variant text-body-sm">(Zero jitter)</span></span>
+</div>
+</div>
+</div>
+<!-- Chart 2: Neural Confidence Distribution (4 Cols) -->
+<div class="xl:col-span-4 bg-surface-container rounded-xl p-space-md shadow-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Neural Confidence Curve</h2>
+</div>
+<span class="font-label-caps text-label-caps text-tertiary bg-tertiary-container/20 px-space-xs py-0.5 rounded">
+            94.8% MEAN
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pb-space-sm">
+          Probability distribution of YOLO-Vision v8.2 tensor detections. Discards below 70% threshold prevent driver distraction.
+        </p>
+<!-- Confidence Density Graph (SVG) -->
+<div class="w-full h-44 bg-surface-container-low rounded-lg p-space-xs flex flex-col justify-end relative overflow-hidden">
+<div class="absolute inset-0 flex justify-between px-6 pt-3 pb-6 pointer-events-none opacity-10">
+<div class="border-r border-outline h-full"></div>
+<div class="border-r border-outline h-full"></div>
+<div class="border-r border-outline h-full"></div>
+<div class="border-r border-outline h-full"></div>
+</div>
+<svg class="w-full h-32 overflow-visible" preserveaspectratio="none" viewbox="0 0 300 120">
+<defs>
+<lineargradient id="curveGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#ffb4ab" stop-opacity="0.3"></stop>
+<stop offset="35%" stop-color="#d0bcff" stop-opacity="0.4"></stop>
+<stop offset="70%" stop-color="#adc6ff" stop-opacity="0.6"></stop>
+<stop offset="100%" stop-color="#4edea3" stop-opacity="0.9"></stop>
+</lineargradient>
+</defs>
+<!-- Distribution Path -->
+<path d="M 0,118 Q 40,118 70,112 T 130,95 T 190,65 T 230,22 T 265,12 T 300,118 Z" fill="url(#curveGradient)" opacity="0.35"></path>
+<path d="M 0,118 Q 40,118 70,112 T 130,95 T 190,65 T 230,22 T 265,12 T 300,118" fill="none" stroke="#4edea3" stroke-width="2.5"></path>
+<!-- Threshold Line at 70% -->
+<line stroke="#ffb4ab" stroke-dasharray="3,3" stroke-width="1.5" x1="85" x2="85" y1="0" y2="120"></line>
+<text fill="#ffb4ab" font-family="JetBrains Mono" font-size="9" font-weight="600" x="88" y="18">CUTOFF (70%)</text>
+</svg>
+<div class="flex justify-between items-center text-outline font-label-caps text-label-caps pt-1 border-t border-surface-container">
+<span>&lt;60%</span>
+<span>70%</span>
+<span>80%</span>
+<span>90%</span>
+<span class="text-tertiary">99.2%</span>
+</div>
+</div>
+</div>
+<!-- Segment breakdown list -->
+<div class="flex flex-col gap-space-xs mt-space-sm">
+<div class="flex items-center justify-between p-space-xs rounded bg-surface-container-low font-body-sm text-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-on-surface">Confirmed Perception (80 - 100%)</span>
+</div>
+<span class="font-telemetry-unit text-telemetry-unit text-tertiary font-semibold">89.4% (1,277)</span>
+</div>
+<div class="flex items-center justify-between p-space-xs rounded bg-surface-container-low font-body-sm text-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-on-surface">Permissive Evaluation (70 - 79%)</span>
+</div>
+<span class="font-telemetry-unit text-telemetry-unit text-secondary font-semibold">8.2% (117)</span>
+</div>
+<div class="flex items-center justify-between p-space-xs rounded bg-surface-container-low font-body-sm text-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-on-surface">Suppressed Noise (&lt;70%)</span>
+</div>
+<span class="font-telemetry-unit text-telemetry-unit text-outline font-semibold">2.4% (34)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================== CLASSIFICATION MATRIX & DRIVER AWARENESS (2 COLS) ==================== -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-md">
+<!-- Perception Asset Breakdown (5 Cols) -->
+<div class="xl:col-span-5 bg-surface-container rounded-xl p-space-md shadow-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Perception Asset Matrix</h2>
+</div>
+<span class="font-label-caps text-label-caps text-outline uppercase">5 Classifiers</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pb-space-md">
+          Object classification breakdown across optical roadway sensors over the 33-minute drive cycle.
+        </p>
+<!-- Donut & Bars Composite Layout -->
+<div class="flex flex-col sm:flex-row items-center gap-space-md bg-surface-container-low p-space-md rounded-lg">
+<!-- Donut SVG -->
+<div class="relative w-36 h-36 flex-shrink-0 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<!-- Background Ring -->
+<circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="38" stroke="currentColor" stroke-width="12"></circle>
+<!-- Speed Limit (38%) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#adc6ff" stroke-dasharray="90.7 238.7" stroke-dashoffset="0" stroke-width="12"></circle>
+<!-- Traffic Signals (22%) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#4edea3" stroke-dasharray="52.5 238.7" stroke-dashoffset="-90.7" stroke-width="12"></circle>
+<!-- Pedestrian (16%) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#d0bcff" stroke-dasharray="38.2 238.7" stroke-dashoffset="-143.2" stroke-width="12"></circle>
+<!-- Hazards (14%) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#00a572" stroke-dasharray="33.4 238.7" stroke-dashoffset="-181.4" stroke-width="12"></circle>
+<!-- Regulatory (10%) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#c2c6d6" stroke-dasharray="23.9 238.7" stroke-dashoffset="-214.8" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="font-telemetry-display text-headline-sm text-on-surface leading-none">1,428</span>
+<span class="font-label-caps text-label-caps text-outline uppercase mt-0.5">Objects</span>
+</div>
+</div>
+<!-- Class Progress Matrix -->
+<div class="w-full flex flex-col gap-space-xs">
+<div class="flex flex-col">
+<div class="flex justify-between font-label-caps text-label-caps">
+<span class="text-primary">Speed Limit Signs</span>
+<span class="text-on-surface">38% (542)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-primary h-full rounded-full" style="width: 38%"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex justify-between font-label-caps text-label-caps">
+<span class="text-tertiary">Traffic Signals</span>
+<span class="text-on-surface">22% (312)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-tertiary h-full rounded-full" style="width: 22%"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex justify-between font-label-caps text-label-caps">
+<span class="text-secondary">Pedestrian Crossings</span>
+<span class="text-on-surface">16% (228)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-secondary h-full rounded-full" style="width: 16%"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex justify-between font-label-caps text-label-caps">
+<span class="text-tertiary-container">Warning / Road Hazard</span>
+<span class="text-on-surface">14% (200)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-tertiary-container h-full rounded-full" style="width: 14%"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex justify-between font-label-caps text-label-caps">
+<span class="text-outline">Stop &amp; Yield Regulatory</span>
+<span class="text-on-surface">10% (146)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-outline h-full rounded-full" style="width: 10%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom verification tag -->
+<div class="flex items-center justify-between pt-space-sm text-outline font-label-caps text-label-caps">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">verified</span>
+          Multi-layer classification parity 99.8%
+        </span>
+<span>YOLOv8x-RoadNet</span>
+</div>
+</div>
+<!-- Cabin Driver-Awareness Observations (IR Optical ADAS) (7 Cols) -->
+<!-- STRICT CONSTRAINT: Objective observations only, NO driver grading/scoring -->
+<div class="xl:col-span-7 bg-surface-container rounded-xl p-space-md shadow-md flex flex-col justify-between">
+<div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs pb-space-xs">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Cabin Driver-Awareness Observations (IR Optical ADAS)</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Factual observation frequency of in-cabin optical cues recorded by Near-Infrared sensor. Non-diagnostic telemetry.
+            </p>
+</div>
+<span class="font-label-caps text-label-caps px-space-xs py-1 rounded bg-surface-container-high text-primary self-start sm:self-auto uppercase">
+            IR SENSOR 60Hz
+          </span>
+</div>
+<!-- 4 Objective In-Cabin Telemetry Gauges -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-xs my-space-md">
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Gaze Direction Parity</span>
+<div class="my-space-xs">
+<span class="font-telemetry-display text-headline-lg text-tertiary leading-none">96.2%</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Forward roadway vector</p>
+</div>
+<span class="font-label-caps text-label-caps text-tertiary bg-tertiary-container/20 px-1.5 py-0.5 rounded w-max">ROAD ALIGNED</span>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Mean Eye Closure (PERCLOS)</span>
+<div class="my-space-xs">
+<div class="flex items-baseline gap-1">
+<span class="font-telemetry-display text-headline-lg text-on-surface leading-none">0.22</span>
+<span class="font-telemetry-unit text-telemetry-unit text-on-surface-variant">sec</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Normal physiological blink</p>
+</div>
+<span class="font-label-caps text-label-caps text-primary bg-primary-container/20 px-1.5 py-0.5 rounded w-max">BASELINE NOMINAL</span>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Attention Variance Events</span>
+<div class="my-space-xs">
+<div class="flex items-baseline gap-1">
+<span class="font-telemetry-display text-headline-lg text-secondary leading-none">3</span>
+<span class="font-telemetry-unit text-telemetry-unit text-on-surface-variant">instances</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Mean duration: 1.8s</p>
+</div>
+<span class="font-label-caps text-label-caps text-secondary bg-secondary-container/20 px-1.5 py-0.5 rounded w-max">ALL RESOLVED &lt;2s</span>
+</div>
+</div>
+<!-- Timeline Heat Strip of Logged Attention Variance Occurrences -->
+<div class="bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-label-caps text-label-caps text-outline uppercase">Continuous Observation Event Log • Session Timeline</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">33-Minute Trip Duration</span>
+</div>
+<!-- Heat Bar Representation -->
+<div class="w-full h-8 bg-surface-container rounded flex items-center px-2 relative gap-1">
+<!-- Normal forward attention block -->
+<div class="h-4 flex-1 bg-tertiary/30 rounded-sm" title="Continuous Forward Alignment"></div>
+<!-- Event 1: Micro glance to console -->
+<div class="h-6 w-3 bg-secondary rounded-sm relative group cursor-pointer" title="10:24 AM: Center Console Look (1.4s)">
+<div class="hidden group-hover:block absolute bottom-8 -left-12 bg-surface-container-highest p-1.5 rounded shadow text-[10px] font-label-caps text-on-surface whitespace-nowrap z-20">
+                10:24 AM: Micro-glance (1.4s)
+              </div>
+</div>
+<div class="h-4 flex-1 bg-tertiary/30 rounded-sm"></div>
+<!-- Event 2: Head deviation >20 deg -->
+<div class="h-6 w-3 bg-secondary rounded-sm relative group cursor-pointer" title="10:33 AM: Blind-spot mirror verification (1.9s)">
+<div class="hidden group-hover:block absolute bottom-8 -left-12 bg-surface-container-highest p-1.5 rounded shadow text-[10px] font-label-caps text-on-surface whitespace-nowrap z-20">
+                10:33 AM: Left Mirror Check (1.9s)
+              </div>
+</div>
+<div class="h-4 flex-1 bg-tertiary/30 rounded-sm"></div>
+<!-- Event 3: Micro glance to cluster -->
+<div class="h-6 w-3 bg-secondary rounded-sm relative group cursor-pointer" title="10:41 AM: Cluster Check (1.2s)">
+<div class="hidden group-hover:block absolute bottom-8 -left-12 bg-surface-container-highest p-1.5 rounded shadow text-[10px] font-label-caps text-on-surface whitespace-nowrap z-20">
+                10:41 AM: Cluster Focus (1.2s)
+              </div>
+</div>
+<div class="h-4 flex-1 bg-tertiary/30 rounded-sm"></div>
+</div>
+<div class="flex justify-between items-center text-outline font-label-caps text-label-caps pt-2">
+<span>T+00m (Dep)</span>
+<span class="text-secondary">• 10:24 AM (Console Check)</span>
+<span class="text-secondary">• 10:33 AM (Mirror Scan)</span>
+<span class="text-secondary">• 10:41 AM (Cluster Scan)</span>
+<span>T+33m (Arr)</span>
+</div>
+</div>
+</div>
+<!-- Specific Event Detail Description -->
+<div class="pt-space-sm flex flex-col sm:flex-row items-start sm:items-center justify-between text-on-surface-variant font-body-sm text-body-sm gap-2">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-tertiary text-[16px]">info</span>
+<span>Observation telemetry is strictly non-punitive and adheres to driver privacy encryption standards.</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline">Camera Stream: Zero Storage (RAM Only)</span>
+</div>
+</div>
+</div>
+<!-- ==================== EDGE COMPUTE & VISION ENGINE DIAGNOSTICS ==================== -->
+<div class="bg-surface-container rounded-xl p-space-md shadow-md flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Edge Hardware &amp; Vision Engine Compute Diagnostics</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Real-time computational load, thermal overhead, and memory throughput of the in-vehicle ADAS system.
+        </p>
+</div>
+<div class="flex items-center gap-space-xs font-label-caps text-label-caps">
+<span class="bg-surface-container-high px-space-xs py-1 rounded text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">memory</span>
+          NVIDIA DRIVE ORIN • 254 TOPS
+        </span>
+<span class="bg-tertiary-container/20 text-tertiary px-space-xs py-1 rounded flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+          HEALTH: NOMINAL
+        </span>
+</div>
+</div>
+<!-- Diagnostic Metric Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-space-sm">
+<!-- Metric 1: NPU Tensor Core Load -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">NPU Tensor Core Load</span>
+<span class="font-label-caps text-label-caps text-primary">68%</span>
+</div>
+<div class="my-space-xs">
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 68%"></div>
+</div>
+</div>
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant">
+<span>Active: 8 / 12 Cores</span>
+<span>Headroom: 32%</span>
+</div>
+</div>
+<!-- Metric 2: Memory Bandwidth -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Unified Memory (LPDDR5)</span>
+<span class="font-label-caps text-label-caps text-tertiary">42%</span>
+</div>
+<div class="my-space-xs">
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 42%"></div>
+</div>
+</div>
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant">
+<span>3.4 GB allocated</span>
+<span>8.0 GB Total</span>
+</div>
+</div>
+<!-- Metric 3: Thermal Envelope -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Thermal Envelope</span>
+<span class="font-label-caps text-label-caps text-tertiary">44°C</span>
+</div>
+<div class="my-space-xs">
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 44%"></div>
+</div>
+</div>
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant">
+<span>Liquid Loop Active</span>
+<span>T-Junc Max: 85°C</span>
+</div>
+</div>
+<!-- Metric 4: Dropped Frames Rate -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">Frame Retention Rate</span>
+<span class="font-label-caps text-label-caps text-tertiary">99.998%</span>
+</div>
+<div class="my-space-xs">
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 99.9%"></div>
+</div>
+</div>
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant">
+<span>3 frames / 142k</span>
+<span>Zero ADAS drops</span>
+</div>
+</div>
+<!-- Metric 5: ASIL-B Safety Heartbeat -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-outline uppercase">ASIL-B Heartbeat</span>
+<span class="font-label-caps text-label-caps text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+            100% UPTIME
+          </span>
+</div>
+<div class="my-space-xs">
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant">
+<span>Dual Core Lockstep</span>
+<span>Watchdog: OK</span>
+</div>
+</div>
+</div>
+<!-- Live Telemetry Stream Strip -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-space-sm font-label-caps text-label-caps text-outline">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="text-on-surface uppercase flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">terminal</span>
+          Subsystem Telemetry Bus:
+        </span>
+<span class="text-tertiary">CAN-FD: TX 1.2MB/s</span>
+<span>•</span>
+<span class="text-tertiary">GMSL2 Deserializer: 4-Lanes Locked</span>
+<span>•</span>
+<span class="text-on-surface-variant">IMU 6-DOF Sampling: 200 Hz</span>
+<span>•</span>
+<span class="text-on-surface-variant">Clock Drift: +0.02ms</span>
+</div>
+<div class="flex items-center gap-2 text-primary font-semibold">
+<span class="material-symbols-outlined text-[14px]">sync</span>
+<span>SYNC LOCKED (PTP IEEE 1588)</span>
+</div>
+</div>
+</div>
+<!-- ==================== AUTOMOTIVE FUNCTIONAL SAFETY COMPLIANCE BANNER ==================== -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-sm max-w-4xl">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center flex-shrink-0 text-primary mt-0.5">
+<span class="material-symbols-outlined text-[24px]">verified_user</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-wider">Automotive Functional Safety • ISO 26262 ASIL-B Disclaimer</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          Notice: Telematics analytics reflect real-time computational perception and driver-monitoring sensor cues. RoadGuard AI does not evaluate driving skill, assess insurance liability, or perform clinical diagnostic assessments. Designed under ISO 26262 ASIL-B telemetry standards and UNECE Regulation 157 ADAS provisions.
+        </p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs flex-shrink-0">
+<span class="font-label-caps text-label-caps px-space-sm py-1.5 rounded-lg bg-surface-container text-outline uppercase">
+        Firmware v2.4.11-ASIL
+      </span>
+<span class="font-label-caps text-label-caps px-space-sm py-1.5 rounded-lg bg-surface-container text-tertiary uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+        Cryptographically Signed
+      </span>
+</div>
+</div>
+</div></main></div></body></html>
