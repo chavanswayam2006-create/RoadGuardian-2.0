@@ -59,3 +59,24 @@
    - Launched FastAPI backend daemon (`http://127.0.0.1:8000`).
    - Launched Vite frontend dev server daemon (`http://localhost:5173/`).
    - Verified HTTP 200 responses and healthy status.
+
+---
+
+## Session 003 — GitHub Pages Deployment Resilience & Standalone Null-Safety
+- **Timestamp**: 2026-09-25T23:46:00+05:30
+- **Agent**: Lead Full-Stack & DevOps Engineer
+- **Objective**: Harden the tactical HUD frontend for seamless GitHub Pages deployment and zero-backend standalone environments.
+
+### Actions Performed
+1. **Telemetry Null-Safety & Fallbacks**:
+   - Added optional chaining across all telemetry accesses (`health?.config?.device`, `health?.config?.classes_loaded`, `health?.config?.ear_threshold`) in `CockpitHeader`, `TopStatusBar`, and `SystemStatusPage`.
+   - Added defensive array fallback `(garage.services || [])` in `RoadMapPage.tsx`.
+2. **Application Resilience & Error Boundary**:
+   - Wrapped the application root in `frontend/src/main.tsx` with `<ErrorBoundary fallbackTitle="ROADGUARD AI PLATFORM RECOVERY">`.
+   - Guarded dynamic Tailwind CDN configuration in `frontend/index.html`.
+3. **Production Base Path & CI/CD**:
+   - Upgraded `frontend/vite.config.ts` to dynamically resolve `/RoadGuardian-2.0/` for GitHub Pages production builds while serving `/` in local development.
+   - Verified GitHub Pages workflow `.github/workflows/deploy.yml` with `npm ci` and Vite production build.
+   - Executed frontend production build (`tsc -b && vite build`) with zero errors.
+   - Executed backend pytest test suite (11/11 passing).
+

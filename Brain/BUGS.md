@@ -38,6 +38,19 @@
 - **Actual Behavior**: 404 for `/api/v1/...` paths and startup warnings.
 - **Resolution**: Added `APIRouter(prefix="/api/v1")` with all contract route aliases in `backend/main.py`, upgraded `backend/config.py` to `SettingsConfigDict`, and added `test_api_v1_contract_compliance` test. Verified with 11/11 passing tests.
 
+### BUG-005: Standalone Static & GitHub Pages Null Safety on Health Config & Base Routing
+- **Component**: Frontend / Deployment & System Telemetry
+- **Severity**: Blocker
+- **Steps to Reproduce**: Load the frontend on GitHub Pages or standalone static environment without an active local backend. The `health` object is null, causing `health.config.device` to throw an uncaught TypeError that crashed the React tree into a blank screen.
+- **Expected Behavior**: Tactical Cockpit HUD loads gracefully in standalone mode with synthetic simulations, fallback hardware metadata, and defensive routing.
+- **Actual Behavior**: Uncaught `TypeError: Cannot read properties of null (reading 'config')` crashed `<CockpitHeader>`, `<TopStatusBar>`, and `<SystemStatusPage>`.
+- **Resolution**:
+  1. Added optional chaining across all telemetry accesses (`health?.config?.device`, `health?.config?.classes_loaded`, `health?.config?.ear_threshold`).
+  2. Wrapped root `<App />` with top-level `<ErrorBoundary>` in `frontend/src/main.tsx`.
+  3. Added safety guard for Tailwind CDN initialization in `frontend/index.html`.
+  4. Configured dynamic base path in `frontend/vite.config.ts` supporting both Vite production build for `/RoadGuardian-2.0/` and root dev server.
+  5. Added defensive array fallback `(garage.services || [])` in `frontend/src/pages/RoadMapPage.tsx`.
+
 ---
 
 ## Bug Report Protocol

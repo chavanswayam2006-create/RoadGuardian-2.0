@@ -21,7 +21,7 @@ export const SystemStatusPage: React.FC<SystemStatusPageProps> = ({
       name: 'AI Vision (GTSRB ResNet-18)',
       category: 'Inference Engine',
       status: isBackendConnected ? 'ONLINE' : 'DEGRADED',
-      details: `${health?.config.classes_loaded || 43} traffic sign classes loaded. Conf threshold: ${health?.config.confidence_threshold || 0.45}`,
+      details: `${health?.config?.classes_loaded || 43} traffic sign classes loaded. Conf threshold: ${health?.config?.confidence_threshold || 0.45}`,
       latency: `${inferenceTimeMs.toFixed(1)} ms`,
     },
     {
@@ -35,7 +35,7 @@ export const SystemStatusPage: React.FC<SystemStatusPageProps> = ({
       name: 'In-Cabin Driver Monitor (IR DMS)',
       category: 'Haar Cascade & EAR',
       status: 'ACTIVE',
-      details: `EAR baseline threshold ${health?.config.ear_threshold || 0.20}. Gaze trajectory & 3D Euler angles active.`,
+      details: `EAR baseline threshold ${health?.config?.ear_threshold || 0.20}. Gaze trajectory & 3D Euler angles active.`,
       latency: '8.2 ms',
     },
     {
@@ -138,7 +138,7 @@ export const SystemStatusPage: React.FC<SystemStatusPageProps> = ({
           <div className="p-space-sm bg-surface-container rounded-lg">
             <span className="font-label-caps text-label-caps text-outline uppercase">Target Processor</span>
             <div className="font-headline-sm text-[16px] font-bold text-on-surface mt-1">
-              {health?.config.device || 'CPU / INTEL AVX2'}
+              {health?.config?.device || 'CPU / INTEL AVX2'}
             </div>
             <span className="font-body-sm text-[11px] text-tertiary">Active Vector Units</span>
           </div>

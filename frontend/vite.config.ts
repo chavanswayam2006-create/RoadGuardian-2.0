@@ -2,7 +2,8 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: '/RoadGuardian-2.0/',
-})
+  base: mode === 'production' || process.env.NODE_ENV === 'production' ? '/RoadGuardian-2.0/' : '/',
+}))
+

@@ -81,7 +81,7 @@ export const TopStatusBar: React.FC<TopStatusBarProps> = ({
           <span className="material-symbols-outlined text-[15px]">dns</span>
           <span className={isBackendConnected ? 'text-tertiary' : 'text-error'}>
             {isBackendConnected
-              ? `EDGE NODE: CONNECTED (${health?.config.device || 'CPU'})`
+              ? `EDGE NODE: CONNECTED (${health?.config?.device || 'CPU'})`
               : 'EDGE NODE: OFFLINE'}
           </span>
         </div>

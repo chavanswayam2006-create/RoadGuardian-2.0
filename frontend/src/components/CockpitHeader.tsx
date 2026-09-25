@@ -74,7 +74,7 @@ export const CockpitHeader: React.FC<CockpitHeaderProps> = ({
                 )}
               </span>
               <span>•</span>
-              <span className="font-mono text-cyan-300">{health?.config.device || 'CPU / INTEL ACCEL'}</span>
+              <span className="font-mono text-cyan-300">{health?.config?.device || 'CPU / INTEL ACCEL'}</span>
               <span>•</span>
               <span className="font-mono text-slate-300">{timeStr}</span>
             </div>

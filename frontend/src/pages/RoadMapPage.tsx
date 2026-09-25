@@ -122,7 +122,7 @@ export const RoadMapPage: React.FC<RoadMapPageProps> = ({
                 </div>
 
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {garage.services.map((svc) => (
+                  {(garage.services || []).map((svc) => (
                     <span
                       key={svc}
                       className="font-label-caps text-[9px] bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded"
