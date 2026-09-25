@@ -1,0 +1,232 @@
+:root {
+  /* Canvas & Foundations */
+  --bg-cockpit-base:     #080C14;
+  --bg-cockpit-surface:  #0F172A;
+  --bg-cockpit-elevated: #1E293B;
+  --bg-cockpit-hover:    #283548;
+  --border-subtle:       #334155;
+  --border-bright:       #475569;
+  --border-cyan:         rgba(6, 182, 212, 0.4);
+
+  /* Semantic Alerts */
+  --alert-critical:      #EF4444;
+  --alert-critical-bg:   rgba(239, 68, 68, 0.12);
+  --alert-critical-glow: rgba(239, 68, 68, 0.35);
+
+  --alert-warning:       #F59E0B;
+  --alert-warning-bg:    rgba(245, 158, 11, 0.12);
+  --alert-warning-glow:  rgba(245, 158, 11, 0.35);
+
+  --alert-info:          #3B82F6;
+  --alert-info-bg:       rgba(59, 130, 246, 0.12);
+  --alert-info-glow:     rgba(59, 130, 246, 0.35);
+
+  --alert-success:       #10B981;
+  --alert-success-bg:    rgba(16, 185, 129, 0.12);
+  --alert-success-glow:  rgba(16, 185, 129, 0.35);
+
+  /* Telemetry Accents */
+  --accent-cyan:         #06B6D4;
+  --accent-cyan-bg:      rgba(6, 182, 212, 0.12);
+  --accent-cyan-glow:    rgba(6, 182, 212, 0.3);
+  --accent-purple:       #8B5CF6;
+  --accent-purple-glow:  rgba(139, 92, 246, 0.3);
+
+  /* Typography */
+  --text-primary:        #F8FAFC;
+  --text-secondary:      #94A3B8;
+  --text-dim:            #64748B;
+
+  --font-sans:           'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:           'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-cockpit-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  line-height: 1.5;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.04) 0%, transparent 60%),
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-cockpit-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+/* Monospace telemetry utility */
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* HUD Panel Containers */
+.hud-card {
+  background-color: var(--bg-cockpit-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hud-card:hover {
+  border-color: var(--border-bright);
+}
+
+/* Corner HUD reticle styling */
+.hud-brackets::before,
+.hud-brackets::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+}
+
+.hud-brackets::before {
+  top: 4px;
+  left: 4px;
+  border-top: 2px solid var(--accent-cyan);
+  border-left: 2px solid var(--accent-cyan);
+}
+
+.hud-brackets::after {
+  bottom: 4px;
+  right: 4px;
+  border-bottom: 2px solid var(--accent-cyan);
+  border-right: 2px solid var(--accent-cyan);
+}
+
+/* Glow effects */
+.glow-cyan {
+  box-shadow: 0 0 15px var(--accent-cyan-glow);
+}
+.glow-critical {
+  box-shadow: 0 0 15px var(--alert-critical-glow);
+}
+.glow-warning {
+  box-shadow: 0 0 15px var(--alert-warning-glow);
+}
+
+/* Animations */
+@keyframes pulse-critical {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0.8);
+  }
+}
+
+@keyframes pulse-warning {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    opacity: 0.85;
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
+  }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.animate-pulse-critical {
+  animation: pulse-critical 1.2s infinite ease-in-out;
+}
+
+.animate-pulse-warning {
+  animation: pulse-warning 1.8s infinite ease-in-out;
+}
+
+.scanline-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline-effect::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), transparent);
+  animation: scanline 4s linear infinite;
+  pointer-events: none;
+}
+
+/* Speedometer circular dial helper */
+.speed-gauge-circle {
+  transition: stroke-dashoffset 0.35s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* Reticle crosshair */
+.reticle-grid {
+  background-image: 
+    linear-gradient(rgba(6, 182, 212, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Leaflet dark theme map overrides */
+.leaflet-container {
+  background: #080C14 !important;
+  font-family: var(--font-sans) !important;
+}
+
+.leaflet-tile-pane {
+  filter: brightness(0.65) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+.leaflet-control-zoom {
+  border: 1px solid var(--border-subtle) !important;
+  background: var(--bg-cockpit-surface) !important;
+}
+
+.leaflet-control-zoom a {
+  background: var(--bg-cockpit-surface) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--bg-cockpit-surface) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-cyan) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 8px !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-cockpit-surface) !important;
+}

@@ -4,9 +4,12 @@
   "private": true,
   "description": "AI Traffic Sign Recognition & Driver Safety System (3-Day Hackathon MVP)",
   "scripts": {
-    "dev:frontend": "echo \"Frontend development script placeholder — configure when frontend is created\"",
-    "dev:backend": "echo \"Backend development script placeholder — configure when backend is created\"",
-    "test": "echo \"Root test runner placeholder\""
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "dev:backend": "python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload",
+    "test": "pytest",
+    "test:backend": "pytest tests/test_backend.py tests/test_alert_engine.py",
+    "test:ml": "pytest tests/test_ml_pipeline.py tests/test_driver_monitor.py"
   },
   "keywords": [
     "traffic-signs",
