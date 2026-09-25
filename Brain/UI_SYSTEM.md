@@ -8,39 +8,50 @@
 
 ---
 
-## 2. Color Palette & Semantic Tokens
+## 2. Color Palette & Semantic Tokens (Session 004 Precision Cockpit)
 
 ```css
 :root {
-  /* Canvas & Foundations */
-  --bg-cockpit-base:     #080C14;  /* Deep Obsidian Abyss */
-  --bg-cockpit-surface:  #0F172A;  /* Dark Slate HUD Panel */
-  --bg-cockpit-elevated: #1E293B;  /* Highlight Surface */
-  --border-subtle:       #334155;  /* Panel Framing */
+  /* Surface & Background Hierarchy */
+  --bg:                #030B14;  /* Deep Night Black */
+  --surface:           #071522;  /* Cockpit Module Surface */
+  --surface-secondary: #0B1B2A;  /* Secondary Inset Surface */
+  --surface-elevated:  #102335;  /* Hover / Elevated State */
+  --surface-highest:   #162B3E;  /* Prominent Popovers / Drawers */
 
-  /* Semantic Alerts */
-  --alert-critical:      #EF4444;  /* Crimson Warning (Drowsiness, Red Light) */
-  --alert-warning:       #F59E0B;  /* Amber Alert (Overspeed, Attention Drift) */
-  --alert-info:          #3B82F6;  /* Sapphire Advisory (Speed Limit, Construction) */
-  --alert-success:       #10B981;  /* Emerald Active / Safe Status */
+  /* Typography Colors */
+  --text-primary:      #E6F0FA;  /* High-legibility technical white */
+  --text-secondary:    #9BAEC0;  /* Sub-readout label color */
+  --text-muted:        #66798B;  /* Timestamp / telemetry caption */
 
-  /* Telemetry Accents */
-  --accent-cyan:         #06B6D4;  /* Reticle / Target Vector / Speedometer */
-  --accent-purple:       #8B5CF6;  /* Geo-boundary / Route line */
+  /* Technical Accents */
+  --accent:            #8DB8FF;  /* Cold Blue Precision Reticle */
+  --accent-strong:     #4D8EFF;  /* Primary Interactive Action */
+  --accent-subtle:     rgba(141, 184, 255, 0.12);
 
-  /* Typography */
-  --text-primary:        #F8FAFC;  /* Crisp High Contrast White */
-  --text-secondary:      #94A3B8;  /* Muted Slate Label */
-  --text-dim:            #64748B;  /* Secondary Telemetry Details */
+  /* Status Colors */
+  --success:           #35D69A;  /* Emerald Nominal / Active */
+  --success-subtle:    rgba(53, 214, 154, 0.12);
+  --warning:           #F5B942;  /* Amber Caution / Cautionary Sign */
+  --warning-subtle:    rgba(245, 185, 66, 0.14);
+  --critical:          #FF5C67;  /* High-consequence Red / Drowsiness */
+  --critical-subtle:   rgba(255, 92, 103, 0.16);
+
+  /* Precision Borders */
+  --border:            rgba(150, 180, 210, 0.14);
+  --border-subtle:     rgba(150, 180, 210, 0.08);
+  --border-strong:     rgba(141, 184, 255, 0.32);
 }
 ```
 
 ---
 
 ## 3. Typography Hierarchy
-- **Primary Display & Headings**: `Outfit` or `Inter` (sans-serif, bold, geometric clarity).
-- **Telemetry Readouts & Numbers**: `JetBrains Mono` or `Roboto Mono` (monospace, tab-aligned, rapid numerical readability).
-- **Minimum Contrast**: 5.5:1 on all dashboard panels for instant visibility under simulated in-vehicle lighting conditions.
+- **Headlines & Primary Titles**: `Space Grotesk` (500, 600, 700 weight, technical automotive feel).
+- **Body & Subtitles**: `Inter` (300, 400, 500, 600 weight, ultra-clean geometric neutrality).
+- **Telemetry Readouts & Units**: `JetBrains Mono` (tabular numbers, uppercase acronyms, status badges).
+- **Minimum Contrast**: 7:1 for critical text and badges, meeting ISO 15008 in-vehicle display ergonomics.
+
 
 ---
 

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Compass, PhoneCall, Layers } from 'lucide-react';
 import { ContextMap } from '../components/ContextMap';
-import { ErrorBoundary } from '../components/ErrorBoundary';
 import type { RoadContext, Garage } from '../types';
 
 interface RoadMapPageProps {
@@ -14,142 +14,176 @@ export const RoadMapPage: React.FC<RoadMapPageProps> = ({
   garages,
   speedLimitKmh,
 }) => {
+  // Map filter layers
+  const [layers, setLayers] = useState({
+    traffic: true,
+    signs: true,
+    signals: true,
+    construction: false,
+    speed: true,
+    garages: true,
+  });
+
+  const toggleLayer = (key: keyof typeof layers) => {
+    setLayers((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   return (
-    <div className="flex flex-col w-full h-[calc(100vh-4.25rem)] overflow-hidden text-on-surface">
-      {/* Top Utility Contextual Rail / Simulation Strip */}
-      <div className="w-full bg-surface-container-lowest px-space-md py-space-xs flex flex-wrap items-center justify-between border-b border-outline-variant/30 gap-2 shrink-0">
-        <div className="flex items-center gap-space-sm min-w-0">
-          <span className="font-label-caps text-label-caps bg-primary/10 text-primary px-space-xs py-0.5 rounded-full flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            GNSS RTK LOCK (L1+L5)
+    <div className="relative w-full h-[calc(100vh-3.5rem)] overflow-hidden flex flex-col lg:flex-row select-none">
+      {/* Primary Map Visual Area (Center & Left) */}
+      <div className="relative flex-1 h-full min-h-[350px]">
+        <ContextMap roadContext={roadContext} garages={layers.garages ? garages : []} />
+
+        {/* Floating Map Controls Bar (TRAFFIC, SIGNS, SIGNALS, CONSTRUCTION, SPEED, GARAGES) */}
+        <div className="absolute top-3 right-3 lg:right-auto lg:left-3 z-[1000] flex items-center gap-1.5 flex-wrap bg-surface/90 p-1.5 rounded-md border border-border backdrop-blur-md shadow-lg font-mono text-[11px]">
+          <span className="text-text-muted px-1.5 flex items-center gap-1 uppercase font-bold text-[10px]">
+            <Layers className="w-3.5 h-3.5 text-accent" />
+            LAYERS:
           </span>
-          <span className="text-outline text-body-sm">|</span>
-          <span className="font-body-sm text-body-sm text-on-surface-variant truncate">
-            Sector:{' '}
-            <strong className="text-on-surface font-medium">
-              {roadContext?.road_name || 'Leopoldstraße / A99 Corridor'} (Waypoint #4802-A)
-            </strong>
-          </span>
-          <span className="font-label-caps text-[10px] bg-surface-container-high text-tertiary px-space-xs py-0.5 rounded hidden sm:inline-block">
-            HD-MAP CACHED (v24.11)
-          </span>
+
+          <button
+            onClick={() => toggleLayer('traffic')}
+            className={`px-2 py-0.5 rounded transition-colors ${
+              layers.traffic ? 'bg-accent text-bg font-bold' : 'surface-elevated text-text-muted'
+            }`}
+          >
+            TRAFFIC
+          </button>
+          <button
+            onClick={() => toggleLayer('signs')}
+            className={`px-2 py-0.5 rounded transition-colors ${
+              layers.signs ? 'bg-accent text-bg font-bold' : 'surface-elevated text-text-muted'
+            }`}
+          >
+            SIGNS
+          </button>
+          <button
+            onClick={() => toggleLayer('signals')}
+            className={`px-2 py-0.5 rounded transition-colors ${
+              layers.signals ? 'bg-accent text-bg font-bold' : 'surface-elevated text-text-muted'
+            }`}
+          >
+            SIGNALS
+          </button>
+          <button
+            onClick={() => toggleLayer('construction')}
+            className={`px-2 py-0.5 rounded transition-colors ${
+              layers.construction ? 'bg-warning text-bg font-bold' : 'surface-elevated text-text-muted'
+            }`}
+          >
+            CONSTRUCTION
+          </button>
+          <button
+            onClick={() => toggleLayer('speed')}
+            className={`px-2 py-0.5 rounded transition-colors ${
+              layers.speed ? 'bg-accent text-bg font-bold' : 'surface-elevated text-text-muted'
+            }`}
+          >
+            SPEED
+          </button>
+          <button
+            onClick={() => toggleLayer('garages')}
+            className={`px-2 py-0.5 rounded transition-colors ${
+              layers.garages ? 'bg-accent text-bg font-bold' : 'surface-elevated text-text-muted'
+            }`}
+          >
+            GARAGES
+          </button>
         </div>
 
-        <div className="flex items-center gap-space-sm">
-          <div className="flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface-variant">
-            <span className="material-symbols-outlined text-[14px] text-tertiary">check_circle</span>
-            <span className="font-label-caps text-[10px] text-on-surface">SIMULATED SCENARIO #04</span>
-            <span className="font-label-caps text-[10px] text-outline font-normal">
-              | {roadContext?.data_source || 'DEMO_DATA'}
-            </span>
-          </div>
-          <div className="hidden md:flex items-center gap-2 text-outline font-label-caps text-[10px]">
-            <span>LAT: {roadContext?.lat.toFixed(4) || '48.1371'}° N</span>
-            <span>LON: {roadContext?.lon.toFixed(4) || '11.5761'}° E</span>
-          </div>
+        {/* Floating GNSS RTK Lock Indicator on Bottom-Left */}
+        <div className="absolute bottom-3 left-3 z-[1000] font-mono text-[10px] bg-surface/90 px-2 py-1 rounded border border-border backdrop-blur-md text-text-muted hidden sm:flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-success status-pulse" />
+          <span>GNSS RTK LOCK (L1+L5)</span>
+          <span>•</span>
+          <span>LAT: {roadContext?.lat.toFixed(4) || '48.1371'}°</span>
+          <span>LON: {roadContext?.lon.toFixed(4) || '11.5761'}°</span>
         </div>
       </div>
 
-      {/* Primary Split View: Left Map / Right Triage Cards */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
-        {/* Central Map Canvas (8 cols on lg) */}
-        <div className="lg:col-span-8 h-full relative overflow-hidden bg-surface-container-lowest">
-          <ErrorBoundary fallbackTitle="ROAD MAP HUD STANDBY">
-            <ContextMap roadContext={roadContext} garages={garages} />
-          </ErrorBoundary>
-
-          {/* Floating Road Context Overlays */}
-          <div className="absolute top-4 left-4 z-[500] bg-surface/90 backdrop-blur-md p-space-sm rounded-xl border border-outline-variant/30 shadow-lg pointer-events-auto max-w-sm">
-            <div className="flex items-center gap-space-xs text-primary font-label-caps text-[10px] uppercase">
-              <span className="material-symbols-outlined text-[14px]">explore</span>
-              <span>Active Road Trajectory</span>
-            </div>
-            <div className="font-headline-sm text-[16px] font-bold text-on-surface mt-1">
-              {roadContext?.road_name || 'Leopoldstraße / A99'}
-            </div>
-            <div className="flex items-center gap-space-sm mt-2 text-xs">
-              <span className="px-2 py-0.5 rounded bg-error-container text-on-error font-bold">
-                SPEED LIMIT {speedLimitKmh} KM/H
-              </span>
-              <span className="text-outline">Surface: Dry Asphalt</span>
-            </div>
+      {/* Right-Side Road Context Drawer (320px width) */}
+      <div className="w-full lg:w-[320px] bg-surface border-t lg:border-t-0 lg:border-l border-border flex flex-col shrink-0 h-auto lg:h-full z-10 overflow-y-auto">
+        <div className="p-4 border-b border-border">
+          <div className="flex items-center gap-2 font-mono text-xs text-text-muted">
+            <Compass className="w-4 h-4 text-accent" />
+            <span className="font-bold tracking-wider uppercase text-text-primary">
+              ROAD CONTEXT
+            </span>
           </div>
         </div>
 
-        {/* Right Panel: Nearby Service Garages Triage (4 cols) */}
-        <div className="lg:col-span-4 h-full bg-surface-container-low border-l border-outline-variant/30 flex flex-col overflow-hidden">
-          <div className="p-space-md border-b border-outline-variant/20 flex items-center justify-between shrink-0">
-            <div>
-              <span className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">
-                EMERGENCY SERVICES
-              </span>
-              <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">
-                Nearby Verified Garages ({garages.length})
-              </h2>
+        {/* Current Road Details */}
+        <div className="p-4 space-y-4 font-mono text-xs flex-1">
+          {/* CURRENT ROAD */}
+          <div className="surface-inset p-3">
+            <span className="telemetry-label text-[9px]">CURRENT ROAD</span>
+            <div className="font-headline font-bold text-sm text-text-primary mt-0.5 truncate">
+              {roadContext?.road_name || 'Leopoldstraße / A99 Corridor'}
             </div>
-            <span className="font-label-caps text-[9px] bg-tertiary/10 text-tertiary px-1.5 py-0.5 rounded font-bold">
-              DEMO DATA
+            <span className="text-[10px] text-text-muted mt-0.5 block uppercase">
+              TYPE: {roadContext?.road_type || 'PRIMARY ARTERIAL'}
             </span>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-space-md space-y-space-sm">
-            {garages.map((garage) => (
-              <div
-                key={garage.id}
-                className="p-space-sm bg-surface-container rounded-xl border border-outline-variant/20 hover:border-primary/50 transition-colors shadow-sm"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-headline-sm text-[14px] font-semibold text-on-surface">
-                      {garage.name}
-                    </h3>
-                    <div className="flex items-center gap-1.5 text-xs text-outline mt-0.5">
-                      <span className="material-symbols-outlined text-[14px] text-tertiary">star</span>
-                      <span className="font-bold text-on-surface">{garage.rating}</span>
-                      <span>•</span>
-                      <span className="text-primary font-mono">{garage.distance_meters}m away</span>
-                    </div>
-                  </div>
-                  <span
-                    className={`font-label-caps text-[9px] px-1.5 py-0.5 rounded ${
-                      garage.open_now
-                        ? 'bg-tertiary/20 text-tertiary'
-                        : 'bg-error-container/30 text-error'
-                    }`}
-                  >
-                    {garage.open_now ? 'OPEN NOW' : 'CLOSED'}
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {(garage.services || []).map((svc) => (
-                    <span
-                      key={svc}
-                      className="font-label-caps text-[9px] bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded"
-                    >
-                      {svc}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="mt-3 pt-2 border-t border-outline-variant/10 flex items-center justify-between text-xs">
-                  <span className="font-mono text-outline">{garage.phone}</span>
-                  <a
-                    href={`tel:${garage.phone}`}
-                    className="px-2 py-1 rounded bg-primary-container text-on-primary-container font-label-caps text-[10px] flex items-center gap-1 hover:bg-primary transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-[13px]">call</span>
-                    <span>Direct Call</span>
-                  </a>
-                </div>
+          {/* Speed Limit & Traffic */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="surface-inset p-2.5">
+              <span className="telemetry-label text-[9px]">SPEED LIMIT</span>
+              <div className="font-bold text-base text-accent mt-0.5">
+                {speedLimitKmh} <span className="text-[10px] text-text-muted">KM/H</span>
               </div>
-            ))}
+            </div>
+            <div className="surface-inset p-2.5">
+              <span className="telemetry-label text-[9px]">TRAFFIC</span>
+              <div className="font-bold text-base text-success mt-0.5">
+                MODERATE
+              </div>
+            </div>
           </div>
 
-          {/* Automotive Help & Dispatcher Note */}
-          <div className="p-space-sm bg-surface-container border-t border-outline-variant/20 text-[11px] text-outline flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[18px]">support_agent</span>
-            <span>Overpass API fallback active. Pre-mapped Munich service stations.</span>
+          {/* Construction & Next Sign */}
+          <div className="surface-inset p-3 space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="telemetry-label text-[9px]">CONSTRUCTION</span>
+              <span className="text-text-primary font-bold text-[11px]">
+                {roadContext?.construction_warning ? 'ACTIVE (250m)' : 'NONE REPORTED'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="telemetry-label text-[9px]">NEXT SIGN</span>
+              <span className="text-accent font-bold text-[11px] truncate max-w-[150px]">
+                PEDESTRIAN CROSSING
+              </span>
+            </div>
+          </div>
+
+          {/* Nearby Emergency Garages List */}
+          <div className="pt-2 border-t border-border">
+            <div className="flex items-center justify-between mb-2">
+              <span className="telemetry-label text-[10px]">NEARBY VERIFIED GARAGES</span>
+              <span className="text-[10px] text-accent">{garages.length} TRIAGED</span>
+            </div>
+
+            <div className="space-y-2">
+              {garages.slice(0, 3).map((g) => (
+                <div key={g.id} className="surface-inset p-2.5 space-y-1 hover:border-accent/30 transition-colors">
+                  <div className="flex items-center justify-between font-headline font-bold text-xs text-text-primary">
+                    <span className="truncate max-w-[170px]">{g.name}</span>
+                    <span className="font-mono text-accent text-[11px]">{g.distance_meters}m</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-text-muted font-mono">
+                    <span>★ {g.rating.toFixed(1)}</span>
+                    <a
+                      href={`tel:${g.phone}`}
+                      className="text-accent hover:underline flex items-center gap-1"
+                    >
+                      <PhoneCall className="w-2.5 h-2.5" />
+                      <span>{g.phone}</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,16 @@
 import React, { useState } from 'react';
+import {
+  Settings as SettingsIcon,
+  Camera,
+  Cpu,
+  Eye,
+  Volume2,
+  Compass,
+  Lock,
+  Server,
+  CheckCircle2,
+  Save,
+} from 'lucide-react';
 
 interface SettingsPageProps {
   isMuted: boolean;
@@ -17,244 +29,326 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   speedLimitKmh,
   onSpeedLimitChange,
 }) => {
-  const [hudGlow, setHudGlow] = useState<boolean>(true);
-  const [speechRate, setSpeechRate] = useState<number>(1.05);
+  const [confThreshold, setConfThreshold] = useState<number>(0.45);
   const [earThreshold, setEarThreshold] = useState<number>(0.20);
-  const [saveToast, setSaveToast] = useState<boolean>(false);
+  const [_speechRate, _setSpeechRate] = useState<number>(1.05);
+  const [debounceSec, setDebounceSec] = useState<number>(5.0);
+  const [_localOnly, _setLocalOnly] = useState<boolean>(true);
+  const [showToast, setShowToast] = useState<boolean>(false);
 
   const handleSave = () => {
-    setSaveToast(true);
-    setTimeout(() => setSaveToast(false), 2500);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2400);
   };
 
   return (
-    <div className="p-space-lg flex flex-col gap-space-lg w-full max-w-[1200px] mx-auto text-on-surface">
+    <div className="p-4 md:p-6 flex flex-col gap-5 max-w-[1200px] mx-auto w-full select-none">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-xs border-b border-outline-variant/20">
-        <div>
-          <div className="flex items-center gap-space-xs font-label-caps text-label-caps text-primary uppercase">
-            <span className="material-symbols-outlined text-[16px]">tune</span>
-            <span>Cockpit Configuration Suite</span>
-          </div>
-          <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight mt-1">
-            System &amp; Perception Settings
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-border gap-2">
+        <div className="flex items-center gap-2.5">
+          <SettingsIcon className="w-5 h-5 text-accent" />
+          <h1 className="font-headline font-bold text-base text-text-primary uppercase tracking-tight">
+            COCKPIT &amp; PERCEPTION PREFERENCES
           </h1>
-          <p className="font-body-md text-body-md text-on-surface-variant">
-            Adjust camera sensors, neural confidence thresholds, audio synthesize properties, and privacy modes.
-          </p>
+          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-elevated text-text-muted border border-border">
+            HMI CONFIG
+          </span>
         </div>
 
         <button
           onClick={handleSave}
-          className="px-space-md py-space-xs rounded-xl bg-primary-container text-on-primary-container hover:bg-primary transition-colors font-label-caps text-label-caps uppercase flex items-center gap-2 self-start sm:self-auto shadow-sm"
+          type="button"
+          className="self-start sm:self-auto px-3 py-1 rounded bg-accent hover:bg-accent-strong text-bg font-headline text-xs font-bold uppercase flex items-center gap-1.5 transition-colors shadow-sm"
         >
-          <span className="material-symbols-outlined text-[18px]">save</span>
-          <span>Save Preferences</span>
+          <Save className="w-3.5 h-3.5" />
+          <span>SAVE CHANGES</span>
         </button>
       </div>
 
-      {saveToast && (
-        <div className="p-space-sm rounded-lg bg-tertiary-container/30 border border-tertiary text-tertiary flex items-center gap-2 text-xs font-label-caps">
-          <span className="material-symbols-outlined text-[18px]">check_circle</span>
-          <span>Settings saved to local cockpit configuration profile.</span>
+      {showToast && (
+        <div className="surface-card p-3 border-success text-success flex items-center gap-2 text-xs font-mono">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>Configuration parameters persisted to local profile.</span>
         </div>
       )}
 
-      {/* Settings Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-space-md">
-        {/* Section 1: Camera & Video Pipeline */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2 pb-space-xs border-b border-outline-variant/10">
-            <span className="material-symbols-outlined text-primary text-[20px]">videocam</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">Camera &amp; Feed Source</h2>
+      {/* Grouped Settings Grid (8 Clean Groups) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* 1. GENERAL */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <SettingsIcon className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              1. GENERAL
+            </h2>
           </div>
-
-          <div className="space-y-3 text-xs">
+          <div className="space-y-3 text-xs font-body">
             <div>
-              <label className="font-label-caps text-outline uppercase block mb-1">Optical Feed Mode</label>
-              <select
-                value={mode}
-                onChange={(e) => onModeChange(e.target.value as any)}
-                className="w-full bg-surface-container p-2 rounded-lg border border-outline-variant/30 text-on-surface font-body-sm focus:outline-none focus:border-primary"
-              >
-                <option value="simulated">Synthetic Procedural Road (Demo)</option>
-                <option value="webcam">Live User Webcam (Direct Sensor)</option>
-                <option value="sample">Static Traffic Scene (Benchmark)</option>
+              <label className="telemetry-label text-[9px] block mb-1">UNITS OF MEASURE</label>
+              <select className="w-full bg-surface-secondary p-2 rounded border border-border text-text-primary font-mono text-xs focus:outline-none focus:border-accent">
+                <option value="metric">Metric (km/h, meters)</option>
+                <option value="imperial">Imperial (mph, feet)</option>
               </select>
+              <span className="text-[10px] text-text-muted mt-0.5 block">
+                Controls all speedometer, speed limit signs, and distance readouts.
+              </span>
             </div>
-
             <div>
-              <label className="font-label-caps text-outline uppercase block mb-1">Target Video Resolution</label>
-              <div className="p-2 bg-surface-container rounded-lg font-mono text-on-surface flex justify-between">
-                <span>1080p Full HD (1920x1080)</span>
-                <span className="text-tertiary font-bold">LOCKED</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: AI Vision & Detection */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2 pb-space-xs border-b border-outline-variant/10">
-            <span className="material-symbols-outlined text-tertiary text-[20px]">neurology</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">AI Detection Parameters</h2>
-          </div>
-
-          <div className="space-y-3 text-xs">
-            <div>
-              <div className="flex justify-between font-label-caps mb-1">
-                <span className="text-outline uppercase">Active Speed Limit Target</span>
-                <span className="text-primary font-bold">{speedLimitKmh} km/h</span>
-              </div>
-              <div className="flex gap-2">
-                {[30, 50, 70, 100].map((lim) => (
+              <label className="telemetry-label text-[9px] block mb-1">BASE SPEED LIMIT SEED</label>
+              <div className="flex items-center gap-2">
+                {[30, 50, 70, 100].map((limit) => (
                   <button
-                    key={lim}
-                    onClick={() => onSpeedLimitChange(lim)}
-                    className={`flex-1 py-1.5 rounded font-label-caps ${
-                      speedLimitKmh === lim
-                        ? 'bg-primary-container text-on-primary-container font-bold'
-                        : 'bg-surface-container text-on-surface-variant hover:text-on-surface'
+                    key={limit}
+                    type="button"
+                    onClick={() => onSpeedLimitChange(limit)}
+                    className={`flex-1 py-1 rounded font-mono text-xs font-bold border transition-colors ${
+                      speedLimitKmh === limit
+                        ? 'bg-accent text-bg border-accent'
+                        : 'surface-inset text-text-secondary border-border hover:border-accent/40'
                     }`}
                   >
-                    {lim} km/h
+                    {limit} KM/H
                   </button>
                 ))}
               </div>
+              <span className="text-[10px] text-text-muted mt-0.5 block">
+                Default speed restriction used when optical vision has not detected road signs yet.
+              </span>
             </div>
+          </div>
+        </div>
 
+        {/* 2. CAMERA */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Camera className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              2. CAMERA
+            </h2>
+          </div>
+          <div className="space-y-3 text-xs font-body">
             <div>
-              <label className="font-label-caps text-outline uppercase block mb-1">Dataset Model Origin</label>
-              <div className="p-2 bg-surface-container rounded-lg font-mono text-on-surface flex justify-between">
-                <span>German Traffic Sign Recognition Benchmark (GTSRB)</span>
-                <span className="text-tertiary font-bold">43 CLS</span>
+              <label className="telemetry-label text-[9px] block mb-1">OPTICAL SOURCE MODE</label>
+              <select
+                value={mode}
+                onChange={(e) => onModeChange(e.target.value as any)}
+                className="w-full bg-surface-secondary p-2 rounded border border-border text-text-primary font-mono text-xs focus:outline-none focus:border-accent"
+              >
+                <option value="simulated">Synthetic Procedural Drive (Demo)</option>
+                <option value="webcam">Live WebRTC Camera Sensor</option>
+              </select>
+              <span className="text-[10px] text-text-muted mt-0.5 block">
+                Choose between simulated dynamic roadway for evaluation or live optical webcam.
+              </span>
+            </div>
+            <div>
+              <label className="telemetry-label text-[9px] block mb-1">RESOLUTION &amp; FPS LOCK</label>
+              <select className="w-full bg-surface-secondary p-2 rounded border border-border text-text-primary font-mono text-xs focus:outline-none focus:border-accent">
+                <option>640x380 @ 60 FPS (Optimized Latency)</option>
+                <option>1280x720 @ 30 FPS (High Definition)</option>
+              </select>
+              <span className="text-[10px] text-text-muted mt-0.5 block">
+                Standardizes optical frame grabber cadence before neural forward pass.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. AI DETECTION */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Cpu className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              3. AI DETECTION
+            </h2>
+          </div>
+          <div className="space-y-3 text-xs font-body">
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <label className="telemetry-label text-[9px]">CONFIDENCE CUTOFF THRESHOLD</label>
+                <span className="font-mono text-accent font-bold">{Math.round(confThreshold * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min="0.25"
+                max="0.90"
+                step="0.05"
+                value={confThreshold}
+                onChange={(e) => setConfThreshold(parseFloat(e.target.value))}
+                className="w-full accent-accent bg-surface-secondary h-1.5 rounded cursor-pointer"
+              />
+              <span className="text-[10px] text-text-muted mt-0.5 block">
+                Detections below this softmax confidence margin are suppressed from the HUD.
+              </span>
+            </div>
+            <div>
+              <label className="telemetry-label text-[9px] block mb-1">TRAFFIC SIGN TAXONOMY</label>
+              <div className="surface-inset p-2 font-mono text-[11px] text-text-secondary flex justify-between">
+                <span>GTSRB 43-CLASS SET</span>
+                <span className="text-success font-bold">LOADED</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Section 3: Driver Monitoring (DMS) */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2 pb-space-xs border-b border-outline-variant/10">
-            <span className="material-symbols-outlined text-secondary text-[20px]">visibility</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">Driver Monitoring (DMS)</h2>
+        {/* 4. DRIVER MONITORING */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Eye className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              4. DRIVER MONITORING
+            </h2>
           </div>
-
-          <div className="space-y-3 text-xs">
+          <div className="space-y-3 text-xs font-body">
             <div>
-              <div className="flex justify-between font-label-caps mb-1">
-                <span className="text-outline uppercase">Eye Aspect Ratio (EAR) Threshold</span>
-                <span className="text-secondary font-bold">{earThreshold.toFixed(2)}</span>
+              <div className="flex justify-between items-center mb-1">
+                <label className="telemetry-label text-[9px]">EYE ASPECT RATIO (EAR) THRESHOLD</label>
+                <span className="font-mono text-accent font-bold">{earThreshold.toFixed(2)}</span>
               </div>
               <input
                 type="range"
                 min="0.15"
-                max="0.28"
+                max="0.30"
                 step="0.01"
                 value={earThreshold}
                 onChange={(e) => setEarThreshold(parseFloat(e.target.value))}
-                className="w-full accent-secondary-container cursor-pointer"
+                className="w-full accent-accent bg-surface-secondary h-1.5 rounded cursor-pointer"
               />
-              <div className="flex justify-between font-label-caps text-[9px] text-outline mt-1">
-                <span>Sensitive (0.15)</span>
-                <span>Default (0.20)</span>
-                <span>Aggressive (0.28)</span>
-              </div>
+              <span className="text-[10px] text-text-muted mt-0.5 block">
+                Continuous closure below this metric triggers temporal micro-sleep alerts.
+              </span>
             </div>
-
-            <div className="flex items-center justify-between p-2 bg-surface-container rounded-lg">
-              <span className="text-on-surface font-body-sm">Gaze Deviation Audio Warning</span>
-              <span className="font-label-caps text-tertiary font-bold">ENABLED</span>
+            <div>
+              <label className="telemetry-label text-[9px] block mb-1">GAZE DEVIATION SENSITIVITY</label>
+              <select className="w-full bg-surface-secondary p-2 rounded border border-border text-text-primary font-mono text-xs focus:outline-none focus:border-accent">
+                <option>Medium (±18° Pitch / ±25° Yaw)</option>
+                <option>High Sensitivity (±12° Pitch / ±15° Yaw)</option>
+              </select>
             </div>
           </div>
         </div>
 
-        {/* Section 4: Voice Alerts (TTS) */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2 pb-space-xs border-b border-outline-variant/10">
-            <span className="material-symbols-outlined text-primary text-[20px]">record_voice_over</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">Voice Alerts &amp; Audio</h2>
+        {/* 5. VOICE */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Volume2 className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              5. VOICE
+            </h2>
           </div>
-
-          <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between p-2 bg-surface-container rounded-lg">
+          <div className="space-y-3 text-xs font-body">
+            <div className="flex items-center justify-between surface-inset p-2.5">
               <div>
-                <span className="font-semibold block text-on-surface">Voice Synthesis Alerts</span>
-                <span className="text-[11px] text-outline">Spoken audio announcements for warnings</span>
+                <span className="font-headline font-bold text-text-primary text-xs block">
+                  SYNTHETIC AUDIO ALERTS
+                </span>
+                <span className="text-[10px] text-text-muted">
+                  Announce speed changes &amp; drowsiness alerts through speaker.
+                </span>
               </div>
               <button
                 type="button"
                 onClick={onToggleMute}
-                className={`px-3 py-1 rounded font-label-caps text-[10px] ${
-                  isMuted
-                    ? 'bg-error-container text-on-error-container'
-                    : 'bg-tertiary/20 text-tertiary font-bold'
+                className={`px-3 py-1 rounded font-mono text-xs font-bold transition-colors ${
+                  !isMuted ? 'bg-success text-bg' : 'bg-surface-elevated text-text-muted'
                 }`}
               >
-                {isMuted ? 'MUTED' : 'ACTIVE'}
+                {!isMuted ? 'ENABLED' : 'MUTED'}
               </button>
             </div>
-
             <div>
-              <div className="flex justify-between font-label-caps mb-1">
-                <span className="text-outline uppercase">Speech Rate</span>
-                <span className="text-primary font-bold">{speechRate}x</span>
+              <div className="flex justify-between items-center mb-1">
+                <label className="telemetry-label text-[9px]">DEDUPLICATION DEBOUNCE</label>
+                <span className="font-mono text-accent font-bold">{debounceSec.toFixed(1)}s</span>
               </div>
               <input
                 type="range"
-                min="0.8"
-                max="1.4"
-                step="0.05"
-                value={speechRate}
-                onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-                className="w-full accent-primary-container cursor-pointer"
+                min="2.0"
+                max="10.0"
+                step="0.5"
+                value={debounceSec}
+                onChange={(e) => setDebounceSec(parseFloat(e.target.value))}
+                className="w-full accent-accent bg-surface-secondary h-1.5 rounded cursor-pointer"
               />
+              <span className="text-[10px] text-text-muted mt-0.5 block">
+                Prevents repeated voice triggers for the same persistent road object.
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Section 5: Appearance & Cockpit HUD */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2 pb-space-xs border-b border-outline-variant/10">
-            <span className="material-symbols-outlined text-outline text-[20px]">palette</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">HUD Visual Appearance</h2>
+        {/* 6. MAP */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Compass className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              6. MAP
+            </h2>
           </div>
+          <div className="space-y-3 text-xs font-body">
+            <div>
+              <label className="telemetry-label text-[9px] block mb-1">TILE PROVIDER</label>
+              <select className="w-full bg-surface-secondary p-2 rounded border border-border text-text-primary font-mono text-xs focus:outline-none focus:border-accent">
+                <option>CartoDB Dark Matter (Tactical Cockpit)</option>
+                <option>OpenStreetMap Standard Tiles</option>
+              </select>
+            </div>
+            <div>
+              <label className="telemetry-label text-[9px] block mb-1">GARAGE TRIAGE RADIUS</label>
+              <select className="w-full bg-surface-secondary p-2 rounded border border-border text-text-primary font-mono text-xs focus:outline-none focus:border-accent">
+                <option>5.0 km (Urban Core)</option>
+                <option>15.0 km (Highway Corridor)</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-          <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between p-2 bg-surface-container rounded-lg">
+        {/* 7. PRIVACY */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Lock className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              7. PRIVACY
+            </h2>
+          </div>
+          <div className="space-y-3 text-xs font-body">
+            <div className="flex items-center justify-between surface-inset p-2.5">
               <div>
-                <span className="font-semibold block text-on-surface">Cockpit Glassmorphism &amp; Glow</span>
-                <span className="text-[11px] text-outline">High-contrast tactical borders &amp; blurs</span>
+                <span className="font-headline font-bold text-text-primary text-xs block">
+                  ON-DEVICE EDGE PROCESSING
+                </span>
+                <span className="text-[10px] text-text-muted">
+                  Video feeds never leave local memory or transmit over public cloud.
+                </span>
               </div>
-              <button
-                type="button"
-                onClick={() => setHudGlow((g) => !g)}
-                className={`px-3 py-1 rounded font-label-caps text-[10px] ${
-                  hudGlow ? 'bg-primary-container text-on-primary-container font-bold' : 'bg-surface-container text-outline'
-                }`}
-              >
-                {hudGlow ? 'ON' : 'OFF'}
-              </button>
+              <span className="font-mono text-xs font-bold text-success px-2 py-0.5 rounded bg-success-subtle">
+                ENFORCED
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Section 6: Privacy & Data Isolation */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2 pb-space-xs border-b border-outline-variant/10">
-            <span className="material-symbols-outlined text-tertiary text-[20px]">shield</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">Privacy &amp; Data Security</h2>
+        {/* 8. SYSTEM */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Server className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              8. SYSTEM
+            </h2>
           </div>
-
-          <div className="space-y-2 text-xs text-on-surface-variant">
-            <div className="flex items-center justify-between p-2 bg-surface-container rounded-lg">
-              <span>Local Dataset Isolation</span>
-              <span className="font-label-caps text-tertiary font-bold">100% AIR-GAPPED</span>
+          <div className="space-y-3 text-xs font-body">
+            <div>
+              <label className="telemetry-label text-[9px] block mb-1">BACKEND SERVICE URL</label>
+              <input
+                type="text"
+                readOnly
+                value="http://127.0.0.1:8000"
+                className="w-full bg-surface-secondary p-2 rounded border border-border text-accent font-mono text-xs focus:outline-none"
+              />
+              <span className="text-[10px] text-text-muted mt-0.5 block">
+                Local FastAPI inference engine connection endpoint.
+              </span>
             </div>
-            <p className="text-[11px] text-outline leading-tight pt-1">
-              Frames and infrared driver gaze coordinates process entirely on the local machine and are never
-              transmitted to external third-party cloud servers.
-            </p>
           </div>
         </div>
       </div>

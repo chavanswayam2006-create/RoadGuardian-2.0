@@ -1,4 +1,17 @@
 import React from 'react';
+import {
+  LayoutDashboard,
+  Camera,
+  Eye,
+  Compass,
+  FileText,
+  BarChart3,
+  Cpu,
+  Settings,
+  ShieldCheck,
+  PhoneCall,
+  X,
+} from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import type { DriverState } from '../types';
 
@@ -39,90 +52,85 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const navItems: {
     id: NavRoute;
     label: string;
-    icon: string;
+    icon: React.ComponentType<{ className?: string }>;
     badge?: React.ReactNode;
   }[] = [
     {
       id: 'dashboard',
-      label: 'Overview',
-      icon: 'dashboard',
+      label: 'OVERVIEW',
+      icon: LayoutDashboard,
     },
     {
       id: 'detection',
-      label: 'Live Detection',
-      icon: 'videocam',
+      label: 'LIVE VISION',
+      icon: Camera,
       badge: (
-        <span className="font-label-caps text-[10px] bg-tertiary/20 text-tertiary px-1.5 py-0.5 rounded-full">
-          LIVE {fps}FPS
+        <span className="font-mono text-[10px] text-accent px-1.5 py-0.5 rounded bg-accent-subtle">
+          {fps} FPS
         </span>
       ),
     },
     {
       id: 'driver-monitoring',
-      label: 'Driver Monitoring',
-      icon: 'visibility',
+      label: 'DRIVER MONITOR',
+      icon: Eye,
       badge: (
         <span
-          className={`flex items-center gap-1 font-label-caps text-[10px] ${
+          className={`flex items-center gap-1 font-mono text-[9px] px-1.5 py-0.5 rounded ${
             driverState === 'ATTENTIVE'
-              ? 'text-tertiary'
+              ? 'bg-success-subtle text-success'
               : driverState === 'DROWSINESS_WARNING'
-              ? 'text-error'
-              : 'text-secondary'
+              ? 'bg-critical-subtle text-critical'
+              : 'bg-warning-subtle text-warning'
           }`}
         >
           <span
             className={`w-1.5 h-1.5 rounded-full ${
               driverState === 'ATTENTIVE'
-                ? 'bg-tertiary animate-pulse'
+                ? 'bg-success'
                 : driverState === 'DROWSINESS_WARNING'
-                ? 'bg-error animate-ping'
-                : 'bg-secondary'
+                ? 'bg-critical'
+                : 'bg-warning'
             }`}
           />
-          {driverState === 'ATTENTIVE' ? 'ATTENTIVE' : driverState === 'DROWSINESS_WARNING' ? 'DROWSY' : 'DRIFT'}
+          {driverState === 'ATTENTIVE' ? 'ACTIVE' : driverState === 'DROWSINESS_WARNING' ? 'DROWSY' : 'DRIFT'}
         </span>
       ),
     },
     {
       id: 'map',
-      label: 'Road Map',
-      icon: 'explore',
+      label: 'ROAD MAP',
+      icon: Compass,
       badge: (
-        <span className="font-label-caps text-[10px] bg-primary-container/30 text-primary px-1.5 py-0.5 rounded-full">
-          GPS ACTIVE
+        <span className="font-mono text-[10px] text-text-muted px-1.5 py-0.5 rounded bg-surface-elevated">
+          GPS LOCK
         </span>
       ),
     },
     {
       id: 'history',
-      label: 'History Log',
-      icon: 'history',
+      label: 'DETECTIONS',
+      icon: FileText,
     },
     {
       id: 'analytics',
-      label: 'Safety Analytics',
-      icon: 'analytics',
+      label: 'ANALYTICS',
+      icon: BarChart3,
     },
     {
       id: 'system',
-      label: 'System Status',
-      icon: 'memory',
-      badge: (
-        <span className="font-label-caps text-[10px] bg-tertiary-container/30 text-tertiary px-1.5 py-0.5 rounded-full">
-          ONLINE
-        </span>
-      ),
+      label: 'SYSTEM',
+      icon: Cpu,
     },
     {
       id: 'settings',
-      label: 'Settings',
-      icon: 'settings',
+      label: 'SETTINGS',
+      icon: Settings,
     },
     {
       id: 'help',
-      label: 'Help & Safety',
-      icon: 'help_center',
+      label: 'HELP',
+      icon: ShieldCheck,
     },
   ];
 
@@ -132,107 +140,99 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {isOpenMobile && (
         <div
           onClick={onCloseMobile}
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-200"
           aria-hidden="true"
         />
       )}
 
-      {/* Main Sidebar Aside */}
+      {/* Main Sidebar Panel */}
       <aside
-        className={`fixed left-0 top-0 h-full w-72 bg-surface-container-lowest flex flex-col z-50 shadow-[0_1px_12px_rgba(0,0,0,0.5)] border-r border-outline-variant/30 transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 bottom-0 left-0 w-[248px] bg-surface z-50 flex flex-col border-r border-border transition-transform duration-200 ease-in-out ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
-        {/* Brand Header */}
-        <div className="p-space-md flex items-center justify-between bg-surface-container-low border-b border-outline-variant/20">
-          <div className="flex items-center gap-space-sm min-w-0">
-            <BrandLogo size={34} />
-            <div className="flex flex-col min-w-0">
-              <span className="font-headline-sm text-[17px] text-primary tracking-tight leading-tight truncate">
-                RoadGuard AI
-              </span>
-              <span className="font-label-caps text-[10px] text-tertiary tracking-widest leading-none mt-0.5">
-                ASSIST PROTOCOL v2.4
-              </span>
-            </div>
-          </div>
-          {/* Mobile close button */}
+        {/* Header Branding */}
+        <div className="h-14 px-4 flex items-center justify-between border-b border-border shrink-0">
+          <BrandLogo />
           <button
             onClick={onCloseMobile}
-            className="lg:hidden p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
-            aria-label="Close sidebar navigation"
+            className="lg:hidden p-1.5 rounded text-text-muted hover:text-text-primary hover:bg-surface-elevated transition-colors"
+            aria-label="Close navigation"
           >
-            <span className="material-symbols-outlined text-[20px]">close</span>
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Navigation Items List */}
-        <div className="flex-1 overflow-y-auto px-space-sm py-space-md">
-          <div className="px-space-sm pb-space-xs font-label-caps text-[10px] text-outline uppercase tracking-wider">
-            Navigation Suite
-          </div>
-          <nav className="flex flex-col gap-1">
-            {navItems.map((item) => {
-              const isActive = currentRoute === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    onRouteChange(item.id);
-                    onCloseMobile();
-                  }}
-                  className={`w-full flex items-center justify-between px-space-sm py-2 rounded-lg text-left transition-colors ${
-                    isActive
-                      ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm'
-                      : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
-                  }`}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <div className="flex items-center gap-space-sm">
-                    <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
-                    <span className="font-body-md text-[13px]">{item.label}</span>
-                  </div>
-                  {item.badge}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Bottom Cockpit Status & Telemetry Module */}
-        <div className="p-space-sm bg-surface-container-low border-t border-outline-variant/20 flex flex-col gap-space-xs">
-          <div className="p-space-xs bg-surface-container rounded-lg flex items-center justify-between">
-            <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">
-              Simulation Mode
-            </span>
-            <span className="font-label-caps text-[10px] bg-surface-container-high text-primary px-space-xs py-0.5 rounded font-bold">
-              ACTIVE
+        {/* Navigation Item Stack */}
+        <nav className="flex-1 overflow-y-auto px-2.5 py-3 space-y-1">
+          <div className="px-2 pb-1.5">
+            <span className="telemetry-label text-[10px] tracking-wider text-text-muted">
+              NAVIGATION
             </span>
           </div>
 
-          <div className="p-space-xs bg-surface-container rounded-lg flex items-center justify-between">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = currentRoute === item.id;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  onRouteChange(item.id);
+                  onCloseMobile();
+                }}
+                className={`w-full flex items-center justify-between px-2.5 py-2 rounded text-left transition-all duration-150 ${
+                  isActive
+                    ? 'bg-surface-elevated text-accent font-semibold border-l-2 border-accent'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-secondary'
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Icon
+                    className={`w-4 h-4 shrink-0 transition-colors ${
+                      isActive ? 'text-accent' : 'text-text-muted group-hover:text-text-primary'
+                    }`}
+                  />
+                  <span
+                    className={`font-mono text-[11px] tracking-wider truncate ${
+                      isActive ? 'text-text-primary font-bold' : 'text-text-secondary'
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                </div>
+                {item.badge}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Bottom Cockpit Quick Telemetry */}
+        <div className="p-3 border-t border-border bg-surface-secondary shrink-0 space-y-2">
+          {/* Speed limit compliance pill */}
+          <div className="flex items-center justify-between px-2.5 py-1.5 rounded bg-surface border border-border-subtle">
             <div className="flex flex-col">
-              <span className="font-label-caps text-[10px] text-outline uppercase">Velocity</span>
-              <span className="font-telemetry-display text-[18px] text-tertiary leading-none mt-0.5">
-                {Math.round(currentSpeedKmh)}{' '}
-                <span className="font-telemetry-unit text-[11px] text-on-surface-variant">km/h</span>
+              <span className="telemetry-label text-[9px]">SPEED POSTED</span>
+              <span className="font-mono text-xs font-bold text-text-primary">
+                {currentSpeedKmh} / {speedLimitKmh} <span className="text-[10px] text-text-muted">KM/H</span>
               </span>
             </div>
-            <div className="text-right">
-              <span className="font-label-caps text-[10px] text-outline uppercase block">Posted</span>
-              <span className="font-label-caps text-[11px] text-on-surface font-semibold">
-                Limit {speedLimitKmh}
-              </span>
-            </div>
+            <div
+              className={`w-2 h-2 rounded-full ${
+                currentSpeedKmh > speedLimitKmh ? 'bg-critical status-pulse' : 'bg-success'
+              }`}
+            />
           </div>
 
+          {/* Emergency SOS hotline button */}
           <button
             onClick={onSosTrigger}
             type="button"
-            className="w-full py-2 bg-error-container text-on-error-container font-label-caps text-[11px] uppercase rounded-lg flex items-center justify-center gap-space-xs hover:bg-error hover:text-on-error transition-colors shadow-sm"
+            className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded bg-critical/10 hover:bg-critical/20 text-critical border border-critical/30 transition-colors text-xs font-mono font-bold tracking-wider"
           >
-            <span className="material-symbols-outlined text-[16px]">sos</span>
-            <span>SOS Emergency Hotline</span>
+            <PhoneCall className="w-3.5 h-3.5" />
+            <span>EMERGENCY SOS</span>
           </button>
         </div>
       </aside>

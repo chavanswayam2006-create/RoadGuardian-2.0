@@ -57,8 +57,8 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
 
   return (
-    <div className="min-h-screen bg-background text-on-surface flex flex-col font-body-md antialiased select-none">
-      {/* Sidebar Navigation Suite */}
+    <div className="min-h-screen bg-bg text-text-primary flex flex-col font-body antialiased select-none">
+      {/* Precision Left Sidebar */}
       <Sidebar
         currentRoute={currentRoute}
         onRouteChange={onRouteChange}
@@ -71,11 +71,11 @@ export const AppShell: React.FC<AppShellProps> = ({
         fps={fps}
       />
 
-      {/* Main Content Wrap Offset by Sidebar width on Desktop */}
-      <div className="pl-0 lg:pl-72 flex-1 flex flex-col min-w-0">
+      {/* Main Content Layout Shifted by 248px on Desktop */}
+      <div className="pl-0 lg:pl-[248px] flex-1 flex flex-col min-w-0 min-h-screen">
         {/* Top Telematics Status Bar */}
         <TopStatusBar
-          onToggleSidebarMobile={() => setIsSidebarMobileOpen((o) => !o)}
+          onToggleSidebarMobile={() => setIsSidebarMobileOpen((prev) => !prev)}
           isBackendConnected={isBackendConnected}
           health={health}
           inferenceTimeMs={inferenceTimeMs}
@@ -88,32 +88,34 @@ export const AppShell: React.FC<AppShellProps> = ({
           fps={fps}
         />
 
-        {/* Global Active Priority Safety Alert Banner (if active) */}
-        <div className="pt-16 px-space-md w-full max-w-[1720px] mx-auto">
-          <AlertBanner alert={activeAlert} onDismiss={onDismissAlert} />
-        </div>
+        {/* Global Floating Active Alert (Dominant only during Warning/Critical) */}
+        {activeAlert && (
+          <div className="pt-16 px-4 md:px-6 w-full max-w-[1600px] mx-auto z-20">
+            <AlertBanner alert={activeAlert} onDismiss={onDismissAlert} />
+          </div>
+        )}
 
-        {/* Main View Area */}
-        <main className="flex-1 w-full bg-background flex flex-col">
+        {/* Main Routed Page Surface */}
+        <main className={`flex-1 w-full flex flex-col ${activeAlert ? 'pt-2' : 'pt-16'}`}>
           {children}
         </main>
       </div>
 
-      {/* Emergency SOS Modal */}
+      {/* Emergency SOS Confirmation Dialog Modal */}
       <SosModal
         isOpen={isSosOpen}
         onClose={() => setIsSosOpen(false)}
         lat={roadContext?.lat || 48.1371}
         lon={roadContext?.lon || 11.5761}
-        roadName={roadContext?.road_name || 'Urban Sector Corridor'}
+        roadName={roadContext?.road_name || 'Leopoldstraße / A99'}
       />
 
-      {/* Notifications Drawer */}
+      {/* Right Notifications Drawer */}
       <NotificationsDrawer
         isOpen={isNotificationsOpen}
         onClose={() => setIsNotificationsOpen(false)}
         events={events}
-        onClear={onClearEvents}
+        onClearEvents={onClearEvents}
       />
     </div>
   );

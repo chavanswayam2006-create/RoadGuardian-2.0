@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, AlertTriangle, Info, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 import type { AlertCategory } from '../types';
 
 interface AlertBannerProps {
@@ -15,64 +15,68 @@ interface AlertBannerProps {
 export const AlertBanner: React.FC<AlertBannerProps> = ({ alert, onDismiss }) => {
   if (!alert) return null;
 
-  const getStyle = () => {
-    switch (alert.category) {
-      case 'CRITICAL':
-        return {
-          card: 'bg-red-950/80 border-red-500/80 text-red-200 animate-pulse-critical',
-          badge: 'bg-red-500 text-black font-extrabold',
-          icon: <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />,
-        };
-      case 'WARNING':
-        return {
-          card: 'bg-amber-950/80 border-amber-500/80 text-amber-200 animate-pulse-warning',
-          badge: 'bg-amber-500 text-black font-extrabold',
-          icon: <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />,
-        };
-      case 'ADVISORY':
-        return {
-          card: 'bg-blue-950/80 border-blue-500/80 text-blue-200 glow-cyan',
-          badge: 'bg-blue-500 text-black font-extrabold',
-          icon: <Info className="w-5 h-5 text-blue-400 shrink-0" />,
-        };
-      default:
-        return {
-          card: 'bg-emerald-950/80 border-emerald-500/80 text-emerald-200',
-          badge: 'bg-emerald-500 text-black font-extrabold',
-          icon: <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />,
-        };
-    }
-  };
-
-  const style = getStyle();
+  const isCritical = alert.category === 'CRITICAL';
+  const isWarning = alert.category === 'WARNING';
 
   return (
-    <div className={`mb-4 p-3 rounded-lg border flex items-center justify-between gap-3 ${style.card}`}>
-      <div className="flex items-center gap-3">
-        {style.icon}
-        <div>
-          <div className="flex items-center gap-2">
-            <span className={`text-[10px] px-2 py-0.5 rounded tracking-wider uppercase font-mono ${style.badge}`}>
+    <div
+      role="alert"
+      className={`mb-3 p-3 rounded-md border flex items-center justify-between gap-3 transition-all duration-200 ${
+        isCritical
+          ? 'bg-critical-subtle border-critical critical-pulse text-text-primary'
+          : isWarning
+          ? 'bg-warning-subtle border-warning text-text-primary'
+          : 'bg-surface-elevated border-accent/30 text-text-primary'
+      }`}
+    >
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="shrink-0">
+          {isCritical ? (
+            <AlertCircle className="w-5 h-5 text-critical" />
+          ) : isWarning ? (
+            <AlertTriangle className="w-5 h-5 text-warning" />
+          ) : (
+            <Info className="w-5 h-5 text-accent" />
+          )}
+        </div>
+
+        <div className="flex flex-col min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span
+              className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wider uppercase ${
+                isCritical
+                  ? 'bg-critical text-bg'
+                  : isWarning
+                  ? 'bg-warning text-bg'
+                  : 'bg-accent/20 text-accent'
+              }`}
+            >
               {alert.category}
             </span>
-            <span className="font-bold text-sm tracking-wide text-white uppercase">{alert.title}</span>
+            <span className="font-headline font-bold text-xs tracking-wide text-text-primary uppercase truncate">
+              {alert.title}
+            </span>
           </div>
-          <p className="text-xs text-slate-300 mt-0.5">{alert.message}</p>
+          <p className="font-body text-xs text-text-secondary mt-0.5 truncate">
+            {alert.message}
+          </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         {alert.action_required && (
-          <span className="hidden md:inline-block text-xs font-mono font-semibold px-2 py-1 rounded bg-black/40 border border-white/20 text-white">
-            ACTION: {alert.action_required}
+          <span className="hidden sm:inline-block font-mono text-[11px] font-semibold px-2 py-0.5 rounded bg-bg/80 border border-border text-text-primary">
+            {alert.action_required}
           </span>
         )}
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="text-xs font-mono px-2 py-1 rounded bg-black/30 hover:bg-black/60 text-slate-300 transition-colors"
+            type="button"
+            className="p-1 rounded text-text-muted hover:text-text-primary hover:bg-bg/40 transition-colors"
+            aria-label="Dismiss alert"
           >
-            DISMISS
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>

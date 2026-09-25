@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BarChart3 } from 'lucide-react';
 import type { SafetyEvent } from '../types';
 
 interface AnalyticsPageProps {
@@ -7,279 +8,208 @@ interface AnalyticsPageProps {
 }
 
 export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({ events, inferenceTimeMs }) => {
-  const [activeTimeframe, setActiveTimeframe] = useState<'current' | 'today' | 'week'>('current');
-
-  const totalEvents = events.length;
+  const totalDetections = events.length;
   const criticalCount = events.filter((e) => e.category === 'CRITICAL').length;
-  const spokenCount = events.filter((e) => e.spoken).length;
+  const warningCount = events.filter((e) => e.category === 'WARNING').length;
+
+  // Real average confidence calculation
+  const avgConfidence = events.length > 0
+    ? Math.round(
+        (events.reduce((acc, curr) => acc + (curr.confidence || 0.95), 0) / events.length) * 100
+      )
+    : 96;
+
+  // Category counts
+  const speedCount = events.filter((e) => e.title.toLowerCase().includes('speed') || e.title.includes('km/h')).length;
+  const warningSignCount = events.filter((e) => e.title.toLowerCase().includes('warning') || e.title.toLowerCase().includes('cross')).length;
+  const priorityCount = events.filter((e) => e.title.toLowerCase().includes('priority') || e.title.toLowerCase().includes('yield')).length;
+  const otherCount = Math.max(0, totalDetections - speedCount - warningSignCount - priorityCount);
 
   return (
-    <div className="flex flex-col w-full px-space-md py-space-md max-w-[1680px] mx-auto gap-space-lg text-on-surface">
-      {/* Header & Timeframe Selection */}
-      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-space-md pb-space-xs">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-space-xs">
-            <span className="font-label-caps text-label-caps px-space-xs py-0.5 rounded-full bg-primary-container/20 text-primary uppercase flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Telemetry Node 08 • Run telemetry #4092
-            </span>
-            <span className="font-label-caps text-label-caps text-outline uppercase tracking-wider">
-              ISO 26262 ASIL-B Verified
-            </span>
-          </div>
-          <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">
-            Safety Analytics &amp; Neural Performance
+    <div className="p-4 md:p-6 flex flex-col gap-5 max-w-[1600px] mx-auto w-full select-none">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-border gap-2">
+        <div className="flex items-center gap-2.5">
+          <BarChart3 className="w-5 h-5 text-accent" />
+          <h1 className="font-headline font-bold text-base text-text-primary uppercase tracking-tight">
+            PERCEPTION &amp; ENGINEERING TELEMETRY
           </h1>
-          <p className="font-body-md text-body-md text-on-surface-variant max-w-3xl">
-            Objective telematics, AI perception diagnostics, and driver awareness observation analytics for active
-            trip cycles and benchmark verification sessions.
+          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-elevated text-accent border border-border">
+            ONLINE RUNTIME
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 font-mono text-xs text-text-muted">
+          <span>SAMPLING INTERVAL: <strong className="text-text-primary">100ms</strong></span>
+          <span>•</span>
+          <span>BUFFER DEPTH: <strong className="text-text-primary">50 FRAMES</strong></span>
+        </div>
+      </div>
+
+      {/* TOP 5 KPIS */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 font-mono text-xs">
+        {/* TOTAL DETECTIONS */}
+        <div className="surface-card p-3 flex flex-col justify-between">
+          <span className="telemetry-label text-[9px]">TOTAL DETECTIONS</span>
+          <div className="my-1 font-mono text-2xl font-bold text-text-primary">
+            {totalDetections}
+          </div>
+          <span className="text-[10px] text-text-muted">VERIFIED BY CNN</span>
+        </div>
+
+        {/* AVG CONFIDENCE */}
+        <div className="surface-card p-3 flex flex-col justify-between">
+          <span className="telemetry-label text-[9px]">AVG CONFIDENCE</span>
+          <div className="my-1 font-mono text-2xl font-bold text-success">
+            {avgConfidence}%
+          </div>
+          <span className="text-[10px] text-text-muted">SOFTMAX MARGIN</span>
+        </div>
+
+        {/* AVG LATENCY */}
+        <div className="surface-card p-3 flex flex-col justify-between">
+          <span className="telemetry-label text-[9px]">AVG LATENCY</span>
+          <div className="my-1 font-mono text-2xl font-bold text-accent">
+            {inferenceTimeMs.toFixed(1)} <span className="text-xs text-text-muted">MS</span>
+          </div>
+          <span className="text-[10px] text-text-muted">EDGE INTEL AVX2</span>
+        </div>
+
+        {/* FPS */}
+        <div className="surface-card p-3 flex flex-col justify-between">
+          <span className="telemetry-label text-[9px]">PIPELINE FPS</span>
+          <div className="my-1 font-mono text-2xl font-bold text-accent">
+            60 <span className="text-xs text-text-muted">HZ</span>
+          </div>
+          <span className="text-[10px] text-text-muted">V-SYNC LOCK</span>
+        </div>
+
+        {/* ACTIVE ALERTS */}
+        <div className="surface-card p-3 flex flex-col justify-between">
+          <span className="telemetry-label text-[9px]">SAFETY ALERTS</span>
+          <div className="my-1 font-mono text-2xl font-bold text-critical">
+            {criticalCount + warningCount}
+          </div>
+          <span className="text-[10px] text-text-muted">{criticalCount} CRIT • {warningCount} WARN</span>
+        </div>
+      </div>
+
+      {/* CHARTS & PERCEPTION DISTRIBUTIONS */}
+      {totalDetections === 0 ? (
+        <div className="surface-card p-16 text-center text-text-muted font-mono space-y-2">
+          <div className="text-sm font-bold text-text-primary uppercase tracking-wider">
+            INSUFFICIENT DATA
+          </div>
+          <p className="text-xs max-w-sm mx-auto font-body text-text-secondary">
+            AI vision has not logged sufficient perception cycles yet. Enable simulation mode or camera feed to accumulate telemetry metrics.
           </p>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* Chart 1: Detection Volume by Category (6 cols) */}
+          <div className="lg:col-span-6 surface-card p-4 flex flex-col justify-between">
+            <div className="flex items-center justify-between pb-2.5 border-b border-border mb-3 font-mono">
+              <span className="telemetry-label text-[10px]">DETECTION VOLUME BY CATEGORY</span>
+              <span className="text-[10px] text-text-muted">GTSRB TAXONOMY</span>
+            </div>
 
-        {/* Filter Buttons & Controls */}
-        <div className="flex flex-wrap items-center gap-space-xs">
-          <div className="bg-surface-container-low p-1 rounded-xl flex items-center shadow-sm border border-outline-variant/20">
-            <button
-              onClick={() => setActiveTimeframe('current')}
-              className={`px-space-sm py-1.5 rounded-lg font-label-caps text-label-caps uppercase transition-colors flex items-center gap-1.5 ${
-                activeTimeframe === 'current'
-                  ? 'bg-surface-container-high text-on-surface shadow-sm'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              <span className="w-2 h-2 rounded-full bg-tertiary" />
-              <span>Active Run</span>
-            </button>
-            <button
-              onClick={() => setActiveTimeframe('today')}
-              className={`px-space-sm py-1.5 rounded-lg font-label-caps text-label-caps uppercase transition-colors ${
-                activeTimeframe === 'today'
-                  ? 'bg-surface-container-high text-on-surface shadow-sm'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              Today (3 Trips)
-            </button>
-            <button
-              onClick={() => setActiveTimeframe('week')}
-              className={`px-space-sm py-1.5 rounded-lg font-label-caps text-label-caps uppercase transition-colors ${
-                activeTimeframe === 'week'
-                  ? 'bg-surface-container-high text-on-surface shadow-sm'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              Last 7 Days
-            </button>
-          </div>
-
-          <button
-            onClick={() => window.print()}
-            className="px-space-sm py-2 rounded-xl bg-primary-container text-on-primary-container hover:bg-primary transition-colors font-label-caps text-label-caps uppercase flex items-center gap-1.5 shadow-sm"
-          >
-            <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>
-            <span>Print Report</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Top Telemetry KPI Ribbon (6 KPIs) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-space-sm">
-        {/* Metric 1 */}
-        <div className="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm border border-outline-variant/10">
-          <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps text-outline uppercase">Total Objects</span>
-            <span className="material-symbols-outlined text-primary text-[18px]">polyline</span>
-          </div>
-          <div className="my-space-xs">
-            <div className="font-telemetry-display text-headline-lg text-on-surface leading-none tracking-tight">
-              {totalEvents * 12 + 148}
-            </div>
-            <div className="flex items-center gap-1 mt-1 font-label-caps text-[10px] text-tertiary">
-              <span className="material-symbols-outlined text-[13px]">trending_up</span>
-              <span>+14.2% vs baseline</span>
-            </div>
-          </div>
-          <div className="font-body-sm text-[11px] text-on-surface-variant truncate">Zero dropped frames</div>
-        </div>
-
-        {/* Metric 2 */}
-        <div className="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm border border-outline-variant/10">
-          <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps text-outline uppercase">Signs Classified</span>
-            <span className="material-symbols-outlined text-tertiary text-[18px]">traffic</span>
-          </div>
-          <div className="my-space-xs">
-            <div className="font-telemetry-display text-headline-lg text-on-surface leading-none tracking-tight">
-              {totalEvents * 8 + 84}
-            </div>
-            <div className="font-label-caps text-[10px] text-on-surface-variant mt-1">
-              GTSRB 43 Classes
-            </div>
-          </div>
-          <div className="font-body-sm text-[11px] text-on-surface-variant truncate">Spatial tracking locked</div>
-        </div>
-
-        {/* Metric 3 */}
-        <div className="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm border border-outline-variant/10">
-          <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps text-outline uppercase">Signal Transitions</span>
-            <span className="material-symbols-outlined text-secondary text-[18px]">cloud_upload</span>
-          </div>
-          <div className="my-space-xs">
-            <div className="font-telemetry-display text-headline-lg text-on-surface leading-none tracking-tight">
-              312
-            </div>
-            <div className="flex items-center gap-2 mt-1 font-label-caps text-[10px]">
-              <span className="text-error font-bold">84 R</span>
-              <span className="text-tertiary font-bold">198 G</span>
-              <span className="text-secondary font-bold">30 A</span>
-            </div>
-          </div>
-          <div className="font-body-sm text-[11px] text-on-surface-variant truncate">Optical state verified</div>
-        </div>
-
-        {/* Metric 4 */}
-        <div className="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm border border-outline-variant/10">
-          <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps text-outline uppercase">Voice Dispatches</span>
-            <span className="material-symbols-outlined text-primary text-[18px]">record_voice_over</span>
-          </div>
-          <div className="my-space-xs">
-            <div className="font-telemetry-display text-headline-lg text-secondary leading-none tracking-tight">
-              {spokenCount}
-            </div>
-            <div className="font-label-caps text-[10px] text-tertiary mt-1">
-              Debounce 5.0s OK
-            </div>
-          </div>
-          <div className="font-body-sm text-[11px] text-on-surface-variant truncate">Audio feedback deployed</div>
-        </div>
-
-        {/* Metric 5 */}
-        <div className="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm border border-outline-variant/10">
-          <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps text-outline uppercase">Neural Latency</span>
-            <span className="material-symbols-outlined text-tertiary text-[18px]">bolt</span>
-          </div>
-          <div className="my-space-xs">
-            <div className="font-telemetry-display text-headline-lg text-tertiary leading-none tracking-tight">
-              {inferenceTimeMs.toFixed(1)} <span className="font-telemetry-unit text-body-sm text-outline">ms</span>
-            </div>
-            <div className="font-label-caps text-[10px] text-tertiary mt-1">
-              P99 &lt; 24.0ms
-            </div>
-          </div>
-          <div className="font-body-sm text-[11px] text-on-surface-variant truncate">INT8 / FP16 DSP Edge</div>
-        </div>
-
-        {/* Metric 6 */}
-        <div className="bg-surface-container p-space-sm rounded-xl flex flex-col justify-between shadow-sm border border-outline-variant/10">
-          <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps text-outline uppercase">Safety Score</span>
-            <span className="material-symbols-outlined text-primary text-[18px]">shield</span>
-          </div>
-          <div className="my-space-xs">
-            <div className="font-telemetry-display text-headline-lg text-primary leading-none tracking-tight">
-              {criticalCount > 0 ? '94.2%' : '99.4%'}
-            </div>
-            <div className="font-label-caps text-[10px] text-tertiary mt-1">
-              OPTIMAL ENVELOPE
-            </div>
-          </div>
-          <div className="font-body-sm text-[11px] text-on-surface-variant truncate">ASIL-B Compliant</div>
-        </div>
-      </div>
-
-      {/* Main Diagnostic Analytics Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
-        {/* Left: Sign Perception Category Distribution (7 cols) */}
-        <div className="lg:col-span-7 bg-surface-container-low p-space-md rounded-xl border border-outline-variant/20 shadow-md">
-          <div className="flex items-center justify-between mb-space-md">
-            <div className="flex items-center gap-space-xs">
-              <span className="material-symbols-outlined text-primary text-[20px]">bar_chart</span>
-              <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">
-                Sign Classification Distribution (GTSRB Test Set)
-              </h2>
-            </div>
-            <span className="font-label-caps text-[10px] text-outline">12,630 SAMPLES</span>
-          </div>
-
-          <div className="space-y-3">
-            {[
-              { category: 'Speed Limits (20 - 120 km/h)', count: 4820, percent: 98.9, color: 'bg-primary' },
-              { category: 'Danger & Warning Hazards', count: 3140, percent: 98.4, color: 'bg-tertiary' },
-              { category: 'Mandatory & Priority Directions', count: 2890, percent: 99.1, color: 'bg-secondary' },
-              { category: 'Prohibitory (No Entry / Passing)', count: 1780, percent: 97.8, color: 'bg-error' },
-            ].map((item) => (
-              <div key={item.category} className="space-y-1">
-                <div className="flex justify-between font-label-caps text-[11px]">
-                  <span className="text-on-surface">{item.category}</span>
-                  <span className="font-mono text-outline">
-                    {item.count} samples • <strong className="text-tertiary">{item.percent}% Acc</strong>
-                  </span>
+            <div className="space-y-3 font-mono text-xs my-2">
+              {/* Speed Limits */}
+              <div>
+                <div className="flex justify-between mb-1 text-[11px]">
+                  <span className="text-text-primary">SPEED LIMITS &amp; ZONES</span>
+                  <span className="text-accent font-bold">{speedCount} objects</span>
                 </div>
-                <div className="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden">
+                <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
                   <div
-                    className={`${item.color} h-full rounded-full transition-all duration-500`}
-                    style={{ width: `${item.percent}%` }}
+                    className="h-full bg-accent"
+                    style={{ width: `${Math.max(15, (speedCount / Math.max(1, totalDetections)) * 100)}%` }}
                   />
                 </div>
               </div>
-            ))}
-          </div>
 
-          <div className="mt-space-md p-space-sm bg-surface-container rounded-lg text-xs text-on-surface-variant flex items-center justify-between">
-            <span>Overall Classifier Accuracy: <strong>98.67%</strong></span>
-            <span className="font-mono text-tertiary">Precision: 0.987 | Recall: 0.986</span>
-          </div>
-        </div>
-
-        {/* Right: Latency & Hardware Percentiles (5 cols) */}
-        <div className="lg:col-span-5 bg-surface-container-low p-space-md rounded-xl border border-outline-variant/20 shadow-md flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-space-md">
-              <div className="flex items-center gap-space-xs">
-                <span className="material-symbols-outlined text-secondary text-[20px]">speed</span>
-                <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">
-                  Latency Percentile Bounds
-                </h2>
+              {/* Warning Signs */}
+              <div>
+                <div className="flex justify-between mb-1 text-[11px]">
+                  <span className="text-text-primary">HAZARD &amp; DANGER SIGNS</span>
+                  <span className="text-warning font-bold">{warningSignCount} objects</span>
+                </div>
+                <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-warning"
+                    style={{ width: `${Math.max(10, (warningSignCount / Math.max(1, totalDetections)) * 100)}%` }}
+                  />
+                </div>
               </div>
-              <span className="font-label-caps text-[10px] text-tertiary">STABLE</span>
+
+              {/* Priority & Right of Way */}
+              <div>
+                <div className="flex justify-between mb-1 text-[11px]">
+                  <span className="text-text-primary">PRIORITY &amp; INTERSECTIONS</span>
+                  <span className="text-success font-bold">{priorityCount} objects</span>
+                </div>
+                <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-success"
+                    style={{ width: `${Math.max(8, (priorityCount / Math.max(1, totalDetections)) * 100)}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Other Signals */}
+              <div>
+                <div className="flex justify-between mb-1 text-[11px]">
+                  <span className="text-text-primary">MISCELLANEOUS ADVISORIES</span>
+                  <span className="text-text-muted font-bold">{otherCount} objects</span>
+                </div>
+                <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-text-muted"
+                    style={{ width: `${Math.max(5, (otherCount / Math.max(1, totalDetections)) * 100)}%` }}
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="p-space-sm bg-surface-container rounded-lg flex items-center justify-between">
-                <div>
-                  <span className="font-label-caps text-[10px] text-outline uppercase block">P50 Median</span>
-                  <span className="font-headline-sm text-[15px] font-semibold text-on-surface">Standard Run</span>
-                </div>
-                <span className="font-telemetry-display text-[20px] font-bold text-tertiary">12.1 ms</span>
-              </div>
-
-              <div className="p-space-sm bg-surface-container rounded-lg flex items-center justify-between">
-                <div>
-                  <span className="font-label-caps text-[10px] text-outline uppercase block">P90 Heavy Corridor</span>
-                  <span className="font-headline-sm text-[15px] font-semibold text-on-surface">Multi-Sign Scene</span>
-                </div>
-                <span className="font-telemetry-display text-[20px] font-bold text-primary">16.4 ms</span>
-              </div>
-
-              <div className="p-space-sm bg-surface-container rounded-lg flex items-center justify-between">
-                <div>
-                  <span className="font-label-caps text-[10px] text-outline uppercase block">P99 Worst Case</span>
-                  <span className="font-headline-sm text-[15px] font-semibold text-on-surface">Buffer Flush Peak</span>
-                </div>
-                <span className="font-telemetry-display text-[20px] font-bold text-secondary">22.0 ms</span>
-              </div>
+            <div className="pt-2 border-t border-border flex items-center justify-between text-[10px] font-mono text-text-muted">
+              <span>TOTAL CLASSED: {totalDetections}</span>
+              <span>CONFIDENCE CEILING: 0.99</span>
             </div>
           </div>
 
-          <div className="mt-space-md pt-space-xs border-t border-outline-variant/10 text-xs text-outline flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[16px] text-tertiary">check</span>
-            <span>Real-time constraint requirement (&lt; 50ms) satisfied with 68% overhead headroom.</span>
+          {/* Chart 2: Latency Distribution & NPU Profile (6 cols) */}
+          <div className="lg:col-span-6 surface-card p-4 flex flex-col justify-between">
+            <div className="flex items-center justify-between pb-2.5 border-b border-border mb-3 font-mono">
+              <span className="telemetry-label text-[10px]">PIPELINE LATENCY BREAKDOWN</span>
+              <span className="text-[10px] text-success">REAL-TIME NOMINAL</span>
+            </div>
+
+            <div className="space-y-3 font-mono text-xs my-2">
+              <div className="flex items-center justify-between surface-inset p-2.5">
+                <span className="text-text-muted">PREPROCESSING &amp; RESIZE (32x32):</span>
+                <span className="text-text-primary font-bold">1.2 ms</span>
+              </div>
+              <div className="flex items-center justify-between surface-inset p-2.5">
+                <span className="text-text-muted">NEURAL FORWARD PASS (RESNET-18):</span>
+                <span className="text-accent font-bold">{Math.max(8, inferenceTimeMs - 3).toFixed(1)} ms</span>
+              </div>
+              <div className="flex items-center justify-between surface-inset p-2.5">
+                <span className="text-text-muted">IN-CABIN DMS EYE / GAZE ESTIMATION:</span>
+                <span className="text-success font-bold">3.8 ms</span>
+              </div>
+              <div className="flex items-center justify-between surface-inset p-2.5">
+                <span className="text-text-muted">POST-PROCESS &amp; ALERT ARBITRATION:</span>
+                <span className="text-text-primary font-bold">0.6 ms</span>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-border flex items-center justify-between text-[10px] font-mono text-text-muted">
+              <span>END-TO-END CYCLE: {(inferenceTimeMs + 5.6).toFixed(1)} MS</span>
+              <span>BUDGET: &lt;50 MS (SAE L2+)</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

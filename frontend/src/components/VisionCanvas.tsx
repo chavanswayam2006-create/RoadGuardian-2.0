@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Camera, Crosshair, Cpu, Radio } from 'lucide-react';
+import { VideoOff } from 'lucide-react';
 import type { Detection } from '../types';
 
 interface VisionCanvasProps {
@@ -8,6 +8,7 @@ interface VisionCanvasProps {
   inferenceTimeMs: number;
   onFrameCaptured?: (base64Image: string) => void;
   speedLimitKmh: number;
+  fps?: number;
 }
 
 export const VisionCanvas: React.FC<VisionCanvasProps> = ({
@@ -16,24 +17,24 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
   inferenceTimeMs,
   onFrameCaptured,
   speedLimitKmh,
+  fps = 60,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const animFrameIdRef = useRef<number | null>(null);
   const [webcamError, setWebcamError] = useState<string | null>(null);
 
-  // Simulated road state
+  // Road animation state
   const roadOffsetRef = useRef<number>(0);
-  const signAnimRef = useRef<{ x: number; y: number; scale: number; signType: string }[]>([
-    { x: 500, y: 180, scale: 0.2, signType: 'speed_50' },
+  const signAnimRef = useRef<{ x: number; y: number; scale: number; speed: number }[]>([
+    { x: 440, y: 140, scale: 0.25, speed: 1.2 },
   ]);
 
-  // Setup webcam stream when in webcam mode
+  // Webcam setup
   useEffect(() => {
     let stream: MediaStream | null = null;
     if (mode === 'webcam') {
       navigator.mediaDevices
-        ?.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 } } })
+        ?.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 380 } } })
         .then((s) => {
           stream = s;
           if (videoRef.current) {
@@ -43,8 +44,8 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
           setWebcamError(null);
         })
         .catch((err) => {
-          console.warn('Webcam access error:', err);
-          setWebcamError('Camera unavailable. Showing tactical simulation.');
+          console.warn('Webcam stream unavailable:', err);
+          setWebcamError('Camera sensor unavailable. Rendering synthetic simulation.');
         });
     }
 
@@ -55,11 +56,10 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
     };
   }, [mode]);
 
-  // Periodic frame grabber to send base64 to /detect
+  // Periodic frame grabber to feed backend /detect API
   useEffect(() => {
     const interval = setInterval(() => {
       if (!onFrameCaptured) return;
-
       const canvas = canvasRef.current;
       if (!canvas) return;
 
@@ -73,7 +73,6 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
           onFrameCaptured(tempCanvas.toDataURL('image/jpeg', 0.7));
         }
       } else {
-        // Grab current frame from simulated roadway canvas
         try {
           const smallCanvas = document.createElement('canvas');
           smallCanvas.width = 320;
@@ -84,15 +83,15 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
             onFrameCaptured(smallCanvas.toDataURL('image/jpeg', 0.7));
           }
         } catch {
-          // ignore canvas capture errors
+          // ignore frame capture exception
         }
       }
-    }, 800); // 800ms cadence for continuous detection
+    }, 850);
 
     return () => clearInterval(interval);
   }, [mode, onFrameCaptured]);
 
-  // Road Simulation Renderer
+  // Road Simulation Loop
   const renderSimulatedRoad = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -101,326 +100,273 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
 
     const w = canvas.width;
     const h = canvas.height;
+    const horizon = h * 0.44;
 
-    // Horizon line
-    const horizon = h * 0.45;
-
-    // 1. Sky & Ground
+    // Sky gradient (Deep dark automotive navy)
     const skyGrad = ctx.createLinearGradient(0, 0, 0, horizon);
-    skyGrad.addColorStop(0, '#060B14');
-    skyGrad.addColorStop(1, '#0C172E');
+    skyGrad.addColorStop(0, '#030810');
+    skyGrad.addColorStop(1, '#071524');
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, w, horizon);
 
+    // Ground & Asphalt gradient
     const groundGrad = ctx.createLinearGradient(0, horizon, 0, h);
-    groundGrad.addColorStop(0, '#0a0f1d');
-    groundGrad.addColorStop(1, '#05070d');
+    groundGrad.addColorStop(0, '#060E18');
+    groundGrad.addColorStop(1, '#02050A');
     ctx.fillStyle = groundGrad;
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // 2. Stars & Cyber grid horizon
-    ctx.strokeStyle = 'rgba(6, 182, 212, 0.15)';
+    // Horizon subtle line
+    ctx.strokeStyle = 'rgba(141, 184, 255, 0.15)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, horizon);
     ctx.lineTo(w, horizon);
     ctx.stroke();
 
-    // 3. Perspective Road Trajectory
-    const roadTopWidth = 60;
-    const roadBottomWidth = w * 0.85;
-    const cx = w / 2;
+    // Road perspective polygon
+    const vpX = w * 0.5;
+    const roadTopWidth = 24;
+    const roadBottomWidth = w * 0.78;
 
-    ctx.fillStyle = '#111827';
+    ctx.fillStyle = '#091522';
     ctx.beginPath();
-    ctx.moveTo(cx - roadTopWidth / 2, horizon);
-    ctx.lineTo(cx + roadTopWidth / 2, horizon);
-    ctx.lineTo(cx + roadBottomWidth / 2, h);
-    ctx.lineTo(cx - roadBottomWidth / 2, h);
+    ctx.moveTo(vpX - roadTopWidth / 2, horizon);
+    ctx.lineTo(vpX + roadTopWidth / 2, horizon);
+    ctx.lineTo(vpX + roadBottomWidth / 2, h);
+    ctx.lineTo(vpX - roadBottomWidth / 2, h);
     ctx.closePath();
     ctx.fill();
 
-    // Road shoulders (cyan neon guides)
-    ctx.strokeStyle = 'rgba(6, 182, 212, 0.4)';
-    ctx.lineWidth = 3;
+    // Road edge lines
+    ctx.strokeStyle = 'rgba(141, 184, 255, 0.35)';
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(cx - roadTopWidth / 2, horizon);
-    ctx.lineTo(cx - roadBottomWidth / 2, h);
-    ctx.moveTo(cx + roadTopWidth / 2, horizon);
-    ctx.lineTo(cx + roadBottomWidth / 2, h);
+    ctx.moveTo(vpX - roadTopWidth / 2, horizon);
+    ctx.lineTo(vpX - roadBottomWidth / 2, h);
+    ctx.moveTo(vpX + roadTopWidth / 2, horizon);
+    ctx.lineTo(vpX + roadBottomWidth / 2, h);
     ctx.stroke();
 
-    // Moving lane dividers
-    roadOffsetRef.current = (roadOffsetRef.current + 4) % 40;
-    ctx.strokeStyle = '#F8FAFC';
-    ctx.lineWidth = 4;
-    ctx.setLineDash([20, 25]);
-    ctx.lineDashOffset = -roadOffsetRef.current;
-    ctx.beginPath();
-    ctx.moveTo(cx, horizon);
-    ctx.lineTo(cx, h);
-    ctx.stroke();
-    ctx.setLineDash([]); // reset
+    // Dashed center lane markings
+    roadOffsetRef.current = (roadOffsetRef.current + 3) % 40;
+    const numDashes = 7;
+    for (let i = 0; i < numDashes; i++) {
+      const progress = ((i * 40 + roadOffsetRef.current) % 240) / 240;
+      const y1 = horizon + progress * (h - horizon);
+      const dashH = Math.max(4, progress * 24);
+      const dashW = Math.max(1.5, progress * 4);
 
-    // 4. Draw Roadside Sign Object with scale & motion
-    signAnimRef.current.forEach((sign) => {
-      sign.scale += 0.006;
-      sign.y += 2.2;
-      sign.x += 1.8; // moves outward to the right side of the road
+      ctx.fillStyle = 'rgba(230, 240, 250, 0.65)';
+      ctx.fillRect(vpX - dashW / 2, y1, dashW, dashH);
+    }
 
-      if (sign.y > h + 50 || sign.x > w + 50) {
-        sign.x = cx + roadTopWidth * 0.8;
+    // Roadside Speed Limit Sign Graphic
+    const sign = signAnimRef.current[0];
+    if (sign) {
+      sign.scale += 0.003 * sign.speed;
+      sign.x += 0.45 * sign.speed;
+      sign.y += 0.22 * sign.speed;
+
+      if (sign.scale > 0.85 || sign.x > w - 40) {
+        sign.scale = 0.22;
+        sign.x = 420;
         sign.y = horizon + 10;
-        sign.scale = 0.2;
       }
 
       ctx.save();
       ctx.translate(sign.x, sign.y);
       ctx.scale(sign.scale, sign.scale);
 
-      // Sign pole
-      ctx.fillStyle = '#64748B';
-      ctx.fillRect(-3, 0, 6, 70);
+      // Post
+      ctx.fillStyle = '#424E5C';
+      ctx.fillRect(-2, 0, 4, 80);
 
-      // Speed limit sign
-      ctx.beginPath();
-      ctx.arc(0, 0, 30, 0, Math.PI * 2);
+      // Circular European Speed Sign (White disc, red ring, black text)
       ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(0, -22, 22, 0, Math.PI * 2);
       ctx.fill();
+
+      ctx.strokeStyle = '#D92D20';
       ctx.lineWidth = 6;
-      ctx.strokeStyle = '#DC2626'; // Red ring
       ctx.stroke();
 
-      ctx.fillStyle = '#0F172A';
-      ctx.font = 'bold 24px monospace';
+      ctx.fillStyle = '#101828';
+      ctx.font = 'bold 20px "Space Grotesk", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(`${speedLimitKmh}`, 0, 2);
+      ctx.fillText(speedLimitKmh.toString(), 0, -22);
 
       ctx.restore();
-    });
-
-    // 5. Draw Traffic Light on left shoulder
-    const tlX = cx - 180;
-    const tlY = horizon + 30;
-    ctx.fillStyle = '#1E293B';
-    ctx.fillRect(tlX - 12, tlY - 30, 24, 60);
-    ctx.strokeStyle = '#334155';
-    ctx.strokeRect(tlX - 12, tlY - 30, 24, 60);
-
-    // Active light (Green or Red)
-    const isRed = detections.some((d) => d.is_red_light);
-    ctx.beginPath();
-    ctx.arc(tlX, tlY - 18, 7, 0, Math.PI * 2);
-    ctx.fillStyle = isRed ? '#EF4444' : '#334155';
-    ctx.fill();
-    if (isRed) {
-      ctx.shadowColor = '#EF4444';
-      ctx.shadowBlur = 10;
     }
+  }, [speedLimitKmh]);
 
-    ctx.beginPath();
-    ctx.arc(tlX, tlY, 7, 0, Math.PI * 2);
-    ctx.fillStyle = '#334155';
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(tlX, tlY + 18, 7, 0, Math.PI * 2);
-    ctx.fillStyle = !isRed ? '#10B981' : '#334155';
-    ctx.fill();
-    ctx.shadowBlur = 0; // reset
-  }, [detections, speedLimitKmh]);
-
-  // Main animation loop
+  // Continuous animation frame loop
   useEffect(() => {
-    const renderLoop = () => {
-      if (mode === 'simulated' || webcamError) {
+    let animId: number;
+    const loop = () => {
+      if (mode !== 'webcam' || webcamError) {
         renderSimulatedRoad();
-      } else if (mode === 'webcam' && videoRef.current && videoRef.current.readyState >= 2) {
-        const canvas = canvasRef.current;
-        if (canvas) {
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-          }
-        }
       }
-
-      animFrameIdRef.current = requestAnimationFrame(renderLoop);
+      animId = requestAnimationFrame(loop);
     };
-
-    animFrameIdRef.current = requestAnimationFrame(renderLoop);
-    return () => {
-      if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
-    };
-  }, [mode, renderSimulatedRoad, webcamError]);
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+  }, [mode, webcamError, renderSimulatedRoad]);
 
   return (
-    <div className="hud-card hud-brackets relative flex flex-col h-full overflow-hidden bg-slate-950">
-      {/* HUD Header Bar */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800 bg-slate-900/80 text-xs font-mono">
-        <div className="flex items-center gap-2 text-cyan-400">
-          <Camera className="w-4 h-4" />
-          <span className="font-bold tracking-wider uppercase">FORWARD OPTICAL HUD</span>
-          <span className="px-1.5 py-0.5 rounded text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800">
-            {mode === 'webcam' && !webcamError ? 'LIVE SENSOR' : 'SYNTHETIC TWIN'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3 text-slate-400">
-          <span className="flex items-center gap-1">
-            <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-            <span className="text-emerald-400 font-mono">60 FPS TARGET</span>
-          </span>
-          <span>•</span>
-          <span className="flex items-center gap-1">
-            <Cpu className="w-3 h-3 text-cyan-400" />
-            <span className="text-slate-300">{inferenceTimeMs.toFixed(1)} ms</span>
-          </span>
-        </div>
-      </div>
-
-      {/* Main Video / Canvas Viewport */}
-      <div className="relative flex-1 min-h-[360px] bg-black flex items-center justify-center overflow-hidden">
-        {/* Hidden video element for webcam streaming */}
+    <div className="relative w-full aspect-[16/10] bg-surface-secondary rounded-lg overflow-hidden border border-border select-none">
+      {/* Video element for real webcam feed */}
+      {mode === 'webcam' && !webcamError && (
         <video
           ref={videoRef}
-          className="hidden"
+          className="absolute inset-0 w-full h-full object-cover"
           playsInline
           muted
         />
+      )}
 
-        {/* Primary Optical Canvas */}
-        <canvas
-          ref={canvasRef}
-          width={640}
-          height={380}
-          className="w-full h-full object-cover scanline-effect"
-        />
+      {/* Canvas for simulated optical drive or fallback */}
+      <canvas
+        ref={canvasRef}
+        width={640}
+        height={380}
+        className="w-full h-full object-cover block"
+      />
 
-        {/* Optical Tactical Reticle Center Crosshair */}
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div className="relative w-28 h-28 border border-cyan-500/20 rounded-full flex items-center justify-center">
-            <Crosshair className="w-6 h-6 text-cyan-400/40" />
-            <div className="absolute -top-3 text-[10px] font-mono text-cyan-500/50">AZIMUTH 000°</div>
-          </div>
+      {/* Top Floating Engineering Telemetry Strip */}
+      <div className="absolute top-2.5 left-3 right-3 flex items-center justify-between pointer-events-none z-10 font-mono text-[11px]">
+        {/* Left: LIVE & Engine Indicator */}
+        <div className="flex items-center gap-2 bg-surface/90 px-2 py-1 rounded border border-border-subtle backdrop-blur-sm">
+          <span className="flex items-center gap-1.5 text-critical font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-critical status-pulse" />
+            LIVE
+          </span>
+          <span className="text-text-muted">/</span>
+          <span className="text-text-primary font-semibold">AI VISION</span>
         </div>
 
-        {/* SVG Bounding Boxes Overlay for Detections */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 640 380">
-          {detections.map((det, idx) => {
-            const rawBbox = (det as any).bbox || (det as any).bounding_box;
-            let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-            if (Array.isArray(rawBbox) && rawBbox.length === 4) {
-              [x1, y1, x2, y2] = rawBbox;
-            } else if (rawBbox && typeof rawBbox === 'object') {
-              x1 = Math.round((rawBbox.x_min ?? 0) * 640);
-              y1 = Math.round((rawBbox.y_min ?? 0) * 380);
-              x2 = Math.round((rawBbox.x_max ?? 1) * 640);
-              y2 = Math.round((rawBbox.y_max ?? 1) * 380);
-            }
-            const width = Math.max(20, x2 - x1);
-            const height = Math.max(20, y2 - y1);
-            const isCritical = det.is_red_light;
-            const strokeColor = isCritical ? '#EF4444' : '#06B6D4';
-
-            return (
-              <g key={`det-${idx}`}>
-                {/* Bounding Box Rect */}
-                <rect
-                  x={x1}
-                  y={y1}
-                  width={width}
-                  height={height}
-                  fill="rgba(6, 182, 212, 0.08)"
-                  stroke={strokeColor}
-                  strokeWidth="2"
-                  strokeDasharray="4 2"
-                />
-
-                {/* Reticle Corner Marks */}
-                <path
-                  d={`M ${x1} ${y1 + 8} L ${x1} ${y1} L ${x1 + 8} ${y1}`}
-                  stroke={strokeColor}
-                  strokeWidth="3"
-                  fill="none"
-                />
-                <path
-                  d={`M ${x2 - 8} ${y1} L ${x2} ${y1} L ${x2} ${y1 + 8}`}
-                  stroke={strokeColor}
-                  strokeWidth="3"
-                  fill="none"
-                />
-                <path
-                  d={`M ${x1} ${y2 - 8} L ${x1} ${y2} L ${x1 + 8} ${y2}`}
-                  stroke={strokeColor}
-                  strokeWidth="3"
-                  fill="none"
-                />
-                <path
-                  d={`M ${x2 - 8} ${y2} L ${x2} ${y2} L ${x2} ${y2 - 8}`}
-                  stroke={strokeColor}
-                  strokeWidth="3"
-                  fill="none"
-                />
-
-                {/* Label Tag Pill */}
-                {(() => {
-                  const labelStr = (det.class_name || (det as any).display_name || (det as any).label || 'Traffic Sign').toString();
-                  const confPct = typeof det.confidence === 'number' ? Math.round(det.confidence * 100) : 50;
-                  return (
-                    <>
-                      <rect
-                        x={x1}
-                        y={Math.max(0, y1 - 20)}
-                        width={Math.max(120, labelStr.length * 8 + 35)}
-                        height="18"
-                        fill={isCritical ? 'rgba(239, 68, 68, 0.9)' : 'rgba(15, 23, 42, 0.85)'}
-                        rx="3"
-                        stroke={strokeColor}
-                        strokeWidth="1"
-                      />
-                      <text
-                        x={x1 + 5}
-                        y={Math.max(14, y1 - 6)}
-                        fill="#F8FAFC"
-                        fontSize="10"
-                        fontFamily="monospace"
-                        fontWeight="bold"
-                      >
-                        {labelStr.toUpperCase()} ({confPct}%)
-                      </text>
-                    </>
-                  );
-                })()}
-              </g>
-            );
-          })}
-        </svg>
-
-        {/* In-Canvas Active HUD Warning Chip */}
-        {detections.length > 0 && (
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5 pointer-events-none">
-            {detections.slice(0, 3).map((d, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2 px-2.5 py-1 rounded bg-slate-900/90 border border-cyan-500/50 backdrop-blur-sm text-xs shadow-lg"
-              >
-                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                <span className="font-mono font-bold text-white uppercase">{d.class_name}</span>
-                <span className="font-mono text-cyan-300">{(d.confidence * 100).toFixed(0)}%</span>
-              </div>
-            ))}
+        {/* Right: Technical FPS & Latency */}
+        <div className="flex items-center gap-3 bg-surface/90 px-2.5 py-1 rounded border border-border-subtle backdrop-blur-sm text-text-muted">
+          <div className="flex items-center gap-1">
+            <span>FPS</span>
+            <span className="text-accent font-bold">{fps}</span>
           </div>
-        )}
-
-        {/* Bottom Optical Stats HUD */}
-        <div className="absolute bottom-2 inset-x-3 flex items-center justify-between text-[11px] font-mono text-slate-400 bg-slate-950/70 backdrop-blur-sm px-3 py-1 rounded border border-slate-800">
-          <div>PIPELINE: YOLOv8 LOCATOR + RESNET-18 GTSRB</div>
-          <div className="text-cyan-400">{detections.length} OBJECTS TRACKED</div>
-          <div>RES: 640x380 RAW</div>
+          <span className="text-border">|</span>
+          <div className="flex items-center gap-1">
+            <span>LATENCY</span>
+            <span className="text-success font-bold">{inferenceTimeMs.toFixed(1)} ms</span>
+          </div>
         </div>
       </div>
+
+      {/* SVG Precision Bounding Box & Floating Reticle Overlay */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-10"
+        viewBox="0 0 640 380"
+        preserveAspectRatio="none"
+      >
+        {detections.map((det, idx) => {
+          const rawBbox = (det as any).bbox || (det as any).bounding_box;
+          let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+
+          if (Array.isArray(rawBbox) && rawBbox.length === 4) {
+            [x1, y1, x2, y2] = rawBbox;
+          } else if (rawBbox && typeof rawBbox === 'object') {
+            x1 = Math.round((rawBbox.x_min ?? 0) * 640);
+            y1 = Math.round((rawBbox.y_min ?? 0) * 380);
+            x2 = Math.round((rawBbox.x_max ?? 1) * 640);
+            y2 = Math.round((rawBbox.y_max ?? 1) * 380);
+          }
+
+          const width = Math.max(24, x2 - x1);
+          const height = Math.max(24, y2 - y1);
+          const isCritical = det.is_red_light;
+          const strokeColor = isCritical ? '#FF5C67' : '#8DB8FF';
+          const labelStr = (det.class_name || 'Traffic Sign').toString().toUpperCase();
+          const confPct = typeof det.confidence === 'number' ? Math.round(det.confidence * 100) : 95;
+
+          return (
+            <g key={`det-${idx}`}>
+              {/* Thin, precise, semi-transparent bounding box */}
+              <rect
+                x={x1}
+                y={y1}
+                width={width}
+                height={height}
+                fill={isCritical ? 'rgba(255, 92, 103, 0.08)' : 'rgba(141, 184, 255, 0.08)'}
+                stroke={strokeColor}
+                strokeWidth="1.25"
+              />
+
+              {/* Minimal Corner Reticles */}
+              <path
+                d={`M ${x1} ${y1 + 6} L ${x1} ${y1} L ${x1 + 6} ${y1}`}
+                stroke={strokeColor}
+                strokeWidth="1.75"
+                fill="none"
+              />
+              <path
+                d={`M ${x2 - 6} ${y1} L ${x2} ${y1} L ${x2} ${y1 + 6}`}
+                stroke={strokeColor}
+                strokeWidth="1.75"
+                fill="none"
+              />
+              <path
+                d={`M ${x1} ${y2 - 6} L ${x1} ${y2} L ${x1 + 6} ${y2}`}
+                stroke={strokeColor}
+                strokeWidth="1.75"
+                fill="none"
+              />
+              <path
+                d={`M ${x2 - 6} ${y2} L ${x2} ${y2} L ${x2 - 6} ${y2}`}
+                stroke={strokeColor}
+                strokeWidth="1.75"
+                fill="none"
+              />
+
+              {/* Compact Floating Label Tag: SPEED LIMIT 40  96% */}
+              <rect
+                x={x1}
+                y={Math.max(20, y1 - 20)}
+                width={Math.max(110, labelStr.length * 6.5 + 40)}
+                height="17"
+                fill="#071522"
+                stroke={strokeColor}
+                strokeWidth="1"
+                rx="2"
+              />
+              <text
+                x={x1 + 6}
+                y={Math.max(20, y1 - 20) + 12}
+                fill="#E6F0FA"
+                fontSize="10"
+                fontFamily='"JetBrains Mono", monospace'
+                fontWeight="600"
+              >
+                {labelStr} <tspan fill={isCritical ? '#FF5C67' : '#35D69A'}>{confPct}%</tspan>
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Subtle Optical Center Reticle */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
+        <div className="relative w-8 h-8">
+          <span className="absolute top-1/2 left-0 right-0 h-px bg-accent/40" />
+          <span className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/40" />
+        </div>
+      </div>
+
+      {/* Webcam Sensor Error Banner if triggered */}
+      {webcamError && (
+        <div className="absolute bottom-3 left-3 right-3 bg-surface/90 border border-warning/50 text-warning px-3 py-1.5 rounded flex items-center gap-2 text-xs font-mono backdrop-blur-sm z-20">
+          <VideoOff className="w-4 h-4 shrink-0" />
+          <span>{webcamError}</span>
+        </div>
+      )}
     </div>
   );
 };

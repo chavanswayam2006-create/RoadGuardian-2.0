@@ -1,4 +1,5 @@
 import React from 'react';
+import { Eye, AlertTriangle, AlertCircle } from 'lucide-react';
 import type { DriverStatus, DriverState, SafetyEvent } from '../types';
 
 interface DriverMonitoringPageProps {
@@ -10,373 +11,270 @@ interface DriverMonitoringPageProps {
 export const DriverMonitoringPage: React.FC<DriverMonitoringPageProps> = ({
   driverStatus,
   onSimulateState,
-  events,
+  events: _events,
 }) => {
   const isDrowsy = driverStatus.state === 'DROWSINESS_WARNING';
   const isDistracted = driverStatus.state === 'ATTENTION_WARNING';
   const isAttentive = driverStatus.state === 'ATTENTIVE';
 
-  // Calculate gaze vector coordinates
-  const yaw = driverStatus.head_pose.yaw;
-  const pitch = driverStatus.head_pose.pitch;
+  const safeHeadPose = driverStatus.head_pose || { pitch: 0, yaw: 0, roll: 0 };
+  const earPercent = Math.min(100, Math.max(0, (driverStatus.ear_average / 0.40) * 100));
 
-  // Gaze line target in SVG
-  const arrowX = 100 + yaw * 1.5;
-  const arrowY = 35 + pitch * 1.2;
-
-  // Filter DMS specific events
-  const dmsEvents = events.filter((e) => e.source === 'DRIVER_MONITOR');
+  // Gaze target vector in canvas
+  const gazeX = Math.max(-45, Math.min(45, (safeHeadPose.yaw || 0) * 2));
+  const gazeY = Math.max(-45, Math.min(45, (safeHeadPose.pitch || 0) * 2));
 
   return (
-    <div className="flex flex-col w-full p-space-md lg:p-space-lg space-y-space-md text-on-surface max-w-[1720px] mx-auto">
-      {/* Top Header & Status Bar with Simulation Switchers */}
-      <section className="flex flex-col gap-space-sm bg-surface-container-low p-space-md rounded-xl shadow-lg border border-outline-variant/20">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md">
-          <div className="flex items-center gap-space-md">
-            <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary shadow-inner">
-              <span className="material-symbols-outlined text-[28px]">face_6</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-space-xs">
-                <span className="font-label-caps text-label-caps text-tertiary">OPTICAL ADAS CORE // CH-4</span>
-                <span className="text-outline text-[10px]">/</span>
-                <span className="font-label-caps text-label-caps text-on-surface-variant">NEAR-INFRARED DMS</span>
-              </div>
-              <h1 className="font-headline-sm text-headline-sm text-on-surface tracking-tight">
-                Driver Awareness Monitoring System (IR DMS)
-              </h1>
-            </div>
-          </div>
-
-          {/* State Indicator Pill & Switcher */}
-          <div className="flex flex-wrap items-center gap-space-sm bg-surface-container-lowest p-space-xs rounded-xl shadow-inner border border-outline-variant/20">
-            <div
-              className={`flex items-center gap-space-xs px-space-md py-space-xs rounded-lg transition-all duration-300 ${
-                isAttentive
-                  ? 'bg-tertiary/10 text-tertiary'
-                  : isDrowsy
-                  ? 'bg-error-container text-on-error-container animate-pulse'
-                  : 'bg-secondary/20 text-secondary'
-              }`}
-            >
-              <span
-                className={`w-2.5 h-2.5 rounded-full ${
-                  isAttentive ? 'bg-tertiary animate-ping' : isDrowsy ? 'bg-error animate-ping' : 'bg-secondary'
-                }`}
-              />
-              <span className="font-label-caps text-label-caps tracking-widest font-bold">
-                {driverStatus.state}
-              </span>
-            </div>
-
-            <div className="h-6 w-px bg-surface-container-high hidden sm:block" />
-
-            <div className="flex items-center gap-1 text-on-surface-variant">
-              <span className="font-label-caps text-[10px] text-outline uppercase pl-space-xs">Simulate:</span>
-              <button
-                type="button"
-                onClick={() => onSimulateState('ATTENTIVE')}
-                className={`px-2 py-1 rounded font-label-caps text-[10px] transition-colors ${
-                  isAttentive ? 'bg-tertiary text-on-tertiary font-bold' : 'hover:bg-surface-container-high text-tertiary'
-                }`}
-              >
-                Safe
-              </button>
-              <button
-                type="button"
-                onClick={() => onSimulateState('ATTENTION_WARNING')}
-                className={`px-2 py-1 rounded font-label-caps text-[10px] transition-colors ${
-                  isDistracted
-                    ? 'bg-secondary text-on-secondary font-bold'
-                    : 'hover:bg-surface-container-high text-secondary'
-                }`}
-              >
-                Distracted
-              </button>
-              <button
-                type="button"
-                onClick={() => onSimulateState('DROWSINESS_WARNING')}
-                className={`px-2 py-1 rounded font-label-caps text-[10px] transition-colors ${
-                  isDrowsy ? 'bg-error text-on-error font-bold' : 'hover:bg-surface-container-high text-error'
-                }`}
-              >
-                Drowsy
-              </button>
-              <button
-                type="button"
-                onClick={() => onSimulateState('FACE_NOT_DETECTED')}
-                className="px-2 py-1 rounded font-label-caps text-[10px] hover:bg-surface-container-high text-outline transition-colors"
-              >
-                No Face
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mandatory Product Safety Disclaimer Notice */}
-        <div className="flex items-start gap-space-sm bg-surface-container-highest/60 px-space-md py-space-sm rounded-lg text-on-surface-variant border border-outline-variant/10">
-          <span className="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">
-            verified_user
+    <div className="p-4 md:p-6 flex flex-col gap-4 max-w-[1600px] mx-auto w-full select-none">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-border gap-2">
+        <div className="flex items-center gap-2.5">
+          <Eye className="w-5 h-5 text-accent" />
+          <h1 className="font-headline font-bold text-base text-text-primary uppercase tracking-tight">
+            DRIVER AWARENESS MONITORING (IR DMS)
+          </h1>
+          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-elevated text-success border border-border">
+            MONITOR ACTIVE
           </span>
-          <p className="font-body-sm text-[12px] leading-tight">
-            <strong className="font-semibold text-primary">Notice:</strong> RoadGuard AI monitors visible
-            facial, gaze, and posture cues to assist driver awareness. This system does not diagnose medical
-            conditions, cognitive impairments, or neurological fatigue disorders.
-          </p>
         </div>
-      </section>
 
-      {/* Main Split Telemetry Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
-        {/* Left: High-Tech Interior IR Camera Feed (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col gap-space-sm bg-surface-container-lowest p-space-sm rounded-xl shadow-xl border border-outline-variant/20">
-          <div className="relative w-full aspect-[16/10] bg-surface-container-lowest rounded-lg overflow-hidden group">
-            {/* Visual scanlines & cabin ambient background */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-surface-container-lowest/80 to-background/60 pointer-events-none" />
-            <div className="tactical-grid absolute inset-0 opacity-40 pointer-events-none" />
+        {/* State Evaluation Switchers */}
+        <div className="flex items-center gap-1.5 font-mono text-xs">
+          <span className="text-text-muted text-[10px] uppercase">SIMULATE:</span>
+          <button
+            onClick={() => onSimulateState('ATTENTIVE')}
+            className={`px-2 py-0.5 rounded text-[11px] transition-colors ${
+              isAttentive ? 'bg-success text-bg font-bold' : 'surface-elevated text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            SAFE
+          </button>
+          <button
+            onClick={() => onSimulateState('ATTENTION_WARNING')}
+            className={`px-2 py-0.5 rounded text-[11px] transition-colors ${
+              isDistracted ? 'bg-warning text-bg font-bold' : 'surface-elevated text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            DISTRACTED
+          </button>
+          <button
+            onClick={() => onSimulateState('DROWSINESS_WARNING')}
+            className={`px-2 py-0.5 rounded text-[11px] transition-colors ${
+              isDrowsy ? 'bg-critical text-bg font-bold' : 'surface-elevated text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            DROWSY
+          </button>
+        </div>
+      </div>
 
-            {/* Corner brackets */}
-            <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-primary/60" />
-            <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-primary/60" />
-            <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-primary/60" />
-            <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-primary/60" />
-
-            {/* Top Peripheral HUD Sensor Status Flags */}
-            <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-              <div className="flex items-center gap-space-xs bg-surface/80 backdrop-blur-md px-space-sm py-1 rounded">
-                <span className="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping" />
-                <span className="font-label-caps text-[10px] text-on-surface">IR SENSOR: 940nm OPTIMAL</span>
-              </div>
-              <div className="flex items-center gap-space-xs">
-                <span className="font-label-caps text-[10px] bg-surface-container-high/80 backdrop-blur-md text-primary px-space-xs py-1 rounded">
-                  POLARIZER: ON
-                </span>
-                <span className="font-label-caps text-[10px] bg-surface-container-high/80 backdrop-blur-md text-tertiary px-space-xs py-1 rounded">
-                  LENS CLEAR
-                </span>
-                <span className="font-label-caps text-[10px] bg-surface-container-high/80 backdrop-blur-md text-on-surface-variant px-space-xs py-1 rounded">
-                  FRAME: 1080p @ 60FPS
-                </span>
-              </div>
-            </div>
-
-            {/* Facial Landmark Bounding Box Overlay & SVG Vector Graphics */}
-            <div
-              className={`absolute inset-[18%_25%_18%_25%] border rounded-lg flex flex-col justify-between p-2 transition-all duration-300 ${
-                isDrowsy
-                  ? 'border-error bg-error/10 shadow-[0_0_25px_rgba(255,180,171,0.3)]'
-                  : isDistracted
-                  ? 'border-secondary bg-secondary/10 shadow-[0_0_20px_rgba(208,188,255,0.2)]'
-                  : 'border-primary/70 bg-primary/5 shadow-[0_0_15px_rgba(77,142,255,0.15)]'
-              }`}
-            >
-              {/* Bounding Metadata Header */}
-              <div className="flex items-center justify-between -mt-6">
-                <span
-                  className={`font-label-caps text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider font-semibold ${
-                    isDrowsy
-                      ? 'bg-error text-on-error'
-                      : isDistracted
-                      ? 'bg-secondary text-on-secondary'
-                      : 'bg-primary-container text-on-primary-container'
-                  }`}
-                >
-                  FACE_ID: DRIVER_PRIMARY ({(driverStatus.confidence * 100).toFixed(1)}%)
-                </span>
-                <span className="font-label-caps text-[9px] text-primary/80 bg-surface-container-lowest/80 px-1 rounded">
-                  FOV LOCK: 0.14ms
-                </span>
-              </div>
-
-              {/* Landmark Mesh Overlay (SVG) */}
-              <svg className="absolute inset-0 w-full h-full opacity-80" viewBox="0 0 200 200" fill="none">
-                {/* Gaze Vector Arrow */}
-                <line
-                  x1="100"
-                  y1="85"
-                  x2={arrowX}
-                  y2={arrowY}
-                  stroke={isDrowsy ? '#ffb4ab' : isDistracted ? '#d0bcff' : '#4edea3'}
-                  strokeWidth="2.5"
-                  strokeDasharray="3 3"
-                />
-                <circle
-                  cx={arrowX}
-                  cy={arrowY}
-                  r="4"
-                  fill={isDrowsy ? '#ffb4ab' : isDistracted ? '#d0bcff' : '#4edea3'}
-                />
-
-                {/* Left Eye */}
-                <circle
-                  cx="72"
-                  cy="84"
-                  r={driverStatus.eyes_closed ? 1.5 : 4}
-                  stroke={isDrowsy ? '#ffb4ab' : '#4edea3'}
-                  strokeWidth="1.5"
-                  fill={driverStatus.eyes_closed ? '#ffb4ab' : 'none'}
-                />
-                <circle cx="85" cy="76" r="2" fill="#adc6ff" />
-                <circle cx="58" cy="80" r="2" fill="#adc6ff" />
-
-                {/* Right Eye */}
-                <circle
-                  cx="128"
-                  cy="84"
-                  r={driverStatus.eyes_closed ? 1.5 : 4}
-                  stroke={isDrowsy ? '#ffb4ab' : '#4edea3'}
-                  strokeWidth="1.5"
-                  fill={driverStatus.eyes_closed ? '#ffb4ab' : 'none'}
-                />
-                <circle cx="115" cy="76" r="2" fill="#adc6ff" />
-                <circle cx="142" cy="80" r="2" fill="#adc6ff" />
-
-                {/* Nose Bridge */}
-                <polyline
-                  points="100,75 100,105 92,112 108,112"
-                  stroke="#adc6ff"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-
-                {/* Mouth Outline */}
-                <path
-                  d="M80 135 Q100 145 120 135"
-                  stroke={isDrowsy ? '#ffb4ab' : '#adc6ff'}
-                  strokeWidth="1.5"
-                  fill="none"
-                />
-              </svg>
-
-              {/* Bottom tag */}
-              <div className="flex justify-between items-end text-[9px] font-mono text-outline">
-                <span>PITCH: {pitch.toFixed(1)}°</span>
-                <span>YAW: {yaw.toFixed(1)}°</span>
-              </div>
-            </div>
-
-            {/* Bottom HUD info */}
-            <div className="absolute bottom-3 left-4 right-4 flex justify-between font-label-caps text-[10px] text-outline pointer-events-none">
-              <span>IR EMITTER: CONTINUOUS 940NM</span>
-              <span>MEDIAN FILTER: APPLIED</span>
+      {/* Warning/Critical Alert Banner if triggered */}
+      {isDrowsy ? (
+        <div className="p-3 rounded-md bg-critical-subtle border border-critical critical-pulse text-critical flex items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="w-5 h-5 shrink-0" />
+            <div>
+              <span className="font-bold tracking-wider uppercase block">
+                DROWSINESS WARNING: MICRO-SLEEP EVENT
+              </span>
+              <span className="text-[11px] text-text-secondary font-body">
+                Prolonged eyelid closure identified below safety threshold (0.20 EAR).
+              </span>
             </div>
           </div>
+          <span className="text-[10px] px-2 py-0.5 rounded bg-critical text-bg font-bold uppercase shrink-0">
+            AUDITORY ALARM ARMED
+          </span>
         </div>
-
-        {/* Right: Telemetry Metrics Deck (5 cols) */}
-        <div className="lg:col-span-5 flex flex-col gap-space-sm">
-          {/* Eye Aspect Ratio Card */}
-          <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-md">
-            <div className="flex items-center justify-between pb-space-xs">
-              <span className="font-label-caps text-label-caps text-outline uppercase tracking-wider">
-                Eye Aspect Ratio (EAR) Gauge
+      ) : isDistracted ? (
+        <div className="p-3 rounded-md bg-warning-subtle border border-warning text-warning flex items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center gap-2.5">
+            <AlertTriangle className="w-5 h-5 shrink-0" />
+            <div>
+              <span className="font-bold tracking-wider uppercase block">
+                ATTENTION WARNING
               </span>
-              <span
-                className={`font-label-caps text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                  driverStatus.ear_average >= 0.20
-                    ? 'bg-tertiary/20 text-tertiary'
-                    : 'bg-error-container text-on-error-container'
-                }`}
-              >
-                {driverStatus.ear_average >= 0.20 ? 'EYES OPEN' : 'EYES CLOSED / DROWSY'}
+              <span className="text-[11px] text-text-secondary font-body">
+                Visible signs of reduced attention detected. Gaze deviated from roadway corridor.
               </span>
             </div>
+          </div>
+          <span className="text-[10px] px-2 py-0.5 rounded bg-warning text-bg font-bold uppercase shrink-0">
+            ADVISORY
+          </span>
+        </div>
+      ) : null}
 
-            <div className="mt-2 flex items-baseline justify-between">
-              <span
-                className={`font-telemetry-display text-[32px] font-bold ${
-                  driverStatus.ear_average >= 0.20 ? 'text-tertiary' : 'text-error'
-                }`}
-              >
-                {driverStatus.ear_average.toFixed(2)}
-              </span>
-              <span className="font-body-sm text-[11px] text-outline">
-                CRITICAL THRESHOLD: &lt; 0.20
-              </span>
-            </div>
+      {/* Main Grid: Left Infrared Camera Viewport (60%) + Right Telemetry Panel (40%) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Large Driver Camera Viewport */}
+        <div className="lg:col-span-7 flex flex-col gap-2">
+          <div className="relative w-full aspect-[16/10] bg-[#02070D] rounded-lg overflow-hidden border border-border flex items-center justify-center">
+            {/* Near-Infrared Camera Simulation Art */}
+            <svg className="w-full h-full" viewBox="0 0 600 380">
+              <defs>
+                <radialGradient id="irGazeGlow" cx="50%" cy="40%" r="50%">
+                  <stop offset="0%" stopColor="rgba(77, 142, 255, 0.12)" />
+                  <stop offset="100%" stopColor="rgba(2, 7, 13, 0)" />
+                </radialGradient>
+              </defs>
 
-            {/* Visual EAR Bar */}
-            <div className="w-full bg-surface-container-high h-3 rounded-full overflow-hidden mt-2 relative">
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${
-                  driverStatus.ear_average >= 0.20 ? 'bg-tertiary' : 'bg-error'
-                }`}
-                style={{ width: `${Math.min(100, (driverStatus.ear_average / 0.40) * 100)}%` }}
+              <rect width="600" height="380" fill="url(#irGazeGlow)" />
+
+              {/* Cabin interior subtle silhouettes */}
+              <path
+                d="M 60 380 L 140 240 L 460 240 L 540 380 Z"
+                fill="none"
+                stroke="rgba(141, 184, 255, 0.1)"
+                strokeWidth="1"
               />
-              {/* Threshold line at 0.20 (50%) */}
-              <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-error" />
-            </div>
+              <circle cx="300" cy="180" r="110" fill="none" stroke="rgba(141, 184, 255, 0.12)" strokeDasharray="3 3" />
 
-            <div className="flex justify-between font-label-caps text-[9px] text-outline mt-1">
-              <span>0.00 (Closed)</span>
-              <span className="text-error font-bold">0.20 LIMIT</span>
-              <span>0.40 (Wide)</span>
+              {/* Stylized Driver Head & Mesh representation */}
+              <g transform={`translate(${gazeX * 0.4}, ${gazeY * 0.3})`}>
+                {/* Head Oval */}
+                <ellipse
+                  cx="300"
+                  cy="170"
+                  rx="68"
+                  ry="88"
+                  fill="none"
+                  stroke={isDrowsy ? '#FF5C67' : isDistracted ? '#F5B942' : 'rgba(141, 184, 255, 0.5)'}
+                  strokeWidth="1.5"
+                />
+
+                {/* Eyes Level */}
+                {driverStatus.eyes_closed ? (
+                  // Closed Eyelid lines
+                  <>
+                    <line x1="270" y1="155" x2="288" y2="155" stroke="#FF5C67" strokeWidth="2.5" />
+                    <line x1="312" y1="155" x2="330" y2="155" stroke="#FF5C67" strokeWidth="2.5" />
+                  </>
+                ) : (
+                  // Open Eyes & pupils
+                  <>
+                    <ellipse cx="279" cy="155" rx="10" ry="6" fill="none" stroke="rgba(141, 184, 255, 0.7)" strokeWidth="1.5" />
+                    <circle cx={279 + gazeX * 0.1} cy={155 + gazeY * 0.1} r="3" fill="#8DB8FF" />
+                    <ellipse cx="321" cy="155" rx="10" ry="6" fill="none" stroke="rgba(141, 184, 255, 0.7)" strokeWidth="1.5" />
+                    <circle cx={321 + gazeX * 0.1} cy={155 + gazeY * 0.1} r="3" fill="#8DB8FF" />
+                  </>
+                )}
+
+                {/* Nose bridge & Gaze Vector Arrow */}
+                <line x1="300" y1="165" x2="300" y2="185" stroke="rgba(141, 184, 255, 0.4)" strokeWidth="1" />
+                <line
+                  x1="300"
+                  y1="175"
+                  x2={300 + gazeX * 1.5}
+                  y2={175 + gazeY * 1.5}
+                  stroke={isDistracted ? '#F5B942' : '#35D69A'}
+                  strokeWidth="2"
+                  strokeDasharray="4 2"
+                />
+                <circle cx={300 + gazeX * 1.5} cy={175 + gazeY * 1.5} r="3.5" fill={isDistracted ? '#F5B942' : '#35D69A'} />
+              </g>
+
+              {/* Optical Crop Corner Reticles */}
+              <path d="M 30 50 L 30 30 L 50 30" stroke="rgba(141, 184, 255, 0.4)" strokeWidth="1.5" fill="none" />
+              <path d="M 570 50 L 570 30 L 550 30" stroke="rgba(141, 184, 255, 0.4)" strokeWidth="1.5" fill="none" />
+              <path d="M 30 330 L 30 350 L 50 350" stroke="rgba(141, 184, 255, 0.4)" strokeWidth="1.5" fill="none" />
+              <path d="M 570 330 L 570 350 L 550 350" stroke="rgba(141, 184, 255, 0.4)" strokeWidth="1.5" fill="none" />
+            </svg>
+
+            {/* Top Overlay Badge */}
+            <div className="absolute top-3 left-3 flex items-center gap-2 font-mono text-[11px] bg-surface/90 px-2.5 py-1 rounded border border-border backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-success status-pulse" />
+              <span className="text-text-primary font-bold">NIR CABIN STREAM</span>
+              <span className="text-text-muted">// 850nm ILLUMINATOR</span>
             </div>
           </div>
+        </div>
 
-          {/* Gaze & Head Orientation Bento */}
-          <div className="grid grid-cols-2 gap-space-sm">
-            <div className="p-space-sm bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-md">
-              <span className="font-label-caps text-[10px] text-outline uppercase block">Gaze Direction</span>
-              <span
-                className={`font-headline-sm text-[16px] font-semibold block mt-1 uppercase ${
-                  isAttentive ? 'text-tertiary' : 'text-secondary'
+        {/* Right Telemetry Panel */}
+        <div className="lg:col-span-5 surface-card p-5 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-border">
+            <span className="telemetry-label text-[10px]">TELEMETRY OBSERVATIONS</span>
+            <span className="font-mono text-xs text-text-muted">ISO 26262 ASIL-B</span>
+          </div>
+
+          {/* Core Metric 1: ATTENTION */}
+          <div className="surface-inset p-3 flex items-center justify-between font-mono">
+            <div>
+              <span className="telemetry-label text-[9px]">ATTENTION</span>
+              <div
+                className={`font-headline font-bold text-base mt-0.5 ${
+                  isAttentive ? 'text-success' : isDrowsy ? 'text-critical' : 'text-warning'
                 }`}
               >
-                {driverStatus.gaze_direction}
-              </span>
-              <span className="font-body-sm text-[10px] text-outline mt-1 block">
-                Trajectory: {yaw > 12 ? 'Right Drift' : yaw < -12 ? 'Left Drift' : 'Forward Center'}
+                {driverStatus.state.replace(/_/g, ' ')}
+              </div>
+            </div>
+            <span className="text-xs text-text-muted">
+              CONF: {(driverStatus.confidence * 100).toFixed(0)}%
+            </span>
+          </div>
+
+          {/* Core Metric 2: EYES */}
+          <div className="surface-inset p-3 space-y-2 font-mono">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="telemetry-label text-[9px]">EYES</span>
+                <div className="font-headline font-bold text-sm text-text-primary mt-0.5">
+                  {driverStatus.eyes_closed ? 'CLOSED (ALERT)' : 'OPEN & FIXATED'}
+                </div>
+              </div>
+              <span
+                className={`font-bold text-sm ${
+                  driverStatus.ear_average < 0.20 ? 'text-critical' : 'text-text-primary'
+                }`}
+              >
+                EAR: {driverStatus.ear_average.toFixed(2)}
               </span>
             </div>
-
-            <div className="p-space-sm bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-md">
-              <span className="font-label-caps text-[10px] text-outline uppercase block">Head Orientation</span>
-              <div className="font-telemetry-display text-[15px] text-on-surface font-bold mt-1">
-                Y: {yaw.toFixed(1)}° | P: {pitch.toFixed(1)}°
-              </div>
-              <span className="font-body-sm text-[10px] text-tertiary mt-1 block">
-                Euler Angles Normal
-              </span>
+            <div className="w-full bg-surface h-1.5 rounded-full overflow-hidden relative">
+              <div
+                className={`h-full transition-all duration-200 ${
+                  driverStatus.ear_average < 0.20 ? 'bg-critical' : 'bg-success'
+                }`}
+                style={{ width: `${earPercent}%` }}
+              />
+              <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-warning" />
+            </div>
+            <div className="flex justify-between text-[10px] text-text-muted">
+              <span>CLOSURE THRESHOLD: 0.20</span>
+              <span>NOMINAL: 0.32</span>
             </div>
           </div>
 
-          {/* Fatigue & Incident Audit Log */}
-          <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-md">
-            <div className="flex items-center justify-between pb-space-xs border-b border-outline-variant/10 mb-space-xs">
-              <span className="font-label-caps text-label-caps text-outline uppercase tracking-wider">
-                Cabin Safety Incident Log
-              </span>
-              <span className="font-label-caps text-[10px] text-primary">{dmsEvents.length} Recorded</span>
+          {/* Core Metric 3: HEAD */}
+          <div className="surface-inset p-3 space-y-1 font-mono text-xs">
+            <span className="telemetry-label text-[9px] block">HEAD POSE (EULER ANGLES)</span>
+            <div className="grid grid-cols-3 gap-2 mt-1">
+              <div className="surface p-2 rounded text-center">
+                <span className="text-[10px] text-text-muted block">PITCH</span>
+                <span className="font-bold text-text-primary">{safeHeadPose.pitch.toFixed(1)}°</span>
+              </div>
+              <div className="surface p-2 rounded text-center">
+                <span className="text-[10px] text-text-muted block">YAW</span>
+                <span className="font-bold text-text-primary">{safeHeadPose.yaw.toFixed(1)}°</span>
+              </div>
+              <div className="surface p-2 rounded text-center">
+                <span className="text-[10px] text-text-muted block">ROLL</span>
+                <span className="font-bold text-text-primary">{safeHeadPose.roll.toFixed(1)}°</span>
+              </div>
             </div>
+          </div>
 
-            {dmsEvents.length === 0 ? (
-              <div className="py-4 text-center text-outline font-body-sm text-[12px]">
-                No driver attention alerts recorded in active session.
-              </div>
-            ) : (
-              <div className="space-y-1.5 max-h-40 overflow-y-auto">
-                {dmsEvents.slice(0, 4).map((ev) => (
-                  <div
-                    key={ev.id}
-                    className="p-1.5 rounded bg-surface-container text-xs flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-1.5 truncate">
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          ev.category === 'CRITICAL' ? 'bg-error' : 'bg-secondary'
-                        }`}
-                      />
-                      <span className="font-semibold text-on-surface truncate">{ev.title}</span>
-                    </div>
-                    <span className="font-label-caps text-[9px] text-outline shrink-0">
-                      {new Date(ev.timestamp).toLocaleTimeString([], { hour12: false })}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* Core Metric 4: MONITOR */}
+          <div className="surface-inset p-3 flex items-center justify-between font-mono text-xs">
+            <span className="text-text-muted">MONITOR SUBSYSTEM:</span>
+            <span className="text-success font-bold">ACTIVE &amp; TRACKING</span>
+          </div>
+
+          {/* Medical Disclaimer Note */}
+          <div className="p-2.5 rounded bg-surface border border-border-subtle text-[11px] text-text-muted font-body leading-relaxed">
+            <strong className="text-text-secondary block mb-0.5 font-headline">Safety Advisory Notice:</strong>
+            Driver monitoring assesses visual behavioral proxies (eyelid aspect ratio &amp; head pose) for situational awareness. It is not intended for clinical, medical, or diagnostic evaluation.
           </div>
         </div>
       </div>

@@ -1,103 +1,114 @@
 import React from 'react';
+import { ShieldCheck, Info, AlertTriangle, Keyboard, PhoneCall } from 'lucide-react';
 
 export const HelpSafetyPage: React.FC = () => {
   return (
-    <div className="p-space-lg flex flex-col gap-space-lg w-full max-w-[1200px] mx-auto text-on-surface">
+    <div className="p-4 md:p-6 flex flex-col gap-5 max-w-[1200px] mx-auto w-full select-none">
       {/* Page Header */}
-      <div className="flex flex-col gap-1 pb-space-xs border-b border-outline-variant/20">
-        <div className="flex items-center gap-space-xs font-label-caps text-label-caps text-primary uppercase">
-          <span className="material-symbols-outlined text-[16px]">help_center</span>
-          <span>Operator Manual &amp; Safety Compliance</span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-border gap-2">
+        <div className="flex items-center gap-2.5">
+          <ShieldCheck className="w-5 h-5 text-accent" />
+          <h1 className="font-headline font-bold text-base text-text-primary uppercase tracking-tight">
+            SAFETY GUIDELINES &amp; OPERATOR PROTOCOL
+          </h1>
+          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-elevated text-success border border-border">
+            ISO 26262 ASIL-B
+          </span>
         </div>
-        <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight mt-1">
-          Help, Safety Guidelines &amp; Regulatory Protocol
-        </h1>
-        <p className="font-body-md text-body-md text-on-surface-variant">
-          Complete guide to operating the RoadGuard AI cockpit HUD during evaluation and road trials.
-        </p>
+        <span className="font-mono text-xs text-text-muted">SAE LEVEL 2+ ADAS</span>
       </div>
 
-      {/* Grid Guide */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-space-md">
-        {/* Card 1: System Purpose & Boundaries */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[20px]">info</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">SAE Level 2+ Role</h2>
+      {/* Guide Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Card 1: SAE Level 2+ Operating Boundaries */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Info className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              OPERATIONAL ROLE &amp; BOUNDARIES
+            </h2>
           </div>
-          <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-            RoadGuard AI provides <strong>situational awareness enhancements</strong>. It is designed to notify the
-            driver of upcoming speed restrictions, pedestrian crosswalks, traffic light phases, and physical signs
-            of in-cabin drowsiness or distraction.
+          <p className="font-body text-xs text-text-secondary leading-relaxed">
+            RoadGuardian 2.0 provides <strong>situational awareness assistance</strong>. It detects regulatory road signs, speed limits, crosswalks, and optical indicators of driver distraction or micro-sleep.
           </p>
-          <div className="p-space-sm bg-surface-container rounded-lg border-l-4 border-error text-xs text-on-surface-variant">
-            <strong className="text-on-surface block mb-1">Human Responsibility Mandate:</strong>
-            The driver remains the primary supervisor of the vehicle at all times and must maintain hands on the
-            steering wheel and visual command of the roadway.
+          <div className="surface-inset p-3 border-l-2 border-warning text-xs text-text-secondary space-y-1">
+            <strong className="text-text-primary font-headline block">Driver Responsibility Mandate:</strong>
+            The human driver remains the primary supervisor of the motor vehicle at all times and must maintain hands on the wheel and active command of the roadway.
           </div>
         </div>
 
         {/* Card 2: Voice Alert Hierarchy */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-tertiary text-[20px]">notifications_active</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">Alert Priority Tiers</h2>
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <AlertTriangle className="w-4 h-4 text-warning" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              ALERT PRIORITY TIERS
+            </h2>
           </div>
-          <div className="space-y-2 text-xs">
-            <div className="p-2 rounded bg-error-container/30 border border-error/40 text-on-surface">
-              <span className="font-label-caps text-error font-bold block">PRIORITY 1: CRITICAL (RED)</span>
-              <span>Drowsiness micro-sleep detection or red traffic light breach. Audio alarm triggers immediately without debounce throttling.</span>
+          <div className="space-y-2 text-xs font-mono">
+            <div className="p-2 rounded bg-critical-subtle border border-critical/30 text-text-primary">
+              <span className="text-critical font-bold block text-[10px]">PRIORITY 1: CRITICAL (RED)</span>
+              <span className="text-[11px] text-text-secondary font-body">
+                Drowsiness micro-sleep detection or red light violation. Immediate voice alarm bypasses debounce.
+              </span>
             </div>
-            <div className="p-2 rounded bg-secondary-container/30 border border-secondary/40 text-on-surface">
-              <span className="font-label-caps text-secondary font-bold block">PRIORITY 2: WARNING (AMBER)</span>
-              <span>Attention drift or overspeed exceeding +5 km/h. Audio announced with 5.0s rate-limiting.</span>
+            <div className="p-2 rounded bg-warning-subtle border border-warning/30 text-text-primary">
+              <span className="text-warning font-bold block text-[10px]">PRIORITY 2: WARNING (AMBER)</span>
+              <span className="text-[11px] text-text-secondary font-body">
+                Attention drift or overspeed exceeding posted limit (+5 km/h). Debounced voice alert.
+              </span>
             </div>
-            <div className="p-2 rounded bg-surface-container text-on-surface-variant">
-              <span className="font-label-caps text-tertiary font-bold block">PRIORITY 3: ADVISORY (BLUE/GREEN)</span>
-              <span>Speed limit zone adjustments, verified navigation signs. In-dash banner update.</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Keyboard Shortcuts */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-secondary text-[20px]">keyboard</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">Evaluation Keybindings</h2>
-          </div>
-          <div className="space-y-1.5 text-xs font-mono">
-            <div className="flex justify-between p-1.5 rounded bg-surface-container">
-              <span className="text-on-surface">Click '-5 / +5' in Speed Bench</span>
-              <span className="text-primary font-bold">Simulate Velocity</span>
-            </div>
-            <div className="flex justify-between p-1.5 rounded bg-surface-container">
-              <span className="text-on-surface">Click '30 / 50 / 70 / 100'</span>
-              <span className="text-primary font-bold">Change Speed Limit</span>
-            </div>
-            <div className="flex justify-between p-1.5 rounded bg-surface-container">
-              <span className="text-on-surface">DMS 'Drowsy / Distracted'</span>
-              <span className="text-primary font-bold">Simulate Micro-Sleep</span>
-            </div>
-            <div className="flex justify-between p-1.5 rounded bg-surface-container">
-              <span className="text-on-surface">Volume Icon in Top Header</span>
-              <span className="text-primary font-bold">Mute / Unmute Voice</span>
+            <div className="p-2 rounded surface-inset text-text-secondary">
+              <span className="text-accent font-bold block text-[10px]">PRIORITY 3: ADVISORY (BLUE/GREEN)</span>
+              <span className="text-[11px] text-text-secondary font-body">
+                Speed limit changes and verified road signs. In-cockpit HUD update.
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Card 4: Technical Support & SOS */}
-        <div className="p-space-md bg-surface-container-low rounded-xl border border-outline-variant/20 shadow-sm space-y-space-sm">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[20px]">sos</span>
-            <h2 className="font-headline-sm text-[16px] font-semibold text-on-surface">Emergency Response (SOS)</h2>
+        {/* Card 3: Evaluation Hotkeys */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Keyboard className="w-4 h-4 text-accent" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              EVALUATION KEYBINDINGS &amp; CONTROLS
+            </h2>
           </div>
-          <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-            The left sidebar includes an <strong>SOS Hotline</strong> quick button. In connected fleet vehicles,
-            triggering this transmits current telemetry coordinates (GNSS latitude/longitude) to local automotive
-            dispatchers (ADAC / Bosch Roadside Support).
+          <div className="space-y-1.5 font-mono text-xs">
+            <div className="flex justify-between p-2 rounded surface-inset">
+              <span className="text-text-secondary">Click '-5 / +5' in Speed Bench</span>
+              <span className="text-accent font-bold">Simulate Velocity</span>
+            </div>
+            <div className="flex justify-between p-2 rounded surface-inset">
+              <span className="text-text-secondary">Click '30 / 50 / 70 / 100'</span>
+              <span className="text-accent font-bold">Change Limit</span>
+            </div>
+            <div className="flex justify-between p-2 rounded surface-inset">
+              <span className="text-text-secondary">DMS 'Drowsy / Distracted'</span>
+              <span className="text-critical font-bold">Simulate Fatigue</span>
+            </div>
+            <div className="flex justify-between p-2 rounded surface-inset">
+              <span className="text-text-secondary">Header Audio Icon</span>
+              <span className="text-accent font-bold">Mute / Unmute Voice</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 4: Emergency Assistance */}
+        <div className="surface-card p-4 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <PhoneCall className="w-4 h-4 text-critical" />
+            <h2 className="font-headline font-bold text-xs tracking-wider uppercase text-text-primary">
+              EMERGENCY PROTOCOL (SOS)
+            </h2>
+          </div>
+          <p className="font-body text-xs text-text-secondary leading-relaxed">
+            The sidebar includes a dedicated <strong>EMERGENCY SOS</strong> trigger. Triggering this transmits GNSS latitude/longitude telemetry to roadside support and presents direct links to emergency dispatch.
           </p>
-          <div className="p-space-sm bg-surface-container rounded-lg text-xs font-mono text-outline">
-            Munich Central Dispatch: +49 89 767676 | Emergency: 112
+          <div className="surface-inset p-2.5 font-mono text-[11px] text-text-muted space-y-0.5">
+            <div>CENTRAL DISPATCH: <strong className="text-text-primary">+49 89 767676</strong></div>
+            <div>EUROPEAN EMERGENCY: <strong className="text-critical">112</strong></div>
           </div>
         </div>
       </div>

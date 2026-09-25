@@ -1,206 +1,173 @@
 import React from 'react';
-import { Eye, Sliders } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import type { DriverStatus, DriverState } from '../types';
 
 interface DriverGaugeProps {
   driverStatus: DriverStatus;
   onSimulateState: (state: DriverState) => void;
+  compact?: boolean;
 }
 
-export const DriverGauge: React.FC<DriverGaugeProps> = ({ driverStatus, onSimulateState }) => {
+export const DriverGauge: React.FC<DriverGaugeProps> = ({
+  driverStatus,
+  onSimulateState,
+  compact = false,
+}) => {
   const { state, ear_average, head_pose, gaze_direction, eyes_closed, confidence } = driverStatus;
 
-  // State styling helper
-  const getStateBadge = () => {
-    switch (state) {
-      case 'ATTENTIVE':
-        return {
-          pill: 'bg-emerald-950/80 border-emerald-500/80 text-emerald-300 glow-success',
-          dot: 'bg-emerald-400',
-          label: 'ATTENTIVE • ROAD FOCUSED',
-        };
-      case 'ATTENTION_WARNING':
-        return {
-          pill: 'bg-amber-950/80 border-amber-500/80 text-amber-300 animate-pulse-warning',
-          dot: 'bg-amber-400',
-          label: 'ATTENTION DRIFT DETECTED',
-        };
-      case 'DROWSINESS_WARNING':
-        return {
-          pill: 'bg-red-950/90 border-red-500 text-red-200 animate-pulse-critical',
-          dot: 'bg-red-500 animate-ping',
-          label: 'DROWSINESS WARNING: MICRO-SLEEP',
-        };
-      case 'FACE_NOT_DETECTED':
-        return {
-          pill: 'bg-orange-950/80 border-orange-500/80 text-orange-300',
-          dot: 'bg-orange-400',
-          label: 'DRIVER NOT IN FRAME',
-        };
-      default:
-        return {
-          pill: 'bg-slate-800 border-slate-700 text-slate-300',
-          dot: 'bg-slate-400',
-          label: 'INITIALIZING DMS...',
-        };
-    }
-  };
+  const isDrowsy = state === 'DROWSINESS_WARNING';
+  const isDistracted = state === 'ATTENTION_WARNING';
+  const isAttentive = state === 'ATTENTIVE';
 
   const safeHeadPose = head_pose || { pitch: 0, yaw: 0, roll: 0 };
-  const badge = getStateBadge();
   const earPercent = Math.min(100, Math.max(0, (ear_average / 0.40) * 100));
 
-  // Gaze reticle offset (-30 to +30 deg to pixel offset)
-  const gazeX = Math.max(-40, Math.min(40, (safeHeadPose.yaw || 0) * 2));
-  const gazeY = Math.max(-40, Math.min(40, (safeHeadPose.pitch || 0) * 2));
+  // Gaze crosshair offset in coordinate box
+  const gazeX = Math.max(-28, Math.min(28, (safeHeadPose.yaw || 0) * 1.5));
+  const gazeY = Math.max(-28, Math.min(28, (safeHeadPose.pitch || 0) * 1.5));
 
   return (
-    <div className="hud-card hud-brackets flex flex-col p-4 bg-slate-900/90 backdrop-blur-md">
-      {/* Panel Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
-        <div className="flex items-center gap-2 text-cyan-400">
-          <Eye className="w-4 h-4" />
-          <span className="font-mono text-xs font-bold tracking-wider uppercase">IN-CABIN DRIVER MONITOR (DMS)</span>
+    <div className="surface-card p-4 flex flex-col justify-between select-none">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-2.5 border-b border-border mb-3">
+        <div className="flex items-center gap-2">
+          <Eye className="w-4 h-4 text-accent" />
+          <span className="font-headline font-bold text-xs tracking-wider text-text-primary uppercase">
+            DRIVER STATUS
+          </span>
         </div>
-        <span className="font-mono text-[10px] text-slate-400">MEDIAPIPE 468-PT MESH</span>
+        <span className="font-mono text-[10px] text-text-muted">
+          IR DMS // 468-PT
+        </span>
       </div>
 
-      {/* Driver State Banner */}
-      <div className={`p-2.5 rounded-lg border flex items-center justify-between mb-4 ${badge.pill}`}>
-        <div className="flex items-center gap-2.5">
-          <span className={`w-3 h-3 rounded-full ${badge.dot}`} />
-          <span className="font-mono text-xs font-bold tracking-wide uppercase">{badge.label}</span>
+      {/* Main State Card */}
+      <div
+        className={`p-2.5 rounded-md border flex items-center justify-between mb-3 transition-colors ${
+          isAttentive
+            ? 'bg-success-subtle border-success/30 text-success'
+            : isDrowsy
+            ? 'bg-critical-subtle border-critical critical-pulse text-critical'
+            : 'bg-warning-subtle border-warning/40 text-warning'
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <span
+            className={`w-2 h-2 rounded-full ${
+              isAttentive ? 'bg-success' : isDrowsy ? 'bg-critical' : 'bg-warning'
+            }`}
+          />
+          <div className="flex flex-col">
+            <span className="font-mono text-[11px] font-bold tracking-wider uppercase">
+              {state.replace(/_/g, ' ')}
+            </span>
+            <span className="text-[10px] opacity-80 font-body">
+              {isAttentive
+                ? 'Road focused & responsive'
+                : isDrowsy
+                ? 'Visible signs of micro-sleep detected'
+                : 'Attention deviation observed'}
+            </span>
+          </div>
         </div>
-        <span className="font-mono text-[11px] opacity-80">{(confidence * 100).toFixed(0)}% CONF</span>
+        <span className="font-mono text-[11px] font-bold">
+          {(confidence * 100).toFixed(0)}%
+        </span>
       </div>
 
-      {/* Grid of Gauges: EAR Dial + Gaze Coordinate Crosshair */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-        {/* Eye Aspect Ratio (EAR) Gauge */}
-        <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800 flex flex-col">
-          <div className="flex items-center justify-between text-xs font-mono mb-2">
-            <span className="text-slate-400 uppercase">EYE ASPECT RATIO (EAR)</span>
-            <span className={`font-bold ${ear_average < 0.20 ? 'text-red-400' : 'text-cyan-300'}`}>
+      {/* Structured Telemetry Row */}
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        {/* Eye Aspect Ratio (EAR) */}
+        <div className="surface-inset p-2 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-[10px] font-mono text-text-muted mb-1">
+            <span>EAR METRIC</span>
+            <span
+              className={`font-bold ${
+                ear_average < 0.20 ? 'text-critical' : 'text-text-primary'
+              }`}
+            >
               {ear_average.toFixed(2)}
             </span>
           </div>
-
-          {/* Progress Bar with 0.20 Threshold Line */}
-          <div className="relative w-full h-4 bg-slate-800 rounded-full overflow-hidden mb-2">
+          <div className="w-full bg-surface h-1.5 rounded-full overflow-hidden relative">
             <div
-              className={`h-full transition-all duration-300 ${
-                ear_average < 0.20
-                  ? 'bg-red-500 shadow-[0_0_10px_#EF4444]'
-                  : ear_average < 0.25
-                  ? 'bg-amber-400'
-                  : 'bg-emerald-400 shadow-[0_0_10px_#10B981]'
+              className={`h-full transition-all duration-200 ${
+                ear_average < 0.20 ? 'bg-critical' : 'bg-success'
               }`}
               style={{ width: `${earPercent}%` }}
             />
-            {/* Threshold Line at 50% (corresponding to 0.20 / 0.40) */}
-            <div
-              className="absolute top-0 bottom-0 w-0.5 bg-red-400 z-10"
-              style={{ left: '50%' }}
-              title="Alert Threshold (0.20)"
-            />
+            {/* 0.20 Threshold Marker at 50% */}
+            <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-warning/80" />
           </div>
-
-          <div className="flex justify-between text-[10px] font-mono text-slate-500">
-            <span>0.00 CLOSED</span>
-            <span className="text-red-400 font-semibold">THRESH 0.20</span>
-            <span>0.40 OPEN</span>
-          </div>
-
-          <div className="mt-2 text-[11px] font-mono text-slate-400 flex justify-between">
-            <span>EYES STATE:</span>
-            <span className={eyes_closed ? 'text-red-400 font-bold' : 'text-emerald-400 font-semibold'}>
-              {eyes_closed ? 'SHUT / OCCLUDED' : 'OPEN & ALERT'}
-            </span>
-          </div>
+          <span className="text-[9px] font-mono text-text-muted mt-1">
+            {eyes_closed ? 'EYES CLOSED' : 'EYES OPEN'} (LIMIT 0.20)
+          </span>
         </div>
 
-        {/* Head Pose & Gaze Reticle */}
-        <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800 flex flex-col items-center">
-          <div className="w-full flex items-center justify-between text-xs font-mono mb-1">
-            <span className="text-slate-400 uppercase">HEAD GAZE VECTOR</span>
-            <span className="text-cyan-300 font-bold uppercase">{gaze_direction || 'FORWARD'}</span>
+        {/* Gaze Vector Target */}
+        <div className="surface-inset p-2 flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="telemetry-label text-[9px]">GAZE DIRECTION</span>
+            <span className="font-mono text-xs font-bold text-text-primary mt-0.5 uppercase">
+              {gaze_direction || 'FORWARD'}
+            </span>
+            <span className="font-mono text-[9px] text-text-muted mt-0.5">
+              P:{safeHeadPose.pitch.toFixed(1)}° Y:{safeHeadPose.yaw.toFixed(1)}°
+            </span>
           </div>
 
-          {/* 2D Crosshair Target */}
-          <div className="relative w-28 h-24 rounded-md border border-cyan-500/30 bg-slate-900/50 flex items-center justify-center my-1">
-            {/* Crosshair lines */}
-            <div className="absolute inset-x-0 h-px bg-cyan-500/20" />
-            <div className="absolute inset-y-0 w-px bg-cyan-500/20" />
-            
-            {/* Safe gaze center box */}
-            <div className="w-8 h-8 rounded border border-emerald-500/40 border-dashed" />
-
-            {/* Gaze Target Vector Dot */}
+          {/* Mini 2D Crosshair Reticle */}
+          <div className="relative w-9 h-9 rounded bg-surface border border-border flex items-center justify-center shrink-0">
+            <div className="absolute inset-x-1 top-1/2 h-px bg-border" />
+            <div className="absolute inset-y-1 left-1/2 w-px bg-border" />
             <div
-              className="absolute w-3.5 h-3.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06B6D4] transition-all duration-200"
+              className="absolute w-2 h-2 rounded-full bg-accent border border-surface transition-all duration-150"
               style={{
                 transform: `translate(${gazeX}px, ${gazeY}px)`,
               }}
             />
           </div>
+        </div>
+      </div>
 
-          <div className="w-full grid grid-cols-3 text-center text-[10px] font-mono text-slate-400 mt-1">
-            <div>P: {(safeHeadPose.pitch ?? 0).toFixed(1)}°</div>
-            <div>Y: {(safeHeadPose.yaw ?? 0).toFixed(1)}°</div>
-            <div>R: {(safeHeadPose.roll ?? 0).toFixed(1)}°</div>
+      {/* State Simulation Buttons (Evaluation Workbench) */}
+      {!compact && (
+        <div className="pt-2 border-t border-border flex items-center justify-between gap-1 text-[10px] font-mono">
+          <span className="text-text-muted uppercase">TEST BENCH:</span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => onSimulateState('ATTENTIVE')}
+              className={`px-2 py-0.5 rounded transition-colors ${
+                isAttentive
+                  ? 'bg-success/20 text-success font-bold'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-elevated'
+              }`}
+            >
+              SAFE
+            </button>
+            <button
+              onClick={() => onSimulateState('ATTENTION_WARNING')}
+              className={`px-2 py-0.5 rounded transition-colors ${
+                isDistracted
+                  ? 'bg-warning/20 text-warning font-bold'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-elevated'
+              }`}
+            >
+              DISTRACTED
+            </button>
+            <button
+              onClick={() => onSimulateState('DROWSINESS_WARNING')}
+              className={`px-2 py-0.5 rounded transition-colors ${
+                isDrowsy
+                  ? 'bg-critical/20 text-critical font-bold'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-elevated'
+              }`}
+            >
+              DROWSY
+            </button>
           </div>
         </div>
-      </div>
-
-      {/* Driver State Simulator Controls */}
-      <div className="border-t border-slate-800 pt-3">
-        <div className="flex items-center gap-1 text-[11px] font-mono text-slate-400 mb-2">
-          <Sliders className="w-3.5 h-3.5 text-cyan-400" />
-          <span>SIMULATE DRIVER STATES (TEST BENCH):</span>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <button
-            onClick={() => onSimulateState('ATTENTIVE')}
-            className={`px-2 py-1.5 rounded text-[11px] font-mono font-semibold border transition-all ${
-              state === 'ATTENTIVE'
-                ? 'bg-emerald-900/70 border-emerald-500 text-emerald-200'
-                : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            ATTENTIVE
-          </button>
-          <button
-            onClick={() => onSimulateState('DROWSINESS_WARNING')}
-            className={`px-2 py-1.5 rounded text-[11px] font-mono font-semibold border transition-all ${
-              state === 'DROWSINESS_WARNING'
-                ? 'bg-red-900/70 border-red-500 text-red-200 shadow-[0_0_10px_#EF4444]'
-                : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            EYES CLOSED
-          </button>
-          <button
-            onClick={() => onSimulateState('ATTENTION_WARNING')}
-            className={`px-2 py-1.5 rounded text-[11px] font-mono font-semibold border transition-all ${
-              state === 'ATTENTION_WARNING'
-                ? 'bg-amber-900/70 border-amber-500 text-amber-200 shadow-[0_0_10px_#F59E0B]'
-                : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            DISTRACTED
-          </button>
-          <button
-            onClick={() => onSimulateState('FACE_NOT_DETECTED')}
-            className={`px-2 py-1.5 rounded text-[11px] font-mono font-semibold border transition-all ${
-              state === 'FACE_NOT_DETECTED'
-                ? 'bg-orange-900/70 border-orange-500 text-orange-200'
-                : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            OCCLUDED
-          </button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

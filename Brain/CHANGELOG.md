@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-09-26
+
+### Added
+- **Automotive HMI Precision Cockpit Design System**:
+  - Re-architected CSS design tokens in `frontend/src/index.css` with 5-tier obsidian surface depth, technical accent scales, and precision radii.
+  - Added Space Grotesk, Inter, and JetBrains Mono typography hierarchy with high-readability telemetry classes.
+  - Implemented crisp 1px borders, subtle translucency, corner reticles, and custom dark scrollbars.
+- **Cockpit Component Upgrades**:
+  - `TopStatusBar`: Live telemetry bar showing inference latency, system status pill, audio switch, and emergency SOS trigger.
+  - `Sidebar`: Grouped navigation hierarchy with ASIL-B compliance badge and smooth active routing.
+  - `VisionCanvas`: High-precision optical detection HUD with corner reticles and sub-millisecond bounding box rendering.
+  - `DriverGauge`: Dual-metric DMS cabin monitor with EAR threshold gauge, gaze reticle, and instant simulation bench.
+  - `ContextMap`: Tactical dark Leaflet integration with GPS vehicle tracker and nearby repair garage markers.
+  - `NotificationsDrawer` & `SosModal`: Safety event drawer and emergency dispatch modal.
+- **Redesigned Application Routes (9 Pages)**:
+  - `DashboardPage`: Integrated safety cockpit.
+  - `LiveDetectionPage`: Dedicated optical vision workbench.
+  - `DriverMonitoringPage`: In-cabin fatigue & distraction telemetry.
+  - `RoadMapPage`: Tactical corridor routing and repair provider directory.
+  - `AnalyticsPage`: Detection performance and safety compliance distribution.
+  - `HistoryPage`: Filterable safety event audit log.
+  - `SystemStatusPage`: Edge hardware and model telemetry diagnostics.
+  - `SettingsPage`: ADAS sensitivity and audio alert configuration.
+  - `HelpSafetyPage`: ISO 26262 ASIL-B reference manual.
+- **Root Landing Page**:
+  - Revamped `index.html` with SVG optical HUD mockup, GTSRB ResNet-18 live telemetry badges, and direct cockpit launch portal.
+
 ## [0.2.0] - 2026-09-25
 
 ### Added

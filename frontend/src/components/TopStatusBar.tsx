@@ -1,4 +1,5 @@
 import React from 'react';
+import { Menu, Volume2, VolumeX, Bell } from 'lucide-react';
 import type { SystemHealth, DriverState } from '../types';
 
 interface TopStatusBarProps {
@@ -29,114 +30,147 @@ export const TopStatusBar: React.FC<TopStatusBarProps> = ({
   fps,
 }) => {
   return (
-    <header className="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl z-30 px-space-md flex items-center justify-between border-b border-outline-variant/30 shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
-      {/* Left side: Hamburger button + Telematics breadcrumb */}
-      <div className="flex items-center gap-space-sm">
-        {/* Mobile menu trigger */}
+    <header className="fixed top-0 left-0 lg:left-[248px] right-0 h-14 bg-surface/95 backdrop-blur-md z-30 px-4 flex items-center justify-between border-b border-border">
+      {/* Left side: Hamburger button on mobile + system identifier */}
+      <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebarMobile}
-          className="lg:hidden p-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
-          aria-label="Open navigation menu"
+          className="lg:hidden p-1.5 rounded bg-surface-secondary text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+          aria-label="Open navigation"
         >
-          <span className="material-symbols-outlined text-[22px]">menu</span>
+          <Menu className="w-4 h-4" />
         </button>
 
-        <div className="flex items-center gap-space-xs">
-          <span className="font-label-caps text-label-caps text-primary uppercase hidden sm:inline-block">
-            Telematics Core
+        <div className="flex items-center gap-2 font-mono text-[11px] text-text-muted">
+          <span className="text-text-primary font-bold tracking-wider">AEGIS HMI</span>
+          <span>/</span>
+          <span className="text-accent uppercase">CORRIDOR TELEMETRY</span>
+        </div>
+      </div>
+
+      {/* Center: System Readiness Telemetry Strip */}
+      <div className="hidden md:flex items-center gap-4 text-[11px] font-mono">
+        {/* CAMERA ● ACTIVE */}
+        <div className="flex items-center gap-1.5 text-text-secondary">
+          <span className="text-text-muted uppercase">CAMERA</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-success" />
+          <span className="text-success font-semibold">ACTIVE</span>
+        </div>
+
+        <span className="text-border">|</span>
+
+        {/* AI MODEL ● ONLINE */}
+        <div
+          className="flex items-center gap-1.5 text-text-secondary"
+          title={`Node: ${health?.config?.device || 'CPU'} | Latency: ${inferenceTimeMs.toFixed(1)}ms`}
+        >
+          <span className="text-text-muted uppercase">AI MODEL</span>
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              isBackendConnected ? 'bg-success' : 'bg-warning'
+            }`}
+          />
+          <span
+            className={`font-semibold ${
+              isBackendConnected ? 'text-success' : 'text-warning'
+            }`}
+          >
+            {isBackendConnected ? `ONLINE (${inferenceTimeMs.toFixed(0)}MS)` : 'STANDALONE'}
           </span>
-          <span className="text-outline text-[12px] hidden sm:inline-block">/</span>
-          <span className="font-label-caps text-label-caps px-space-xs py-0.5 rounded-full bg-tertiary-container/20 text-tertiary flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping" />
-            SESSION ACTIVE - CRUISE MODE
+        </div>
+
+        <span className="text-border">|</span>
+
+        {/* DRIVER MONITOR ● ACTIVE */}
+        <div className="flex items-center gap-1.5 text-text-secondary">
+          <span className="text-text-muted uppercase">DRIVER MONITOR</span>
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              driverState === 'ATTENTIVE'
+                ? 'bg-success'
+                : driverState === 'DROWSINESS_WARNING'
+                ? 'bg-critical status-pulse'
+                : 'bg-warning'
+            }`}
+          />
+          <span
+            className={`font-semibold ${
+              driverState === 'ATTENTIVE'
+                ? 'text-success'
+                : driverState === 'DROWSINESS_WARNING'
+                ? 'text-critical'
+                : 'text-warning'
+            }`}
+          >
+            {driverState === 'ATTENTIVE' ? 'ACTIVE' : driverState === 'DROWSINESS_WARNING' ? 'ALERT' : 'DRIFT'}
+          </span>
+        </div>
+
+        <span className="text-border">|</span>
+
+        {/* MAP ● CONNECTED */}
+        <div className="flex items-center gap-1.5 text-text-secondary">
+          <span className="text-text-muted uppercase">MAP</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-success" />
+          <span className="text-success font-semibold">CONNECTED</span>
+        </div>
+
+        <span className="text-border">|</span>
+
+        {/* VOICE ● READY */}
+        <div className="flex items-center gap-1.5 text-text-secondary">
+          <span className="text-text-muted uppercase">VOICE</span>
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              isMuted ? 'bg-text-muted' : isSpeaking ? 'bg-accent status-pulse' : 'bg-success'
+            }`}
+          />
+          <span
+            className={`font-semibold ${
+              isMuted ? 'text-text-muted' : isSpeaking ? 'text-accent' : 'text-success'
+            }`}
+          >
+            {isMuted ? 'MUTED' : isSpeaking ? 'ACTIVE' : 'READY'}
           </span>
         </div>
       </div>
 
-      {/* Center telemetry telemetry chips (visible on desktop) */}
-      <div className="hidden xl:flex items-center gap-space-md">
-        <div className="flex items-center gap-1 font-label-caps text-label-caps text-on-surface-variant">
-          <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse" />
-          <span>FRONT-CAM: 1080p @ {fps}FPS</span>
+      {/* Right Controls: Audio Mute, Notifications, FPS */}
+      <div className="flex items-center gap-2">
+        {/* Quick FPS readout */}
+        <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded bg-surface-secondary text-[11px] font-mono text-text-muted border border-border-subtle">
+          <span>FPS</span>
+          <span className="text-accent font-bold">{fps}</span>
         </div>
 
-        <div className="flex items-center gap-1 font-label-caps text-label-caps text-primary">
-          <span className="material-symbols-outlined text-[15px]">neurology</span>
-          <span>GTSRB-CNN: {inferenceTimeMs.toFixed(1)}ms</span>
-        </div>
-
-        <div className="flex items-center gap-1 font-label-caps text-label-caps text-tertiary">
-          <span className="material-symbols-outlined text-[15px]">center_focus_strong</span>
-          <span>
-            IR DMS:{' '}
-            {driverState === 'ATTENTIVE'
-              ? 'ATTENTIVE (98%)'
-              : driverState === 'DROWSINESS_WARNING'
-              ? 'DROWSINESS ALERT'
-              : 'ATTENTION DRIFT'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-1 font-label-caps text-label-caps text-on-surface-variant">
-          <span className="material-symbols-outlined text-[15px]">dns</span>
-          <span className={isBackendConnected ? 'text-tertiary' : 'text-error'}>
-            {isBackendConnected
-              ? `EDGE NODE: CONNECTED (${health?.config?.device || 'CPU'})`
-              : 'EDGE NODE: OFFLINE'}
-          </span>
-        </div>
-      </div>
-
-      {/* Right controls: Mute audio, notifications, user profile */}
-      <div className="flex items-center gap-space-sm">
-        {/* Voice alerts toggle button */}
+        {/* Voice Mute Toggle */}
         <button
           onClick={onToggleMute}
           type="button"
-          className={`p-2 rounded-lg transition-colors flex items-center justify-center ${
+          className={`p-1.5 rounded text-xs transition-colors flex items-center justify-center ${
             isMuted
-              ? 'bg-surface-container text-outline hover:text-on-surface'
-              : isSpeaking
-              ? 'bg-primary-container text-on-primary-container animate-pulse shadow-sm'
-              : 'bg-surface-container hover:bg-surface-container-high text-tertiary'
+              ? 'bg-surface-secondary text-text-muted hover:text-text-primary'
+              : 'bg-surface-elevated text-accent hover:bg-surface-highest'
           }`}
-          title={isMuted ? 'Voice Alerts Muted (Click to Unmute)' : 'Voice Alerts Active (Click to Mute)'}
-          aria-label={isMuted ? 'Unmute voice alerts' : 'Mute voice alerts'}
+          title={isMuted ? 'Voice alerts muted (click to enable)' : 'Voice alerts active (click to mute)'}
+          aria-label="Toggle voice alerts"
         >
-          <span className="material-symbols-outlined text-[20px]">
-            {isMuted ? 'volume_off' : 'volume_up'}
-          </span>
+          {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
         </button>
 
-        {/* Notifications button with badge */}
+        {/* Notification Bell */}
         <button
           onClick={onOpenNotifications}
           type="button"
-          className="relative p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center"
-          aria-label="View recent safety notifications"
+          className="relative p-1.5 rounded bg-surface-secondary text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
+          title="Telemetry notification buffer"
+          aria-label="Open notifications"
         >
-          <span className="material-symbols-outlined text-[20px]">notifications</span>
+          <Bell className="w-4 h-4" />
           {unreadAlertCount > 0 && (
-            <span className="absolute -top-1 -right-1 font-label-caps text-[10px] w-4 h-4 bg-error text-on-error rounded-full flex items-center justify-center font-bold">
-              {unreadAlertCount > 9 ? '9+' : unreadAlertCount}
-            </span>
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-accent" />
           )}
         </button>
-
-        {/* User / Pilot Profile avatar */}
-        <div className="flex items-center gap-space-xs pl-space-xs border-l border-outline-variant/30">
-          <div className="hidden md:flex flex-col text-right">
-            <span className="font-body-sm text-[12px] text-on-surface font-medium leading-none">
-              Capt. Miller
-            </span>
-            <span className="font-label-caps text-[9px] text-outline leading-tight mt-0.5">
-              Pilot Demo
-            </span>
-          </div>
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
-            <span className="material-symbols-outlined text-[18px]">person</span>
-          </div>
-        </div>
       </div>
     </header>
   );
