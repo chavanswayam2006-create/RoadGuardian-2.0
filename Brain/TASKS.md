@@ -74,3 +74,12 @@
 - [x] Modernize root landing page (`index.html`) with live optical SVG HUD representation and technical cards.
 - [x] Fix all TypeScript strict typing issues and verify zero compilation errors (`tsc -b && vite build`).
 
+
+---
+
+## Phase 9: Deployment Hardening & Error Boundary Resilience
+- [x] Configure dual-target hosting support (GitHub Pages base path via `VITE_BASE_PATH` & Vercel rewrite configuration).
+- [x] Expand backend CORS settings in `backend/config.py` for cloud-hosted frontend origins.
+- [x] Embed dedicated `ErrorBoundary` components around high-risk dynamic canvas/map modules (`VisionCanvas`, `ContextMap`, and root routed page content).
+- [x] Verify frontend builds cleanly (`npm run build`) and backend tests pass (11/11 tests).
+

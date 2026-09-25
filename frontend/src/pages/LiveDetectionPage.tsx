@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Camera } from 'lucide-react';
 import { VisionCanvas } from '../components/VisionCanvas';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import type { Detection } from '../types';
 
 interface LiveDetectionPageProps {
@@ -71,14 +72,16 @@ export const LiveDetectionPage: React.FC<LiveDetectionPageProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
         {/* LEFT: Large Camera Viewport */}
         <div className="lg:col-span-8 flex flex-col gap-2">
-          <VisionCanvas
-            mode={mode}
-            detections={filteredDetections}
-            inferenceTimeMs={inferenceTimeMs}
-            onFrameCaptured={onFrameCaptured}
-            speedLimitKmh={speedLimitKmh}
-            fps={fps}
-          />
+          <ErrorBoundary fallbackTitle="VISION MODULE RECOVERY">
+            <VisionCanvas
+              mode={mode}
+              detections={filteredDetections}
+              inferenceTimeMs={inferenceTimeMs}
+              onFrameCaptured={onFrameCaptured}
+              speedLimitKmh={speedLimitKmh}
+              fps={fps}
+            />
+          </ErrorBoundary>
         </div>
 
         {/* RIGHT: Detection Inspector */}

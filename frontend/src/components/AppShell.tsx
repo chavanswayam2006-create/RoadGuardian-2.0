@@ -4,6 +4,7 @@ import { TopStatusBar } from './TopStatusBar';
 import { AlertBanner } from './AlertBanner';
 import { SosModal } from './SosModal';
 import { NotificationsDrawer } from './NotificationsDrawer';
+import { ErrorBoundary } from './ErrorBoundary';
 import type { SystemHealth, DriverState, AlertCategory, SafetyEvent, RoadContext } from '../types';
 
 interface AppShellProps {
@@ -97,7 +98,9 @@ export const AppShell: React.FC<AppShellProps> = ({
 
         {/* Main Routed Page Surface */}
         <main className={`flex-1 w-full flex flex-col ${activeAlert ? 'pt-2' : 'pt-16'}`}>
-          {children}
+          <ErrorBoundary fallbackTitle="PAGE MODULE RECOVERY">
+            {children}
+          </ErrorBoundary>
         </main>
       </div>
 

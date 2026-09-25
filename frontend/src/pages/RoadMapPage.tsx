@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Compass, PhoneCall, Layers } from 'lucide-react';
 import { ContextMap } from '../components/ContextMap';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import type { RoadContext, Garage } from '../types';
 
 interface RoadMapPageProps {
@@ -32,7 +33,9 @@ export const RoadMapPage: React.FC<RoadMapPageProps> = ({
     <div className="relative w-full h-[calc(100vh-3.5rem)] overflow-hidden flex flex-col lg:flex-row select-none">
       {/* Primary Map Visual Area (Center & Left) */}
       <div className="relative flex-1 h-full min-h-[350px]">
-        <ContextMap roadContext={roadContext} garages={layers.garages ? garages : []} />
+        <ErrorBoundary fallbackTitle="MAP MODULE RECOVERY">
+          <ContextMap roadContext={roadContext} garages={layers.garages ? garages : []} />
+        </ErrorBoundary>
 
         {/* Floating Map Controls Bar (TRAFFIC, SIGNS, SIGNALS, CONSTRUCTION, SPEED, GARAGES) */}
         <div className="absolute top-3 right-3 lg:right-auto lg:left-3 z-[1000] flex items-center gap-1.5 flex-wrap bg-surface/90 p-1.5 rounded-md border border-border backdrop-blur-md shadow-lg font-mono text-[11px]">

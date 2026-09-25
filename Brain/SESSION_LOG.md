@@ -119,3 +119,26 @@
    - Zero TypeScript compilation errors (`tsc -b && vite build` succeeded in 839ms).
    - Local Vite server running and responsive on port 5173.
 
+
+---
+
+## Session 004 — Deployment Hardening & Error Boundary Resilience
+- **Timestamp**: 2026-09-26T01:30:00+05:30
+- **Agent**: Senior Platform & Reliability Engineer
+- **Objective**: Harden deployment configurations for multi-target hosting (GitHub Pages and Vercel), wrap critical interactive canvases in error boundaries, and configure CORS origins for live deployment.
+
+### Actions Performed
+1. **Multi-Target Deployment Config**:
+   - `frontend/vite.config.ts`: Updated base path to be driven by `VITE_BASE_PATH` (defaults to `/` for Vercel/local; supports `/RoadGuardian-2.0/` for GitHub Pages).
+   - `.github/workflows/deploy.yml`: Explicitly passed `VITE_BASE_PATH: /RoadGuardian-2.0/` during GitHub Pages production build.
+   - `frontend/vercel.json`: Added client-side rewrite rule routing all SPA paths to `/index.html`.
+2. **Backend CORS Updates**:
+   - `backend/config.py`: Added Vercel preview and production domain patterns (`https://frontend-mu-tan-79.vercel.app`, `https://*.vercel.app`) to `CORS_ORIGINS`.
+3. **Frontend Fault-Tolerance & Error Boundaries**:
+   - Enclosed `VisionCanvas` in `DashboardPage.tsx` and `LiveDetectionPage.tsx` with dedicated `ErrorBoundary` instances (`fallbackTitle="VISION MODULE RECOVERY"`).
+   - Enclosed `ContextMap` in `RoadMapPage.tsx` with `ErrorBoundary` (`fallbackTitle="MAP MODULE RECOVERY"`).
+   - Enclosed primary page router outlet in `AppShell.tsx` with `ErrorBoundary` (`fallbackTitle="PAGE MODULE RECOVERY"`).
+4. **Verification**:
+   - Python backend config and 11 pytest test cases pass (`11 passed in 8.82s`).
+   - Frontend TypeScript check (`npx tsc --noEmit`) and Vite build succeed with zero errors.
+

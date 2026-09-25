@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { VisionCanvas } from '../components/VisionCanvas';
 import { DriverGauge } from '../components/DriverGauge';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import type {
   Detection,
   DriverStatus,
@@ -167,13 +168,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </button>
           </div>
 
-          <VisionCanvas
-            mode="simulated"
-            detections={detections}
-            inferenceTimeMs={inferenceTimeMs}
-            speedLimitKmh={speedLimitKmh}
-            fps={60}
-          />
+          <ErrorBoundary fallbackTitle="VISION MODULE RECOVERY">
+            <VisionCanvas
+              mode="simulated"
+              detections={detections}
+              inferenceTimeMs={inferenceTimeMs}
+              speedLimitKmh={speedLimitKmh}
+              fps={60}
+            />
+          </ErrorBoundary>
         </div>
 
         {/* RIGHT COLUMN: SECTION 3 (CURRENT ALERT) + SECTION 4 (DRIVER STATUS) */}
