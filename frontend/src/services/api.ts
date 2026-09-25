@@ -57,11 +57,14 @@ class ApiService {
       return {
         class_id: d.metadata?.class_id ?? d.class_id ?? 0,
         class_name: d.display_name || d.class_name || d.label || 'Traffic Object',
-        category: d.category || 'TRAFFIC_SIGN',
+        category: d.metadata?.sign_category || d.category || 'TRAFFIC_SIGN',
         confidence: d.confidence ?? 0.5,
         bbox,
         is_red_light: d.label === 'SIGNAL_RED' || d.metadata?.signal_state === 'SIGNAL_RED',
         speed_limit_kmh: d.metadata?.speed_limit_kmh ?? d.speed_limit_kmh ?? null,
+        severity: d.metadata?.severity || 'INFO',
+        action_required: d.metadata?.action_required || 'ADVISORY',
+        ingestion_mode: d.metadata?.ingestion_mode || 'REGION_DETECTION',
       };
     });
 

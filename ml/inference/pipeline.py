@@ -11,6 +11,12 @@ from ml.inference.detector import TrafficSignDetector
 from ml.inference.classifier import GTSRBClassifier
 from ml.inference.label_manager import LabelManager
 
+# Minimum classifier confidence required to accept a whole-image DIRECT_CROP fallback.
+# Empirically, degenerate uploads (random noise, flat gradients, motion-blurred texture)
+# score in the 0.45-0.55 band, while genuine tightly-cropped signs score ~0.90-1.00.
+DIRECT_CROP_MIN_CONFIDENCE = 0.65
+
+
 class TrafficSignPipeline:
     """
     Incremental Traffic Sign Recognition Pipeline:
@@ -124,6 +130,47 @@ class TrafficSignPipeline:
                             }
                         }
                         detections.append(det_event)
+
+        # Fallback for Direct Cropped Images / Uploaded Signs:
+        # If no candidates were proposed (e.g. tightly-cropped sign where contour detector has no outer borders,
+        # or image aspect ratio is approximately square and candidate detector found nothing),
+        # evaluate the whole image directly with the GTSRB classifier.
+        if len(detections) == 0 and frame_bgr is not None:
+            # Check aspect ratio
+            ar = float(w_frame) / float(h_frame) if h_frame > 0 else 1.0
+            if 0.5 <= ar <= 2.0:
+                cls_direct = self.classifier.classify_crop(frame_bgr)
+                direct_conf = cls_direct["confidence"]
+                # Gated: only accept a whole-image direct crop when the classifier is
+                # decisively confident (>= caller threshold and >= DIRECT_CROP_MIN_CONFIDENCE).
+                # This rejects random noise, flat gradients and blank backgrounds.
+                if direct_conf >= max(threshold, DIRECT_CROP_MIN_CONFIDENCE) and cls_direct["class_id"] >= 0:
+                    det_event = {
+                        "id": f"det_crop_{uuid.uuid4().hex[:8]}",
+                        "frame_id": frame_id,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                        "category": "TRAFFIC_SIGN",
+                        "label": cls_direct["label"],
+                        "display_name": cls_direct["display_name"],
+                        "confidence": direct_conf,
+                        "bounding_box": {
+                            "x_min": 0.0,
+                            "y_min": 0.0,
+                            "x_max": 1.0,
+                            "y_max": 1.0
+                        },
+                        "metadata": {
+                            "class_id": cls_direct["class_id"],
+                            "sign_category": cls_direct["category"],
+                            "speed_limit_kmh": cls_direct["speed_limit_kmh"],
+                            "severity": cls_direct["severity"],
+                            "action_required": "BRAKE" if cls_direct["severity"] == "CRITICAL" else (
+                                "SLOW_DOWN" if cls_direct["severity"] == "WARNING" else "ADVISORY"
+                            ),
+                            "ingestion_mode": "DIRECT_CROP"
+                        }
+                    }
+                    detections.append(det_event)
 
         t_cls_ms = (time.perf_counter() - t_cls_start) * 1000
         t_total_ms = (time.perf_counter() - t_start) * 1000

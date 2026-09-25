@@ -126,8 +126,27 @@ class TrafficSignDetector:
             })
 
         # 4. Traffic light detection (vertical aspect ratio 1:2 to 1:4 with high vertical contrast)
-        light_candidates = self._detect_traffic_signals(frame_bgr, hsv)
-        candidates.extend(light_candidates)
+        # Only run on road scene frames (w_frame >= 200) to avoid false positives on cropped signs
+        if w_frame >= 200 and h_frame >= 200:
+            light_candidates = self._detect_traffic_signals(frame_bgr, hsv)
+            # Filter out any traffic light candidate that lies inside a detected traffic sign
+            valid_lights = []
+            for sig in light_candidates:
+                sx1, sy1, sx2, sy2 = sig["box"]
+                inside_sign = False
+                for sign in candidates:
+                    tx1, ty1, tx2, ty2 = sign["box"]
+                    ix1, iy1 = max(sx1, tx1), max(sy1, ty1)
+                    ix2, iy2 = min(sx2, tx2), min(sy2, ty2)
+                    inter = max(0, ix2 - ix1) * max(0, iy2 - iy1)
+                    sig_area = (sx2 - sx1) * (sy2 - sy1)
+                    if sig_area > 0 and (inter / sig_area) > 0.4:
+                        inside_sign = True
+                        break
+                if not inside_sign:
+                    valid_lights.append(sig)
+
+            candidates.extend(valid_lights)
 
         return candidates
 

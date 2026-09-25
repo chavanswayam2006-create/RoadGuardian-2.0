@@ -88,18 +88,9 @@ export const App: React.FC = () => {
     action_required?: string;
   } | null>(null);
 
-  // Vision pipeline state
-  const [detections, setDetections] = useState<Detection[]>([
-    {
-      class_id: 2,
-      class_name: 'Speed limit (50km/h)',
-      category: 'Speed Limit',
-      confidence: 0.98,
-      bbox: [480, 140, 560, 220],
-      speed_limit_kmh: 50,
-    },
-  ]);
-  const [inferenceTimeMs, setInferenceTimeMs] = useState<number>(14.2);
+  // Vision pipeline state - starts empty (no fake detections)
+  const [detections, setDetections] = useState<Detection[]>([]);
+  const [inferenceTimeMs, setInferenceTimeMs] = useState<number>(0);
 
   // Driver monitor state
   const [driverStatus, setDriverStatus] = useState<DriverStatus>({
@@ -258,34 +249,32 @@ export const App: React.FC = () => {
       const res = await api.detectFrame(base64Image, 0.40);
       if (res.success) {
         setInferenceTimeMs(res.inference_time_ms);
-        if (res.detections.length > 0) {
-          setDetections(res.detections);
+        setDetections(res.detections);
 
-          // Update speed limit if speed limit sign detected
-          const speedSign = res.detections.find((d) => d.speed_limit_kmh);
-          if (speedSign && speedSign.speed_limit_kmh) {
-            setSpeedLimitKmh(speedSign.speed_limit_kmh);
-          }
+        // Update speed limit if speed limit sign detected
+        const speedSign = res.detections.find((d) => d.speed_limit_kmh);
+        if (speedSign && speedSign.speed_limit_kmh) {
+          setSpeedLimitKmh(speedSign.speed_limit_kmh);
+        }
 
-          // Handle server-issued active alerts
-          if (res.active_alert) {
-            setActiveAlert({
+        // Handle server-issued active alerts
+        if (res.active_alert) {
+          setActiveAlert({
+            category: res.active_alert.category,
+            title: res.active_alert.title,
+            message: res.active_alert.message,
+            action_required: res.active_alert.action_required,
+          });
+
+          if (res.active_alert.speak_text) {
+            const voiced = speak(res.active_alert.speak_text);
+            addSafetyEvent({
               category: res.active_alert.category,
               title: res.active_alert.title,
               message: res.active_alert.message,
-              action_required: res.active_alert.action_required,
+              source: 'TRAFFIC_VISION',
+              spoken: voiced,
             });
-
-            if (res.active_alert.speak_text) {
-              const voiced = speak(res.active_alert.speak_text);
-              addSafetyEvent({
-                category: res.active_alert.category,
-                title: res.active_alert.title,
-                message: res.active_alert.message,
-                source: 'TRAFFIC_VISION',
-                spoken: voiced,
-              });
-            }
           }
         }
       }

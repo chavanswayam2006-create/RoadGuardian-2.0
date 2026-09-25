@@ -21,6 +21,9 @@ export interface Detection {
   bbox: [number, number, number, number]; // [x1, y1, x2, y2]
   is_red_light?: boolean;
   speed_limit_kmh?: number | null;
+  severity?: string;
+  action_required?: string;
+  ingestion_mode?: string;
 }
 
 export interface DetectResponse {
