@@ -51,6 +51,46 @@
   4. Configured dynamic base path in `frontend/vite.config.ts` supporting both Vite production build for `/RoadGuardian-2.0/` and root dev server.
   5. Added defensive array fallback `(garage.services || [])` in `frontend/src/pages/RoadMapPage.tsx`.
 
+### BUG-006: Root URL (`/`) Returned a Bare 404 — Looked Like a Dead Backend
+- **Component**: Backend / Developer Experience
+- **Severity**: Low
+- **Steps to Reproduce**: Start the backend (`python backend/main.py`) and open `http://127.0.0.1:8000/` in a browser.
+- **Expected Behavior**: Opening the service root indicates the API is alive and where the docs are.
+- **Actual Behavior**: `{"detail":"Not Found"}`. The FastAPI app was fully healthy (`/health`, `/docs`, `/openapi.json` all returned 200; the port owner was confirmed as `python backend/main.py`), but the bare 404 made it look broken.
+- **Resolution**: Added a `GET /` service-discovery route in `backend/main.py` returning service name, version, `/docs`, `/health`, and an endpoint index. Verified live: `GET /` -> 200 with JSON body.
+
+### BUG-007: CORS Allow-List Rejected Vite Preview / LAN Origins and `*.vercel.app` Never Matched
+- **Component**: Backend / CORS
+- **Severity**: High
+- **Steps to Reproduce**: Serve the production build with `npm run preview` (port 4173) or open the built `dist/index.html`, then load the CAM page. The browser blocks `fetch('http://localhost:8000/health')` and the UI reports `MODEL SERVICE OFFLINE` although the backend is up.
+- **Expected Behavior**: Local dev (5173), local preview (4173) and the deployed Vercel frontend can all reach `/health` and `/detect`.
+- **Actual Behavior**: Only 5173/3000 and one hardcoded Vercel origin were allowed. The entry `https://*.vercel.app` is a literal string in Starlette's `allow_origins`, so it never matched any real origin (verified: `https://some-other-app.vercel.app` received no `Access-Control-Allow-Origin`).
+- **Resolution**: `backend/config.py` now parses `CORS_ORIGINS` (comma-separated env supported), includes 5173 + 4173 for both `localhost` and `127.0.0.1`, and adds `CORS_ORIGIN_REGEX` (`^https://([a-z0-9-]+\.)*vercel\.app$`) applied via `allow_origin_regex`. Verified live with an Origin-header matrix: 5173/4173 pass, arbitrary `*.vercel.app` previews pass, non-Vercel origins are still rejected.
+
+### BUG-008: Camera Failure Reporting Could Not Distinguish Hardware, Constraint and Secure-Context Problems
+- **Component**: Frontend / CAM Camera Lifecycle
+- **Severity**: Medium
+- **Steps to Reproduce**: Press START CAMERA on a desktop without a webcam, from a non-secure origin (`file://`, plain-HTTP LAN IP), or while another application holds the camera.
+- **Expected Behavior**: The exact reason is reported, image upload remains available, and `facingMode` constraints never cause a false "no camera" report.
+- **Actual Behavior**: A single `facingMode: 'environment'` request was issued; unsupported constraints and secure-context problems produced generic/incorrect messages.
+- **Resolution**: `frontend/src/pages/LiveDetectionPage.tsx` now (1) checks `window.isSecureContext`, (2) retries once without `facingMode` on `OverconstrainedError`/`NotFoundError`, (3) maps error names to distinct messages (permission / no device / in use / constraints), and (4) enumerates `videoinput` devices after success to display the active input. Camera state remains fully independent from the model-service state.
+
+### BUG-009: Fabricated Traffic-Sign Results Remained in Dashboard, VisionCanvas and Seed Events
+- **Component**: Frontend / Data Honesty
+- **Severity**: High
+- **Steps to Reproduce**: Load the Dashboard before any detection (or with the backend offline) and inspect "CURRENT OBSERVATION"; or open the event timeline in a fresh session.
+- **Expected Behavior**: No traffic-sign result is displayed unless the model produced it.
+- **Actual Behavior**: `DashboardPage.tsx` fell back to `{ class_name: 'Speed limit (50km/h)', confidence: 0.98 }` and rendered an extra `|| 0.96` confidence fallback; `VisionCanvas.tsx` used a `: 95` confidence fallback; `App.tsx` seeded a safety event titled `SPEED LIMIT 50 KM/H DETECTED` claiming `GTSRB Classifier verified 50 km/h zone ahead`.
+- **Resolution**: All three fallbacks removed. The dashboard now renders `AWAITING DETECTION` / `NO SIGN DETECTED` until real detections arrive; the canvas omits the confidence tag when the value is missing; the seeded event is now an honest `VISION PIPELINE READY` info entry.
+
+### BUG-010: `.env.example` Documented Variables That `Settings` Never Read
+- **Component**: Backend / Configuration
+- **Severity**: Low
+- **Steps to Reproduce**: Copy `.env.example` to `.env` and start the backend: `BACKEND_HOST`, `BACKEND_PORT`, `TRAFFIC_SIGN_MODEL_PATH`, `DETECTION_CONFIDENCE_THRESHOLD` had no effect.
+- **Expected Behavior**: Every documented variable maps to a real setting.
+- **Actual Behavior**: `backend/config.py` reads `HOST`, `PORT`, `MODEL_WEIGHTS_PATH`, `DEFAULT_CONFIDENCE_THRESHOLD`, ... and the documented model path pointed at a non-existent file name (`traffic_sign_detector.pt`).
+- **Resolution**: `.env.example` rewritten to match the `Settings` fields exactly, and relative model/dataset/cascade paths are now resolved against the repository root (`settings.model_weights_abspath` etc.) so the backend can be started from any working directory.
+
 ---
 
 ## Bug Report Protocol

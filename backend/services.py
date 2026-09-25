@@ -20,11 +20,11 @@ class InferenceService:
     def __init__(self):
         print("Initializing InferenceService...")
         self.pipeline = TrafficSignPipeline(
-            classifier_path=settings.MODEL_WEIGHTS_PATH,
+            classifier_path=settings.model_weights_abspath,
             default_confidence_threshold=settings.DEFAULT_CONFIDENCE_THRESHOLD
         )
         self.driver_monitor = DriverAwarenessMonitor(
-            cascade_dir=settings.CASCADES_DIR,
+            cascade_dir=settings.cascades_abspath,
             ear_closed_threshold=settings.DEFAULT_EAR_THRESHOLD
         )
         self.alert_engine = AlertEngine()

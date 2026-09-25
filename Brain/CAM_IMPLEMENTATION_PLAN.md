@@ -72,3 +72,30 @@ via GTSRBClassifier          (Handles tightly cropped sign
    - Run frontend TypeScript check (`npx tsc --noEmit`) and build (`npm run build`).
    - Run real-world image tests with GTSRB test signs, non-sign noise, and webcam simulation.
 
+---
+
+## 5. Round 2 Implementation Status (2026-09-26)
+
+### Applied — Backend
+- `GET /` service-discovery route so the service root no longer looks like a dead backend (`backend/main.py`).
+- CORS repaired: comma-separated `CORS_ORIGINS` env + `CORS_ORIGIN_REGEX` for genuine Vercel preview matching; Vite preview ports 4173 added for both `localhost` and `127.0.0.1` (`backend/config.py`, `backend/main.py`).
+- Model/dataset/cascade paths resolved against the repository root so the backend can start from any working directory (`backend/config.py`, `backend/services.py`).
+- `.env.example` aligned with the actual `Settings` field names.
+
+### Applied — Frontend CAM
+- Camera lifecycle hardened: secure-context check, `facingMode` retry, distinct error mapping, `enumerateDevices()` verification, active-input label. Camera and model status remain fully independent (camera keeps working with the backend offline).
+- Developer test samples hidden behind `import.meta.env.DEV` and relabelled `DEV TEST MODE - SAMPLES` (production CAM UI exposes no sample buttons).
+- Offline banner prints the resolved API target (`api.getBaseUrl()`).
+- Fabricated values removed from `DashboardPage.tsx`, `VisionCanvas.tsx`, and `App.tsx` seed events.
+
+### Verification Evidence
+- `python -m pytest tests -q` -> **16 passed**.
+- `npx tsc -b --force` -> exit 0; `npm run build` -> built in 845 ms.
+- Live `POST /detect` with `frontend/public/samples/sample_stop.png` -> `Stop` @ `0.9997`, `7.23 ms`.
+- CORS Origin matrix re-verified after the backend restart.
+
+### Still Open
+- A **public HTTPS backend host** is required for the deployed Vercel frontend (`VITE_API_BASE_URL`); until then the deployed CAM page honestly reports `MODEL SERVICE OFFLINE`.
+- Real-world detection accuracy (photos of signs in traffic scenes) has not been benchmarked — the pipeline is validated on cropped sign imagery (GTSRB-style), and no accuracy figure is claimed.
+
+

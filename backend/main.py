@@ -50,9 +50,12 @@ app = FastAPI(
 )
 
 # CORS middleware
+# Explicit origins come from settings.cors_origins; Vercel preview deployments
+# are matched by CORS_ORIGIN_REGEX (e.g. https://<project>-<hash>.vercel.app).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=settings.cors_origins,
+    allow_origin_regex=settings.CORS_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -71,6 +74,29 @@ async def global_exception_handler(request: Request, exc: Exception):
             timestamp=datetime.now(timezone.utc).isoformat()
         ).model_dump()
     )
+
+@app.get("/", tags=["System"])
+async def root():
+    """
+    Service discovery root. The API has no HTML landing page, so requests to /
+    return a small JSON index instead of a bare 404. Interactive docs: /docs
+    """
+    return {
+        "service": settings.PROJECT_NAME,
+        "version": settings.VERSION,
+        "status": "online",
+        "documentation": "/docs",
+        "openapi_schema": "/openapi.json",
+        "health": "/health",
+        "endpoints": {
+            "health": "GET /health",
+            "traffic_sign_inference": "POST /detect",
+            "driver_monitoring": "POST /driver-status",
+            "road_context": "GET /road-context",
+            "garages": "GET /garages",
+            "events": "GET /events",
+        },
+    }
 
 @app.get("/health", response_model=HealthResponse, tags=["System"])
 async def get_health():

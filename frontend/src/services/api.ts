@@ -9,6 +9,11 @@ class ApiService {
     this.baseUrl = API_BASE_URL;
   }
 
+  /** Resolved backend base URL (exposed for UI diagnostics only). */
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
+
   async getHealth(): Promise<SystemHealth> {
     const res = await fetch(`${this.baseUrl}/health`, {
       headers: { 'Accept': 'application/json' },

@@ -147,6 +147,34 @@ RoadGuardian-2.0/
 
 ---
 
+## Running Locally
+
+Two processes are required — the frontend contains no substitute backend.
+
+```bash
+# 1) ML backend (FastAPI + PyTorch GTSRB classifier)
+python backend/main.py                 # -> http://127.0.0.1:8000 (docs: /docs, health: /health)
+# or: npm run dev:backend
+
+# 2) Frontend (Vite dev server)
+npm run dev:frontend                   # -> http://localhost:5173
+```
+
+- Traffic-sign inference endpoint: `POST /detect` with `{"image_base64", "confidence_threshold", "frame_id"}`.
+- `GET /` returns a JSON service index (the API has no HTML landing page).
+- Developer-only CAM sample shortcuts load the bundled images in `frontend/public/samples/`.
+
+## Deployment (Vercel frontend + separate backend)
+
+- The frontend is a static build and can be hosted on Vercel.
+- **Vercel cannot run the PyTorch/FastAPI service.** A public HTTPS backend host is REQUIRED.
+- Configure the frontend API target in `frontend/.env` (see `frontend/.env.example`):
+  `VITE_API_BASE_URL=http://localhost:8000` locally, or `https://<public-backend-host>` in production.
+- Add the deployed frontend origin to the backend CORS configuration (`CORS_ORIGINS` or `CORS_ORIGIN_REGEX`).
+- Until a public backend exists, the deployed CAM page honestly reports `MODEL SERVICE OFFLINE` — there is deliberately no mock fallback.
+
+---
+
 ## Source of Truth Protocol
 
 All contributors and AI agents must follow the **Brain Operating Protocol**:

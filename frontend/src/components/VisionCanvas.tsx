@@ -285,7 +285,7 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
           const isCritical = det.is_red_light;
           const strokeColor = isCritical ? '#FF5C67' : '#8DB8FF';
           const labelStr = (det.class_name || 'Traffic Sign').toString().toUpperCase();
-          const confPct = typeof det.confidence === 'number' ? Math.round(det.confidence * 100) : 95;
+          const confPct = typeof det.confidence === 'number' ? Math.round(det.confidence * 100) : null;
 
           return (
             <g key={`det-${idx}`}>
@@ -345,7 +345,7 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
                 fontFamily='"JetBrains Mono", monospace'
                 fontWeight="600"
               >
-                {labelStr} <tspan fill={isCritical ? '#FF5C67' : '#35D69A'}>{confPct}%</tspan>
+                {labelStr} {confPct !== null && <tspan fill={isCritical ? '#FF5C67' : '#35D69A'}>{confPct}%</tspan>}
               </text>
             </g>
           );

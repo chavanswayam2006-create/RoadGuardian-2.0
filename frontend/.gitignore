@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Local environment overrides (VITE_API_BASE_URL etc.) - never commit
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-09-26
+
+### Fixed
+- **Backend reachability confusion**: `GET /` returned a bare 404 (no root route existed) while the service was healthy. Added a service-discovery root route (name, version, `/docs`, `/health`, endpoint index).
+- **CORS gaps causing false `MODEL SERVICE OFFLINE`**: the allow-list omitted Vite preview (4173) and the `https://*.vercel.app` entry was a literal string that never matched. `CORS_ORIGINS` is now comma-separated and env-overridable, and `CORS_ORIGIN_REGEX` genuinely admits Vercel preview deployments (non-Vercel origins still rejected).
+- **Camera lifecycle robustness**: `getUserMedia` now checks secure context, retries once without `facingMode` constraints, reports permission / no-device / in-use / constraint failures distinctly, and enumerates video inputs to display the active device. Camera and model-service status remain independent.
+- **Removed remaining fabricated traffic-sign data**: dashboard `Speed limit (50km/h)` @ 98% fallback, `|| 0.96` and `: 95` confidence fallbacks, and the seeded `SPEED LIMIT 50 KM/H DETECTED` safety event.
+- **Configuration clarity**: `.env.example` rewritten to match the real `Settings` field names (previous `BACKEND_*` / `TRAFFIC_SIGN_MODEL_PATH` variables were silently ignored); relative model/dataset paths now resolve against the repository root so the backend runs from any working directory.
+
+### Added
+- `frontend/.env.example` documenting `VITE_API_BASE_URL` (local + production) and the requirement for a public HTTPS backend for the deployed frontend.
+- `api.getBaseUrl()` accessor and an "API target" line in the CAM offline state for instant diagnosis.
+
+### Changed
+- Developer test samples on the CAM page are now hidden behind `import.meta.env.DEV` and labelled `DEV TEST MODE - SAMPLES` (production UI has none).
+- `.gitignore` (frontend) now explicitly excludes `.env`, `.env.*` while keeping `.env.example` tracked.
+
+### Verified
+- Live `POST /detect` with a bundled sample: `Stop` (class 14) at `0.9997`, `inference_time_ms 7.23`.
+- CORS Origin matrix re-tested after the change; `python -m pytest tests -q` -> 16 passed; `npx tsc -b --force` and `npm run build` -> exit 0.
+
 ## [0.3.0] - 2026-09-26
 
 ### Added

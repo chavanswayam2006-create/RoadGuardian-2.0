@@ -26,6 +26,7 @@ export const LiveDetectionPage: React.FC<LiveDetectionPageProps> = ({
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [isPermissionDenied, setIsPermissionDenied] = useState<boolean>(false);
+  const [cameraDeviceLabel, setCameraDeviceLabel] = useState<string | null>(null);
 
   const [uploadedImageSrc, setUploadedImageSrc] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
@@ -53,6 +54,28 @@ export const LiveDetectionPage: React.FC<LiveDetectionPageProps> = ({
     }
     setIsCameraActive(false);
   }, []);
+  const handleCameraFailure = useCallback((err: any) => {
+    console.warn('Camera access failure:', err);
+    const name = err?.name || '';
+    if (name === 'NotAllowedError' || name === 'PermissionDeniedError' || name === 'SecurityError') {
+      setIsPermissionDenied(true);
+      setCameraError(
+        'Camera permission was denied. Allow camera access for this site in the browser address bar, then press START CAMERA again.'
+      );
+    } else if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
+      setCameraError(
+        'The browser reports no camera device (sensor) on this machine. Connect or enable a webcam and retry - image upload still works because the ML service is independent of the camera.'
+      );
+    } else if (name === 'NotReadableError' || name === 'TrackStartError' || name === 'AbortError') {
+      setCameraError('The camera is already in use by another application or tab. Close other camera applications and retry.');
+    } else if (name === 'OverconstrainedError') {
+      setCameraError('No connected camera could satisfy the requested video constraints (resolution / facing mode).');
+    } else {
+      setCameraError(`Unable to start camera: ${err?.message || 'Unknown error'}`);
+    }
+    setIsCameraActive(false);
+  }, []);
+
   const startCamera = useCallback(async () => {
     stopCamera();
     setCameraError(null);
@@ -61,43 +84,77 @@ export const LiveDetectionPage: React.FC<LiveDetectionPageProps> = ({
     setUploadedImageSrc(null);
     setUploadedFileName(null);
     setRecognitionError(null);
+    setCameraDeviceLabel(null);
 
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setCameraError('Browser camera access is not supported on this device/browser.');
+    // getUserMedia requires a secure context: https:// or http://localhost.
+    if (typeof window !== 'undefined' && window.isSecureContext === false) {
+      setCameraError(
+        'Camera capture requires a secure context. Open this app via http://localhost:<port> or an HTTPS URL - browsers block camera access on file:// and plain-HTTP LAN addresses.'
+      );
+      return;
+    }
+    if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+      setCameraError(
+        'This browser does not expose the MediaDevices API, so live camera capture is unavailable here. Uploading a traffic-sign image still works.'
+      );
       return;
     }
 
+    let stream: MediaStream | null = null;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      stream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 640 },
           height: { ideal: 480 },
-          facingMode: 'environment',
+          facingMode: { ideal: 'environment' },
         },
         audio: false,
       });
-
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+    } catch (primaryErr: any) {
+      // Desktop/laptop webcams frequently cannot satisfy facingMode:'environment'.
+      // Retry once with no facing preference before reporting a hard failure.
+      const retryable = ['OverconstrainedError', 'NotFoundError', 'DevicesNotFoundError'].includes(primaryErr?.name);
+      if (!retryable) {
+        handleCameraFailure(primaryErr);
+        return;
       }
-      setIsCameraActive(true);
-    } catch (err: any) {
-      console.warn('Camera access failure:', err);
-      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        setIsPermissionDenied(true);
-        setCameraError('Camera permission was denied. Please allow camera permissions in your browser address bar.');
-      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-        setCameraError('No camera sensor detected on this device.');
-      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
-        setCameraError('Camera is already in use by another application or tab.');
-      } else {
-        setCameraError(`Unable to start camera: ${err.message || 'Unknown error'}`);
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false,
+        });
+      } catch (fallbackErr: any) {
+        handleCameraFailure(fallbackErr);
+        return;
       }
-      setIsCameraActive(false);
     }
-  }, [stopCamera]);
+
+    if (!stream) {
+      handleCameraFailure({ name: 'NotFoundError' });
+      return;
+    }
+
+    streamRef.current = stream;
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+      try {
+        await videoRef.current.play();
+      } catch {
+        // Autoplay rejection is non-fatal - the element still receives the stream.
+      }
+    }
+    setIsCameraActive(true);
+
+    // Informational: report which video input the browser is actually using.
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoInputs = devices.filter((device) => device.kind === 'videoinput');
+      const activeTrack = stream.getVideoTracks()[0];
+      setCameraDeviceLabel(activeTrack?.label || `${videoInputs.length} video input(s) detected`);
+    } catch {
+      // Device enumeration is optional; ignore failures.
+    }
+  }, [stopCamera, handleCameraFailure]);
 
   useEffect(() => {
     return () => {
@@ -439,6 +496,15 @@ export const LiveDetectionPage: React.FC<LiveDetectionPageProps> = ({
                 <Upload className="w-3.5 h-3.5 text-accent" />
                 <span>Upload Traffic Sign</span>
               </button>
+
+              {cameraDeviceLabel && (
+                <span
+                  className="text-[10px] text-text-muted font-mono hidden md:inline max-w-[240px] truncate"
+                  title={`Active video input: ${cameraDeviceLabel}`}
+                >
+                  INPUT: {cameraDeviceLabel}
+                </span>
+              )}
             </div>
 
             <input
@@ -453,8 +519,9 @@ export const LiveDetectionPage: React.FC<LiveDetectionPageProps> = ({
               className="hidden"
             />
 
-            <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
-              <span>TEST SAMPLES:</span>
+            {import.meta.env.DEV && (
+              <div className="flex items-center gap-1.5 text-[11px] text-text-muted" title="Developer-only shortcuts: load bundled GTSRB sample images to verify the inference pipeline. Hidden in production builds.">
+              <span className="text-warning/90">DEV TEST MODE - SAMPLES:</span>
               <button
                 onClick={() => handleLoadSample('/samples/sample_stop.png', 'Stop Sign (GTSRB #14)')}
                 className="px-2 py-0.5 rounded bg-surface-elevated border border-border hover:border-accent text-text-primary transition-colors"
@@ -477,6 +544,7 @@ export const LiveDetectionPage: React.FC<LiveDetectionPageProps> = ({
                 KEEP RIGHT
               </button>
             </div>
+            )}
           </div>
         </div>
 
@@ -517,7 +585,7 @@ export const LiveDetectionPage: React.FC<LiveDetectionPageProps> = ({
                 </p>
                 {!isBackendConnected && (
                   <div className="p-2 rounded bg-surface text-warning text-[10px] border border-warning/30">
-                    Run `python backend/main.py` to activate the PyTorch ResNet-18 model service.
+                    Run `python backend/main.py` to activate the PyTorch ResNet-18 model service. API target: <span className="text-accent font-bold">{api.getBaseUrl()}</span>
                   </div>
                 )}
               </div>

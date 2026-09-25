@@ -170,11 +170,11 @@ export const App: React.FC = () => {
     {
       id: 'ev-init-2',
       timestamp: new Date(Date.now() - 4000).toISOString(),
-      category: 'ADVISORY',
-      title: 'SPEED LIMIT 50 KM/H DETECTED',
-      message: 'GTSRB Classifier verified 50 km/h zone ahead.',
-      source: 'TRAFFIC_VISION',
-      spoken: true,
+      category: 'INFO',
+      title: 'VISION PIPELINE READY',
+      message: 'Traffic-sign recognition runs only on real captured frames or uploaded images - no simulated detections.',
+      source: 'SYSTEM',
+      spoken: false,
     },
   ]);
 

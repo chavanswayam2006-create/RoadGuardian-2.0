@@ -61,12 +61,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     ? { level: 'CAUTION', label: 'CAUTION ADVISORY', color: 'text-warning', bg: 'bg-warning-subtle', border: 'border-warning' }
     : { level: 'NORMAL', label: 'NORMAL', color: 'text-success', bg: 'bg-success-subtle', border: 'border-success/30' };
 
-  // Latest detected sign
-  const latestSign = detections[0] || {
-    class_name: 'Speed limit (50km/h)',
-    confidence: 0.98,
-    speed_limit_kmh: speedLimitKmh,
-  };
+  // Latest genuinely detected sign. No synthetic fallback: when nothing has
+  // been recognized the UI states that instead of inventing a sign/confidence.
+  const latestSign = detections.length > 0 ? detections[0] : null;
 
   // Recent 5 events
   const recentEvents = events.slice(0, 5);
@@ -198,15 +195,30 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             {/* Alert Content Box */}
             <div className="my-2.5 flex items-center justify-between gap-3">
               <div className="flex flex-col">
-                <span className="telemetry-label text-[10px]">VERIFIED ROAD SIGN</span>
-                <span className="font-headline font-bold text-base text-text-primary mt-0.5 tracking-tight uppercase">
-                  {latestSign.class_name}
+                <span className="telemetry-label text-[10px]">
+                  {latestSign ? 'VERIFIED ROAD SIGN' : 'AWAITING DETECTION'}
                 </span>
-                <div className="flex items-center gap-2 mt-1 font-mono text-[11px] text-text-secondary">
-                  <span>CONFIDENCE: <strong className="text-success">{Math.round((latestSign.confidence || 0.96) * 100)}%</strong></span>
-                  <span>•</span>
-                  <span>LIMIT: <strong className="text-accent">{speedLimitKmh} KM/H</strong></span>
-                </div>
+                {latestSign ? (
+                  <>
+                    <span className="font-headline font-bold text-base text-text-primary mt-0.5 tracking-tight uppercase">
+                      {latestSign.class_name}
+                    </span>
+                    <div className="flex items-center gap-2 mt-1 font-mono text-[11px] text-text-secondary">
+                      <span>CONFIDENCE: <strong className="text-success">{Math.round((latestSign.confidence ?? 0) * 100)}%</strong></span>
+                      <span>-</span>
+                      <span>LIMIT: <strong className="text-accent">{speedLimitKmh} KM/H</strong></span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-headline font-bold text-base text-text-muted mt-0.5 tracking-tight uppercase">
+                      NO SIGN DETECTED
+                    </span>
+                    <div className="flex items-center gap-2 mt-1 font-mono text-[11px] text-text-muted">
+                      <span>POINT CAMERA AT A TRAFFIC SIGN OR UPLOAD AN IMAGE</span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* European Speed Limit Sign Shield */}

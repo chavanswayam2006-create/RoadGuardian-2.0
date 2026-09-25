@@ -142,3 +142,31 @@
    - Python backend config and 11 pytest test cases pass (`11 passed in 8.82s`).
    - Frontend TypeScript check (`npx tsc --noEmit`) and Vite build succeed with zero errors.
 
+---
+
+## Session 005 — Backend Reachability Audit, CORS Repair & Honest CAM Diagnostics
+- **Timestamp**: 2026-09-26
+- **Agent**: Lead Full-Stack & ML Systems Engineer
+- **Objective**: Explain the `/` 404, prove the FastAPI/ML service works end-to-end, repair the CORS configuration that produced false `MODEL SERVICE OFFLINE` states, harden the camera lifecycle, and remove all remaining fabricated traffic-sign data.
+
+### Actions Performed
+1. **Repository & Runtime Audit (no code changes until complete)**:
+   - Inspected `backend/` (`main.py`, `config.py`, `services.py`, `schemas.py`, `alert_engine.py`), `ml/inference/*`, `frontend/src` (CAM page, API client, App state, VisionCanvas, Dashboard), `package.json` files, `.env.example`, `.gitignore`, `vercel.json`, `vite.config.ts`.
+   - Confirmed the FastAPI app object is created in `backend/main.py` (`app = FastAPI(...)`) and started via `python backend/main.py` (`uvicorn.run("backend.main:app", host=127.0.0.1, port=8000)`), also exposed as `npm run dev:backend`.
+2. **Live Backend Verification**:
+   - Found an already-running process `python backend/main.py` (pid 182608) owning port 8000.
+   - `GET /` -> 404 (no root route), `GET /health` -> 200 (`healthy`, `classes_loaded: 43`), `GET /docs` -> 200, `GET /openapi.json` -> 200.
+   - Enumerated the registered route table; `/predict` and `/inference` do not exist — `POST /detect` is the inference endpoint.
+3. **Real Model Test (no fabricated results)**:
+   - `POST /detect` with `frontend/public/samples/sample_stop.png` -> `Stop` (class 14) at `0.9997`, `inference_time_ms 7.23`; invalid payload -> `400`.
+4. **CORS Repair**:
+   - `backend/config.py` now exposes comma-separated `CORS_ORIGINS` plus `CORS_ORIGIN_REGEX` (default `^https://([a-z0-9-]+\.)*vercel\.app$`); `backend/main.py` applies `allow_origin_regex`.
+   - Added Vite preview origins (4173) for both `localhost` and `127.0.0.1`. Verified with an Origin matrix: 5173/4173/preview-Vercel allowed, non-Vercel rejected.
+5. **Root Route Added**: `GET /` returns a service-discovery JSON index (name, version, `/docs`, `/health`, endpoint list).
+6. **Path Robustness**: model/dataset/cascade paths resolve against the repository root (`settings.model_weights_abspath`), so the backend works from any working directory.
+7. **Camera Hardening** (`frontend/src/pages/LiveDetectionPage.tsx`): secure-context check, `facingMode` retry without constraints, precise error mapping, `enumerateDevices()` verification, active-input label. Camera state stays independent of model-service state.
+8. **Honest Data Cleanup**: removed the dashboard `Speed limit (50km/h)` @ 98% fallback, the `|| 0.96` and `: 95` confidence fallbacks, and the seeded `SPEED LIMIT 50 KM/H DETECTED` event; developer samples moved behind `import.meta.env.DEV`.
+9. **Configuration Files**: rewrote `.env.example` to match `Settings`; added `frontend/.env.example` and `.env` protection in `frontend/.gitignore`.
+10. **Verification**: `python -m pytest tests -q` -> **16 passed**; `npx tsc -b --force` -> exit 0; `npm run build` -> 845 ms; CORS + inference re-tested after the restart (pid 183292).
+
+
