@@ -86,8 +86,11 @@ class GarageItem(BaseModel):
     distance_meters: int
     address: str
     coordinates: Coordinates
+    lat: Optional[float] = None
+    lon: Optional[float] = None
     phone: Optional[str] = None
     open_now: bool = True
+    rating: Optional[float] = 4.8
 
 class GaragesResponse(BaseModel):
     search_center: Coordinates

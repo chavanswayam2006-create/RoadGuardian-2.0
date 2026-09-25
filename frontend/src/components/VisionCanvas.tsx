@@ -309,7 +309,16 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
         {/* SVG Bounding Boxes Overlay for Detections */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 640 380">
           {detections.map((det, idx) => {
-            const [x1, y1, x2, y2] = det.bbox;
+            const rawBbox = (det as any).bbox || (det as any).bounding_box;
+            let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+            if (Array.isArray(rawBbox) && rawBbox.length === 4) {
+              [x1, y1, x2, y2] = rawBbox;
+            } else if (rawBbox && typeof rawBbox === 'object') {
+              x1 = Math.round((rawBbox.x_min ?? 0) * 640);
+              y1 = Math.round((rawBbox.y_min ?? 0) * 380);
+              x2 = Math.round((rawBbox.x_max ?? 1) * 640);
+              y2 = Math.round((rawBbox.y_max ?? 1) * 380);
+            }
             const width = Math.max(20, x2 - x1);
             const height = Math.max(20, y2 - y1);
             const isCritical = det.is_red_light;
@@ -356,26 +365,34 @@ export const VisionCanvas: React.FC<VisionCanvasProps> = ({
                 />
 
                 {/* Label Tag Pill */}
-                <rect
-                  x={x1}
-                  y={Math.max(0, y1 - 20)}
-                  width={Math.max(120, det.class_name.length * 8 + 35)}
-                  height="18"
-                  fill={isCritical ? 'rgba(239, 68, 68, 0.9)' : 'rgba(15, 23, 42, 0.85)'}
-                  rx="3"
-                  stroke={strokeColor}
-                  strokeWidth="1"
-                />
-                <text
-                  x={x1 + 5}
-                  y={Math.max(14, y1 - 6)}
-                  fill="#F8FAFC"
-                  fontSize="10"
-                  fontFamily="monospace"
-                  fontWeight="bold"
-                >
-                  {det.class_name.toUpperCase()} ({(det.confidence * 100).toFixed(0)}%)
-                </text>
+                {(() => {
+                  const labelStr = (det.class_name || (det as any).display_name || (det as any).label || 'Traffic Sign').toString();
+                  const confPct = typeof det.confidence === 'number' ? Math.round(det.confidence * 100) : 50;
+                  return (
+                    <>
+                      <rect
+                        x={x1}
+                        y={Math.max(0, y1 - 20)}
+                        width={Math.max(120, labelStr.length * 8 + 35)}
+                        height="18"
+                        fill={isCritical ? 'rgba(239, 68, 68, 0.9)' : 'rgba(15, 23, 42, 0.85)'}
+                        rx="3"
+                        stroke={strokeColor}
+                        strokeWidth="1"
+                      />
+                      <text
+                        x={x1 + 5}
+                        y={Math.max(14, y1 - 6)}
+                        fill="#F8FAFC"
+                        fontSize="10"
+                        fontFamily="monospace"
+                        fontWeight="bold"
+                      >
+                        {labelStr.toUpperCase()} ({confPct}%)
+                      </text>
+                    </>
+                  );
+                })()}
               </g>
             );
           })}

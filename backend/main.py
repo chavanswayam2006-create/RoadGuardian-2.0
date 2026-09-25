@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Request, Query, status
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -185,6 +185,22 @@ async def get_events(
         limit=limit,
         events=events
     )
+
+# API v1 Router for Brain/API_CONTRACT.md compliance
+api_v1 = APIRouter(prefix="/api/v1")
+api_v1.add_api_route("/health", get_health, methods=["GET"], response_model=HealthResponse, tags=["API v1"])
+api_v1.add_api_route("/vision/detect-frame", detect_frame, methods=["POST"], response_model=DetectResponse, tags=["API v1"])
+api_v1.add_api_route("/detect", detect_frame, methods=["POST"], response_model=DetectResponse, tags=["API v1"])
+api_v1.add_api_route("/driver/analyze", analyze_driver, methods=["POST"], response_model=DriverStatusResponse, tags=["API v1"])
+api_v1.add_api_route("/driver-status", analyze_driver, methods=["POST"], response_model=DriverStatusResponse, tags=["API v1"])
+api_v1.add_api_route("/context/road-info", get_road_context, methods=["GET"], response_model=RoadContextResponse, tags=["API v1"])
+api_v1.add_api_route("/road-context", get_road_context, methods=["GET"], response_model=RoadContextResponse, tags=["API v1"])
+api_v1.add_api_route("/context/nearby-garages", get_garages, methods=["GET"], response_model=GaragesResponse, tags=["API v1"])
+api_v1.add_api_route("/garages", get_garages, methods=["GET"], response_model=GaragesResponse, tags=["API v1"])
+api_v1.add_api_route("/history/events", get_events, methods=["GET"], response_model=EventsResponse, tags=["API v1"])
+api_v1.add_api_route("/events", get_events, methods=["GET"], response_model=EventsResponse, tags=["API v1"])
+
+app.include_router(api_v1)
 
 if __name__ == "__main__":
     import uvicorn

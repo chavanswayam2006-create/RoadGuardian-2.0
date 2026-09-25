@@ -85,6 +85,12 @@ export const ContextMap: React.FC<ContextMapProps> = ({ roadContext, garages }) 
     garageMarkersRef.current.clearLayers();
 
     garages.forEach((garage) => {
+      const lat = typeof garage.lat === 'number' ? garage.lat : (garage as any)?.coordinates?.latitude;
+      const lon = typeof garage.lon === 'number' ? garage.lon : (garage as any)?.coordinates?.longitude;
+      if (typeof lat !== 'number' || typeof lon !== 'number' || isNaN(lat) || isNaN(lon)) {
+        return;
+      }
+
       const wrenchIcon = L.divIcon({
         className: 'garage-marker',
         html: `
@@ -108,21 +114,25 @@ export const ContextMap: React.FC<ContextMapProps> = ({ roadContext, garages }) 
         iconAnchor: [14, 14],
       });
 
-      const marker = L.marker([garage.lat, garage.lon], { icon: wrenchIcon });
-      marker.bindPopup(`
-        <div style="font-family: var(--font-sans); padding: 4px; min-width: 160px;">
-          <div style="font-weight: bold; font-size: 13px; color: #F8FAFC; margin-bottom: 2px;">
-            ${garage.name}
+      try {
+        const marker = L.marker([lat, lon], { icon: wrenchIcon });
+        marker.bindPopup(`
+          <div style="font-family: var(--font-sans); padding: 4px; min-width: 160px;">
+            <div style="font-weight: bold; font-size: 13px; color: #F8FAFC; margin-bottom: 2px;">
+              ${garage.name || 'Auto Service'}
+            </div>
+            <div style="font-size: 11px; color: #94A3B8; font-family: monospace; margin-bottom: 4px;">
+              ${garage.distance_meters ?? 500}m away • Rating: ${garage.rating ?? 4.8}★
+            </div>
+            <div style="font-size: 11px; color: #06B6D4; font-family: monospace;">
+              📞 ${garage.phone || 'N/A'}
+            </div>
           </div>
-          <div style="font-size: 11px; color: #94A3B8; font-family: monospace; margin-bottom: 4px;">
-            ${garage.distance_meters}m away • Rating: ${garage.rating}★
-          </div>
-          <div style="font-size: 11px; color: #06B6D4; font-family: monospace;">
-            📞 ${garage.phone}
-          </div>
-        </div>
-      `);
-      marker.addTo(garageMarkersRef.current!);
+        `);
+        marker.addTo(garageMarkersRef.current!);
+      } catch (err) {
+        console.warn('Failed to add garage marker:', err);
+      }
     });
   }, [garages]);
 

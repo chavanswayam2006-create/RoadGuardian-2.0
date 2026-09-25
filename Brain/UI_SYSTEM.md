@@ -64,3 +64,33 @@
 ### 4.4 Safety Event Timeline (`EventTicker`)
 - Live event stream logging all alerts with timestamps, confidence scores, and dismiss/mute controls.
 - Speech synthesis visual toggle (Mute / Unmute voice alerts).
+
+---
+
+## 5. UI/UX Production Audit & Verification Report
+
+### 5.1 Evaluated Dimensions
+1. **Visual Hierarchy**: Tactical dark theme prioritizing immediate safety hazards (Crimson AlertBanner and EAR Warning) over ambient navigation markers.
+2. **Readability**: JetBrains Mono for all high-speed telemetry (speed, EAR, coordinates, latency) with white-on-dark contrast exceeding 7:1.
+3. **Alert Visibility**: Multi-sensory feedback combining color-coded pulsing visual cards with client-side Web SpeechSynthesis voice debounced to 5.0 seconds.
+4. **Map Usability**: Leaflet dark tile rendering with auto-adjusting bounds, animated vehicle trajectory, and garage markers.
+5. **Detection Readability**: Dynamic SVG vector overlays with reticle corner markers, category chips, and confidence percentage.
+6. **Driver Monitoring Visibility**: Direct dual gauge: 0.20-calibrated EAR progress bar + 2D gaze reticle with pitch/yaw angles.
+7. **Responsive Behavior**: Mobile-adaptive layout transitioning from single-column on viewport < 1024px to a balanced 7:5 dual-cockpit on desktop.
+8. **Accessibility & Safety**: Explicit `aria-label` tags for controls; contrast-tested semantic colors.
+9. **Resilience & Error Boundaries**: Independent `<ErrorBoundary>` wraps around Leaflet Map and Optical Canvas, guaranteeing that third-party script faults never bring down the primary cockpit dashboard.
+
+### 5.2 Audit Outcomes
+- **FIXED**:
+  - ContextMap Leaflet marker crash on backend coordinate payload format (`BUG-001`).
+  - Optical canvas bounding box destructuring crash on live detection stream (`BUG-002`).
+  - Driver monitor missing qualitative gaze direction and unguarded pose angles (`BUG-003`).
+  - Subsystem resilience via tactical ErrorBoundary fallback wrappers.
+- **NOT FIXED**:
+  - Real hardware multi-monitor HUD projection (outside 3-day hackathon MVP scope).
+- **DESIGN RISKS**:
+  - High ambient sunlight in physical vehicles requires dynamic day/night theme toggle (future feature).
+- **RECOMMENDATIONS**:
+  - Add optional high-contrast Day Mode palette for bright daylight road conditions.
+  - Implement WebGL/Three.js 3D car model for advanced cockpit aesthetics in post-hackathon phase.
+

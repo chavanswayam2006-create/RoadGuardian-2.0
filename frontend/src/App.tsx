@@ -7,6 +7,7 @@ import { VisionCanvas } from './components/VisionCanvas';
 import { DriverGauge } from './components/DriverGauge';
 import { ContextMap } from './components/ContextMap';
 import { EventTicker } from './components/EventTicker';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import type {
   Detection,
   DriverStatus,
@@ -388,13 +389,15 @@ export const App: React.FC = () => {
       <main className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
         {/* Left Column: Vision Optical Canvas (Primary HUD) */}
         <section className="lg:col-span-7 flex flex-col gap-4">
-          <VisionCanvas
-            mode={mode}
-            detections={detections}
-            inferenceTimeMs={inferenceTimeMs}
-            onFrameCaptured={handleFrameCaptured}
-            speedLimitKmh={speedLimitKmh}
-          />
+          <ErrorBoundary fallbackTitle="OPTICAL FEED STANDBY">
+            <VisionCanvas
+              mode={mode}
+              detections={detections}
+              inferenceTimeMs={inferenceTimeMs}
+              onFrameCaptured={handleFrameCaptured}
+              speedLimitKmh={speedLimitKmh}
+            />
+          </ErrorBoundary>
 
           {/* Vehicle Simulation Controls */}
           <div className="hud-card p-3 bg-slate-900/80 border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
@@ -403,12 +406,14 @@ export const App: React.FC = () => {
               <button
                 onClick={() => setCurrentSpeedKmh((v) => Math.max(0, v - 5))}
                 className="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold"
+                aria-label="Decrease vehicle speed by 5 km/h"
               >
                 -5 KM/H
               </button>
               <button
                 onClick={() => setCurrentSpeedKmh((v) => v + 5)}
                 className="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold"
+                aria-label="Increase vehicle speed by 5 km/h"
               >
                 +5 KM/H
               </button>
@@ -423,6 +428,7 @@ export const App: React.FC = () => {
                 <button
                   key={limit}
                   onClick={() => setSpeedLimitKmh(limit)}
+                  aria-label={`Set speed limit to ${limit} km/h`}
                   className={`px-2 py-0.5 rounded font-bold transition-all ${
                     speedLimitKmh === limit
                       ? 'bg-red-600 text-white'
@@ -446,10 +452,12 @@ export const App: React.FC = () => {
 
           {/* Geospatial Road Context & Nearby Garages */}
           <div className="flex-1 min-h-[280px]">
-            <ContextMap
-              roadContext={roadContext}
-              garages={garages}
-            />
+            <ErrorBoundary fallbackTitle="ROAD MAP HUD STANDBY">
+              <ContextMap
+                roadContext={roadContext}
+                garages={garages}
+              />
+            </ErrorBoundary>
           </div>
 
           {/* Chronological Safety Event Timeline */}

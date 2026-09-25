@@ -1,6 +1,6 @@
 import os
 from typing import List
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "RoadGuardian 2.0"
@@ -18,8 +18,6 @@ class Settings(BaseSettings):
     DEFAULT_CONFIDENCE_THRESHOLD: float = 0.50
     DEFAULT_EAR_THRESHOLD: float = 0.20
 
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

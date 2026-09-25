@@ -109,5 +109,32 @@ def test_events_endpoint():
     assert "total" in data
     print(f"\n[PASS] GET /events passed: {data['total']} events retrieved")
 
+
+def test_api_v1_contract_compliance():
+    """Verifies that all Brain/API_CONTRACT.md endpoints respond correctly under /api/v1/"""
+    r_health = client.get("/api/v1/health")
+    assert r_health.status_code == 200
+
+    r_context = client.get("/api/v1/context/road-info?lat=48.137154&lon=11.576124")
+    assert r_context.status_code == 200
+    assert r_context.json()["data_source"] == "DEMO_DATA"
+
+    r_garages = client.get("/api/v1/context/nearby-garages?lat=48.137154&lon=11.576124&radius=3000")
+    assert r_garages.status_code == 200
+    assert r_garages.json()["count"] > 0
+
+    r_events = client.get("/api/v1/history/events?limit=10")
+    assert r_events.status_code == 200
+
+    b64 = get_sample_test_image_base64()
+    r_detect = client.post("/api/v1/vision/detect-frame", json={"image_base64": b64, "confidence_threshold": 0.40})
+    assert r_detect.status_code == 200
+    assert r_detect.json()["success"] is True
+
+    r_driver = client.post("/api/v1/driver/analyze", json={"timestamp": "2026-09-25T02:00:00Z"})
+    assert r_driver.status_code == 200
+    assert "state" in r_driver.json()
+    print("\n[PASS] All /api/v1 contract endpoints verified successfully")
+
 if __name__ == "__main__":
     pytest.main(["-s", __file__])

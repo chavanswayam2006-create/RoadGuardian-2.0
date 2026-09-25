@@ -46,12 +46,13 @@ export const DriverGauge: React.FC<DriverGaugeProps> = ({ driverStatus, onSimula
     }
   };
 
+  const safeHeadPose = head_pose || { pitch: 0, yaw: 0, roll: 0 };
   const badge = getStateBadge();
   const earPercent = Math.min(100, Math.max(0, (ear_average / 0.40) * 100));
 
   // Gaze reticle offset (-30 to +30 deg to pixel offset)
-  const gazeX = Math.max(-40, Math.min(40, (head_pose.yaw || 0) * 2));
-  const gazeY = Math.max(-40, Math.min(40, (head_pose.pitch || 0) * 2));
+  const gazeX = Math.max(-40, Math.min(40, (safeHeadPose.yaw || 0) * 2));
+  const gazeY = Math.max(-40, Math.min(40, (safeHeadPose.pitch || 0) * 2));
 
   return (
     <div className="hud-card hud-brackets flex flex-col p-4 bg-slate-900/90 backdrop-blur-md">
@@ -122,7 +123,7 @@ export const DriverGauge: React.FC<DriverGaugeProps> = ({ driverStatus, onSimula
         <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800 flex flex-col items-center">
           <div className="w-full flex items-center justify-between text-xs font-mono mb-1">
             <span className="text-slate-400 uppercase">HEAD GAZE VECTOR</span>
-            <span className="text-cyan-300 font-bold uppercase">{gaze_direction}</span>
+            <span className="text-cyan-300 font-bold uppercase">{gaze_direction || 'FORWARD'}</span>
           </div>
 
           {/* 2D Crosshair Target */}
@@ -144,9 +145,9 @@ export const DriverGauge: React.FC<DriverGaugeProps> = ({ driverStatus, onSimula
           </div>
 
           <div className="w-full grid grid-cols-3 text-center text-[10px] font-mono text-slate-400 mt-1">
-            <div>P: {head_pose.pitch.toFixed(1)}°</div>
-            <div>Y: {head_pose.yaw.toFixed(1)}°</div>
-            <div>R: {head_pose.roll.toFixed(1)}°</div>
+            <div>P: {(safeHeadPose.pitch ?? 0).toFixed(1)}°</div>
+            <div>Y: {(safeHeadPose.yaw ?? 0).toFixed(1)}°</div>
+            <div>R: {(safeHeadPose.roll ?? 0).toFixed(1)}°</div>
           </div>
         </div>
       </div>

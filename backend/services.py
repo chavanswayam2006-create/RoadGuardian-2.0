@@ -125,6 +125,9 @@ class InferenceService:
                 "distance_meters": 420,
                 "address": "Sonnenstraße 12, 80331 München",
                 "coordinates": {"latitude": 48.136500, "longitude": 11.568000},
+                "lat": 48.136500,
+                "lon": 11.568000,
+                "rating": 4.8,
                 "phone": "+49 89 2314560",
                 "open_now": True
             },
@@ -134,6 +137,9 @@ class InferenceService:
                 "distance_meters": 950,
                 "address": "Paul-Heyse-Straße 8, 80336 München",
                 "coordinates": {"latitude": 48.139000, "longitude": 11.554000},
+                "lat": 48.139000,
+                "lon": 11.554000,
+                "rating": 4.6,
                 "phone": "+49 89 5489012",
                 "open_now": True
             },
@@ -143,6 +149,9 @@ class InferenceService:
                 "distance_meters": 1600,
                 "address": "Landsberger Str. 45, 80339 München",
                 "coordinates": {"latitude": 48.141200, "longitude": 11.542000},
+                "lat": 48.141200,
+                "lon": 11.542000,
+                "rating": 4.7,
                 "phone": "+49 89 8899120",
                 "open_now": False
             }
